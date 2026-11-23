@@ -174,11 +174,11 @@
                 </a>
                 <a href="#" onclick="navigate('jurnal')" id="nav-jurnal" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-50 text-slate-600 transition nav-item relative">
                     <i class="fas fa-book w-5 text-center"></i> Jurnal Harian
-                    <span class="absolute right-2 top-1/2 -translate-y-1/2 bg-amber-100 text-amber-700 text-[10px] px-1.5 py-0.5 rounded font-bold">Lokal</span>
+                    <span class="absolute right-2 top-1/2 -translate-y-1/2 bg-emerald-100 text-emerald-700 text-[10px] px-1.5 py-0.5 rounded font-bold">Sheet</span>
                 </a>
                 <a href="#" onclick="navigate('perangkat')" id="nav-perangkat" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-50 text-slate-600 transition nav-item relative">
                     <i class="fas fa-folder-open w-5 text-center"></i> Perangkat Ajar
-                    <span class="absolute right-2 top-1/2 -translate-y-1/2 bg-blue-100 text-blue-700 text-[10px] px-1.5 py-0.5 rounded font-bold">Baru</span>
+                    <span class="absolute right-2 top-1/2 -translate-y-1/2 bg-emerald-100 text-emerald-700 text-[10px] px-1.5 py-0.5 rounded font-bold">Sheet</span>
                 </a>
                 
                 <p class="px-2 text-xs font-bold text-slate-400 uppercase mb-2 mt-6 tracking-wider">Sistem</p>
@@ -209,8 +209,12 @@
                     </button>
                     <h2 class="text-base sm:text-lg font-bold text-slate-800 truncate" id="header-title">Dashboard</h2>
                 </div>
-                <div class="flex items-center gap-2 sm:gap-5 flex-shrink-0">
-                    <button class="text-slate-400 hover:text-primary transition relative p-1.5">
+                <div class="flex items-center gap-2 sm:gap-4 flex-shrink-0">
+                    <button type="button" onclick="syncFromGoogleSheets(true)" class="bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition" title="Tarik data terbaru dari Google Sheets">
+                        <i class="fas fa-sync-alt" id="sync-icon"></i>
+                        <span class="hidden md:inline">Sinkron Sheet</span>
+                    </button>
+                    <button class="text-slate-400 hover:text-primary transition relative p-1.5 hidden sm:block">
                         <i class="fas fa-bell text-lg sm:text-xl"></i>
                         <span class="absolute top-0.5 right-0.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>
                     </button>
@@ -475,7 +479,7 @@
                         <div class="p-4 sm:p-5 border-b border-slate-100 flex flex-col sm:flex-row gap-3 justify-between items-start sm:items-center bg-white">
                             <div>
                                 <h3 class="font-bold text-slate-800 text-base sm:text-lg">Jurnal Kegiatan Pembelajaran Harian</h3>
-                                <p class="text-xs text-slate-500">Catat aktivitas mengajar harian Anda (Tersimpan otomatis di browser)</p>
+                                <p class="text-xs text-slate-500">Tersinkronisasi langsung dengan tab <strong>Jurnal</strong> di Google Sheets</p>
                             </div>
                             <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
                                 <button onclick="addJurnalRow()" class="bg-primary text-white px-3.5 py-2 rounded-lg hover:bg-blue-700 transition text-xs font-bold shadow-sm flex-1 sm:flex-none text-center">
@@ -514,7 +518,7 @@
                         <div class="p-4 sm:p-5 border-b border-slate-100 flex flex-col sm:flex-row gap-3 justify-between items-start sm:items-center bg-white">
                             <div>
                                 <h3 class="font-bold text-slate-800 text-base sm:text-lg">Perangkat Pembelajaran (Kurikulum Merdeka)</h3>
-                                <p class="text-xs text-slate-500">Kelola ATP, Modul Ajar, Prota & Promes dengan Barcode Unik 1 per 1</p>
+                                <p class="text-xs text-slate-500">Tersimpan di Google Sheets & dilengkapi Barcode Unik 1 per 1</p>
                             </div>
                             <div class="flex gap-2 w-full sm:w-auto">
                                 <button onclick="openPerangkatModal()" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition text-xs sm:text-sm font-bold shadow-sm flex-1 sm:flex-none text-center">
@@ -1046,7 +1050,7 @@
             show('app-shell');
             updateHeaderProfile();
 
-            // Muat cache lokal terlebih dahulu agar langsung tampil instan
+            // Muat cache lokal agar layar terbuka seketika (0 detik)
             const cachedCfg = localStorage.getItem('app_pengaturan_cache');
             const cachedSiswa = localStorage.getItem('app_siswa_cache');
             if (cachedCfg) state.pengaturan = JSON.parse(cachedCfg);
@@ -1055,27 +1059,80 @@
             populatePengaturanForm();
             navigate('dashboard');
             
-            // Sinkronisasi data terbaru dari Google Sheets di latar belakang
+            // Sinkronisasi penuh 2 arah dari Google Sheets (menghapus data di web jika sudah dihapus di Sheet)
+            await syncFromGoogleSheets(false);
+        }
+
+        async function syncFromGoogleSheets(manualClick = false) {
+            const syncIcon = el('sync-icon');
+            if (syncIcon) syncIcon.classList.add('fa-spin');
+            if (manualClick) showLoader("Menyinkronkan data dengan Google Sheets...");
+
             try {
-                const [cfg, ssw] = await Promise.all([
-                    fetchAPI('get_pengaturan'),
-                    fetchAPI('get_siswa')
-                ]);
-                if (cfg && Object.keys(cfg).length > 0) {
-                    state.pengaturan = cfg;
-                    localStorage.setItem('app_pengaturan_cache', JSON.stringify(cfg));
+                const all = await fetchAPI('sync_all');
+                if (all) {
+                    // Pengaturan
+                    if (all.pengaturan && typeof all.pengaturan === 'object') {
+                        state.pengaturan = all.pengaturan;
+                        localStorage.setItem('app_pengaturan_cache', JSON.stringify(all.pengaturan));
+                    }
+                    // Siswa (jika di Sheet dihapus semua atau sebagian, di web otomatis mengikuti Sheet)
+                    if (Array.isArray(all.siswa)) {
+                        state.siswa = all.siswa;
+                        localStorage.setItem('app_siswa_cache', JSON.stringify(all.siswa));
+                    }
+                    // Jurnal
+                    if (Array.isArray(all.jurnal)) {
+                        state.jurnal = all.jurnal;
+                        localStorage.setItem('app_jurnal', JSON.stringify(all.jurnal));
+                    }
+                    // Perangkat Ajar
+                    if (Array.isArray(all.perangkat)) {
+                        state.perangkat = all.perangkat;
+                        localStorage.setItem('app_perangkat', JSON.stringify(all.perangkat));
+                    }
+                    // Filter Absensi bulan & tahun aktif dari Sheet
+                    const bulan = el('filter-bulan')?.value;
+                    const tahun = el('filter-tahun')?.value;
+                    if (Array.isArray(all.absensi) && bulan && tahun) {
+                        state.absensi = all.absensi.filter(a => a.bulan == bulan && a.tahun == tahun);
+                        localStorage.setItem(`app_absensi_${bulan}_${tahun}`, JSON.stringify(state.absensi));
+                    }
+                    // Filter Nilai mapel & semester aktif dari Sheet
+                    const mapel = el('filter-mapel')?.value?.trim();
+                    const sem = el('filter-semester')?.value;
+                    if (Array.isArray(all.nilai) && mapel && sem) {
+                        state.nilai = all.nilai.filter(n => n.mata_pelajaran == mapel && n.semester == sem);
+                        localStorage.setItem(`app_nilai_v2_${mapel}_${sem}`, JSON.stringify(state.nilai));
+                    }
+
+                    populatePengaturanForm();
+                    updateHeaderProfile();
+                    renderDashboard();
+                    if (!el('view-siswa').classList.contains('hidden-view')) renderTableSiswa();
+                    if (!el('view-absensi').classList.contains('hidden-view')) renderTableAbsensi();
+                    if (!el('view-nilai').classList.contains('hidden-view')) renderTableNilai();
+                    if (!el('view-jurnal').classList.contains('hidden-view')) renderJurnal();
+                    if (!el('view-perangkat').classList.contains('hidden-view')) renderPerangkat();
+
+                    if (manualClick) showToast("100% Data berhasil disinkronkan dari Google Sheets!");
                 }
-                if (Array.isArray(ssw) && (ssw.length > 0 || state.siswa.length === 0)) {
-                    state.siswa = ssw;
-                    localStorage.setItem('app_siswa_cache', JSON.stringify(ssw));
-                }
-                populatePengaturanForm();
-                updateHeaderProfile();
-                renderDashboard();
-                if (!el('view-siswa').classList.contains('hidden-view')) renderTableSiswa();
-                if (!el('view-absensi').classList.contains('hidden-view')) renderTableAbsensi();
             } catch (e) {
-                console.warn("Berjalan menggunakan data cache lokal.");
+                if (manualClick) showToast("Gagal terhubung ke Google Sheets. Menggunakan data lokal.", "error");
+            } finally {
+                if (syncIcon) syncIcon.classList.remove('fa-spin');
+                if (manualClick) hideLoader();
+            }
+        }
+
+        function updateHeaderProfile() {
+            const nama = (state.user?.nama_lengkap && state.user.nama_lengkap !== 'Admin Sekolah' && state.user.nama_lengkap !== 'Admin')
+                ? state.user.nama_lengkap
+                : (state.pengaturan?.guru_kelas || 'Guru yang Bertugas');
+            if (el('user-name-display')) el('user-name-display').innerText = nama;
+            if (el('dash-welcome-name')) el('dash-welcome-name').innerText = nama;
+            if (el('user-avatar')) {
+                el('user-avatar').src = state.user?.foto_profil_base64 || `https://placehold.co/40x40/2563eb/ffffff?text=${encodeURIComponent(nama.charAt(0).toUpperCase())}`;
             }
         }
 
@@ -1923,7 +1980,7 @@
         }
 
         function addJurnalRow() {
-            state.jurnal.push({ tanggal: '', tema: '', kd: '', materi: '', kegiatan: '', penilaian: '' });
+            state.jurnal.push({ id: 'jrn_' + Date.now(), tanggal: '', tema: '', kd: '', materi: '', kegiatan: '', penilaian: '' });
             saveJurnal(true);
             renderJurnal();
         }
@@ -1937,13 +1994,21 @@
 
         function deleteJurnalRow(idx) {
             state.jurnal.splice(idx, 1);
-            saveJurnal(true);
+            saveJurnal(false);
             renderJurnal();
         }
 
-        function saveJurnal(silent = false) {
+        async function saveJurnal(silent = false) {
             localStorage.setItem('app_jurnal', JSON.stringify(state.jurnal));
-            if (!silent) showToast("Jurnal harian berhasil disimpan!");
+            if (!silent) showLoader("Menyimpan jurnal ke Google Sheets...");
+            try {
+                await fetchAPI('save_jurnal', state.jurnal);
+                if (!silent) showToast("Jurnal harian tersimpan di Google Sheets!");
+            } catch (e) {
+                if (!silent) showToast("Jurnal disimpan di perangkat!");
+            } finally {
+                if (!silent) hideLoader();
+            }
         }
 
         /**
@@ -1962,56 +2027,152 @@
             grid.innerHTML = '';
 
             if (state.perangkat.length === 0) {
-                grid.innerHTML = `<div class="col-span-full text-center py-16 bg-white rounded-2xl border border-dashed border-slate-300 text-slate-500">
-                    <i class="fas fa-folder-open text-4xl text-slate-300 mb-3"></i>
-                    <p class="font-semibold">Belum ada dokumen perangkat ajar.</p>
-                    <p class="text-xs mt-1">Klik <strong>+ Tambah Dokumen</strong> untuk membuat perangkat beserta barcode otomatis.</p>
-                </div>`;
+                grid.innerHTML = `
+                    <div class="col-span-full text-center py-16 bg-white rounded-2xl border border-dashed border-slate-300 text-slate-500">
+                        <i class="fas fa-folder-open text-4xl text-slate-300 mb-3"></i>
+                        <p class="font-semibold">Belum ada dokumen perangkat ajar.</p>
+                        <p class="text-xs mt-1">Klik tombol <strong>+ Tambah Dokumen</strong> untuk menambahkan Modul Ajar, ATP, Prota, atau Promes.</p>
+                    </div>`;
                 return;
             }
 
             state.perangkat.forEach((doc, idx) => {
-                const shortId = '#' + String(doc.id).slice(-5);
+                const qrBoxId = `qr-card-${idx}`;
                 const card = document.createElement('div');
-                card.className = "bg-white rounded-2xl border border-slate-200 p-5 shadow-xs hover:shadow-md transition flex flex-col justify-between";
+                card.className = 'bg-white rounded-2xl border border-slate-200 p-5 shadow-xs hover:shadow-md transition flex flex-col justify-between gap-4';
                 card.innerHTML = `
                     <div>
-                        <div class="flex justify-between items-start gap-3 mb-3">
-                            <div>
-                                <span class="inline-block px-2.5 py-1 rounded-md bg-blue-50 text-primary text-[11px] font-extrabold uppercase tracking-wider mb-1.5">${escapeHtml(doc.jenis)}</span>
-                                <p class="text-xs font-bold text-slate-400 uppercase">${escapeHtml(doc.mapel)}</p>
-                                <h4 class="font-bold text-slate-800 text-base leading-snug mt-1">${escapeHtml(doc.judul)}</h4>
-                            </div>
-                            <!-- Kotak Barcode Besar 115x115px (Klik untuk Zoom) -->
-                            <div onclick='zoomBarcode(${JSON.stringify(doc).replace(/'/g, "&#39;")})' class="bg-white p-2 border-2 border-slate-200 rounded-xl text-center cursor-pointer hover:border-primary transition flex-shrink-0 shadow-xs" title="Klik untuk memperbesar Barcode">
-                                <div id="qr-card-${idx}" class="flex justify-center items-center"></div>
-                                <span class="block text-[10px] font-mono font-bold text-slate-500 mt-1">${shortId}</span>
-                            </div>
+                        <div class="flex items-center justify-between gap-2 mb-3">
+                            <span class="px-2.5 py-1 rounded-md bg-blue-50 text-primary text-xs font-extrabold uppercase tracking-wider">${escapeHtml(doc.jenis)}</span>
+                            <span class="text-xs font-bold text-slate-500 bg-slate-100 px-2.5 py-1 rounded-md">${escapeHtml(doc.mapel)}</span>
                         </div>
-                        <p class="text-xs text-slate-600 line-clamp-3 mb-4">${escapeHtml(doc.catatan || 'Tidak ada catatan tambahan.')}</p>
+                        <h4 class="font-bold text-slate-800 text-base leading-snug mb-1.5">${escapeHtml(doc.judul)}</h4>
+                        <p class="text-xs text-slate-500 line-clamp-2 mb-3">${escapeHtml(doc.catatan || 'Tidak ada catatan tambahan.')}</p>
+                        ${doc.link ? `<a href="${escapeHtml(doc.link)}" target="_blank" class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-600 hover:underline mb-2"><i class="fas fa-external-link-alt"></i> Buka Tautan Dokumen</a>` : ''}
                     </div>
-                    <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
-                        ${doc.link ? `<a href="${escapeHtml(doc.link)}" target="_blank" class="text-xs font-bold text-emerald-600 hover:underline"><i class="fas fa-external-link-alt mr-1"></i> Buka File Drive</a>` : `<span class="text-[11px] text-slate-400 italic">Tanpa tautan Drive</span>`}
-                        <div class="flex gap-1">
-                            <button onclick='zoomBarcode(${JSON.stringify(doc).replace(/'/g, "&#39;")})' class="text-slate-600 hover:text-primary bg-slate-100 hover:bg-blue-50 p-2 rounded-lg text-xs transition" title="Perbesar Barcode"><i class="fas fa-qrcode"></i></button>
-                            <button onclick='editPerangkat(${JSON.stringify(doc).replace(/'/g, "&#39;")})' class="text-blue-600 hover:bg-blue-50 p-2 rounded-lg text-xs transition" title="Edit"><i class="fas fa-edit"></i></button>
-                            <button onclick="deletePerangkat(${idx})" class="text-red-500 hover:bg-red-50 p-2 rounded-lg text-xs transition" title="Hapus"><i class="fas fa-trash"></i></button>
+                    <div class="pt-3 border-t border-slate-100 flex items-center justify-between gap-3">
+                        <div onclick='zoomBarcode(${JSON.stringify(doc).replace(/'/g, "&#39;")})' class="bg-white p-2 border border-slate-200 rounded-xl cursor-pointer hover:border-primary transition text-center" title="Klik untuk memperbesar Barcode">
+                            <div id="${qrBoxId}" class="flex justify-center"></div>
+                            <span class="block text-[10px] font-mono text-slate-400 mt-1">#${String(doc.id).slice(-5)}</span>
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <button type="button" onclick='zoomBarcode(${JSON.stringify(doc).replace(/'/g, "&#39;")})' class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-blue-50 text-slate-700 hover:text-primary text-xs font-bold transition">
+                                <i class="fas fa-search-plus mr-1"></i> Scan
+                            </button>
+                            <button type="button" onclick='editPerangkat(${JSON.stringify(doc).replace(/'/g, "&#39;")})' class="px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-600 text-xs font-bold transition">
+                                <i class="fas fa-edit mr-1"></i> Edit
+                            </button>
+                            <button type="button" onclick="deletePerangkat(${idx})" class="px-3 py-1.5 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 text-xs font-bold transition">
+                                <i class="fas fa-trash mr-1"></i> Hapus
+                            </button>
                         </div>
                     </div>
                 `;
                 grid.appendChild(card);
 
-                // Generate QR Code 115x115px otomatis
-                const qrTarget = el(`qr-card-${idx}`);
-                if (qrTarget && typeof QRCode !== 'undefined') {
-                    new QRCode(qrTarget, {
-                        text: getQrContentForDoc(doc),
-                        width: 115,
-                        height: 115,
-                        colorDark: "#000000",
-                        colorLight: "#ffffff",
-                        correctLevel: QRCode.CorrectLevel.L
-                    });
+                if (typeof QRCode !== 'undefined') {
+                    const qrTarget = el(qrBoxId);
+                    if (qrTarget) {
+                        new QRCode(qrTarget, {
+                            text: getQrContentForDoc(doc),
+                            width: 110,
+                            height: 110,
+                            colorDark: "#000000",
+                            colorLight: "#ffffff",
+                            correctLevel: QRCode.CorrectLevel.L
+                        });
+                    }
+                }
+            });
+        }
+
+        function zoomBarcode(doc) {
+            el('zoom-qr-jenis').innerText = doc.jenis;
+            el('zoom-qr-judul').innerText = doc.judul;
+            el('zoom-qr-mapel').innerText = doc.mapel;
+            el('zoom-qr-id').innerText = '#' + String(doc.id).slice(-5);
+            const container = el('zoom-qr-container');
+            container.innerHTML = '';
+            if (typeof QRCode !== 'undefined') {
+                new QRCode(container, {
+                    text: getQrContentForDoc(doc),
+                    width: 240,
+                    height: 240,
+                    colorDark: "#000000",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.L
+                });
+            }
+            showModal('modal-barcode-zoom');
+        }
+
+        function openPerangkatModal() {
+            el('perangkat-id').value = '';
+            el('form-perangkat').reset();
+            el('modal-perangkat-title').innerText = "Tambah Perangkat Ajar";
+            showModal('modal-perangkat');
+        }
+
+        function closePerangkatModal() { hideModal('modal-perangkat'); }
+
+        function editPerangkat(doc) {
+            el('perangkat-id').value = doc.id;
+            el('perangkat-jenis').value = doc.jenis;
+            el('perangkat-mapel').value = doc.mapel;
+            el('perangkat-judul').value = doc.judul;
+            el('perangkat-link').value = doc.link || '';
+            el('perangkat-catatan').value = doc.catatan || '';
+            el('modal-perangkat-title').innerText = "Edit Perangkat Ajar";
+            showModal('modal-perangkat');
+        }
+
+        async function submitPerangkat(e) {
+            e.preventDefault();
+            const id = el('perangkat-id').value;
+            const item = {
+                id: id || ('dok_' + Date.now()),
+                jenis: el('perangkat-jenis').value,
+                mapel: el('perangkat-mapel').value.trim(),
+                judul: el('perangkat-judul').value.trim(),
+                link: el('perangkat-link').value.trim(),
+                catatan: el('perangkat-catatan').value.trim()
+            };
+
+            if (id) {
+                const idx = state.perangkat.findIndex(p => p.id == id);
+                if (idx > -1) state.perangkat[idx] = item;
+            } else {
+                state.perangkat.push(item);
+            }
+
+            localStorage.setItem('app_perangkat', JSON.stringify(state.perangkat));
+            closePerangkatModal();
+            renderPerangkat();
+
+            showLoader("Menyimpan perangkat ke Google Sheets...");
+            try {
+                await fetchAPI('save_perangkat', state.perangkat);
+                showToast("Perangkat ajar & barcode tersimpan di Google Sheets!");
+            } catch (err) {
+                showToast("Perangkat ajar disimpan di perangkat!");
+            } finally {
+                hideLoader();
+            }
+        }
+
+        function deletePerangkat(idx) {
+            Dialog.confirm("Hapus Dokumen", "Yakin ingin menghapus dokumen perangkat ajar ini?", async () => {
+                state.perangkat.splice(idx, 1);
+                localStorage.setItem('app_perangkat', JSON.stringify(state.perangkat));
+                renderPerangkat();
+                showLoader("Menghapus dari Google Sheets...");
+                try {
+                    await fetchAPI('save_perangkat', state.perangkat);
+                    showToast("Dokumen dihapus dari Google Sheets!");
+                } catch (err) {
+                    showToast("Dokumen dihapus dari perangkat");
+                } finally {
+                    hideLoader();
                 }
             });
         }
