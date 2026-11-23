@@ -315,7 +315,7 @@
                         <!-- Table Wrapper -->
                         <div class="p-0 flex-1 overflow-auto bg-white">
                             <div class="bg-blue-50 text-blue-800 text-xs px-4 py-2 border-b border-blue-100 font-medium">
-                                <i class="fas fa-info-circle mr-1"></i> Ketik <strong>S</strong> (Sakit), <strong>I</strong> (Izin), <strong>A</strong> (Alpa) pada kolom tanggal. Angka rekap dihitungkan otomatis.
+                                <i class="fas fa-info-circle mr-1"></i> Ketik <strong>.</strong> (Hadir), <strong>S</strong> (Sakit), <strong>I</strong> (Izin), <strong>A</strong> (Alpa). Kursor akan berpindah otomatis!
                             </div>
                             <table class="w-full text-left border-collapse text-xs whitespace-nowrap">
                                 <thead>
@@ -520,6 +520,26 @@
                                     <input type="file" id="file-logo-kanan" accept="image/*" class="text-[10px] w-full mb-2 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-primary hover:file:bg-blue-100" onchange="encodeImage(this, 'preview-logo-kanan', 'set-logo_kanan_base64')">
                                     <button type="button" onclick="clearImage('preview-logo-kanan', 'set-logo_kanan_base64', 'Logo')" class="text-xs text-red-500 hover:text-red-700 font-medium">Hapus Logo</button>
                                     <input type="hidden" id="set-logo_kanan_base64">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Panel Backup & Restore -->
+                        <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 mb-6">
+                            <h3 class="text-lg font-bold text-slate-800 border-b border-slate-100 pb-3 mb-6"><i class="fas fa-database text-emerald-500 mr-2"></i> Backup & Restore Data (Ekspor/Impor)</h3>
+                            <div class="flex flex-col sm:flex-row gap-4">
+                                <div class="flex-1 bg-blue-50 border border-blue-100 rounded-xl p-5 text-center">
+                                    <i class="fas fa-cloud-download-alt text-3xl text-blue-400 mb-3"></i>
+                                    <h4 class="font-bold text-slate-800 mb-1">Ekspor (Backup)</h4>
+                                    <p class="text-xs text-slate-500 mb-4">Unduh seluruh data (Siswa, Absen, Nilai, Pengaturan) ke dalam format file JSON.</p>
+                                    <button type="button" onclick="exportAllData()" class="bg-blue-600 text-white px-5 py-2 rounded-lg text-sm font-bold hover:bg-blue-700 transition w-full shadow-sm">Ekspor Semua Data</button>
+                                </div>
+                                <div class="flex-1 bg-amber-50 border border-amber-100 rounded-xl p-5 text-center">
+                                    <i class="fas fa-cloud-upload-alt text-3xl text-amber-400 mb-3"></i>
+                                    <h4 class="font-bold text-slate-800 mb-1">Impor (Restore)</h4>
+                                    <p class="text-xs text-slate-500 mb-4">Pulihkan data dari file JSON. <strong>Peringatan:</strong> Ini akan menimpa data yang ada!</p>
+                                    <input type="file" id="file-import" accept=".json" class="hidden" onchange="handleImportData(event)">
+                                    <button type="button" onclick="document.getElementById('file-import').click()" class="bg-amber-500 text-white px-5 py-2 rounded-lg text-sm font-bold hover:bg-amber-600 transition w-full shadow-sm">Impor Data JSON</button>
                                 </div>
                             </div>
                         </div>
@@ -1057,7 +1077,7 @@
                 days.forEach(d => {
                     let val = absenData[`tgl_${d}`] || '';
                     html += `<td class="border-r py-0 px-0">
-                        <input type="text" maxlength="1" class="tbl-input uppercase font-bold text-slate-700 tgl-input" data-day="${d}" data-sid="${s.id}" value="${val}" onkeyup="calcAbsen('${s.id}')">
+                        <input type="text" maxlength="1" class="tbl-input uppercase font-bold text-slate-700 tgl-input" data-day="${d}" data-sid="${s.id}" value="${val}" oninput="handleAbsenInput(this, '${s.id}')">
                     </td>`;
                 });
                 
@@ -1072,6 +1092,27 @@
                 tr.innerHTML = html;
                 tbody.appendChild(tr);
             });
+        }
+
+        function handleAbsenInput(input, sid) {
+            let val = input.value.toUpperCase();
+            // Hanya izinkan titik (.), S, I, A, atau kosong
+            if (!['.', 'S', 'I', 'A', ''].includes(val)) {
+                input.value = '';
+                return;
+            }
+            input.value = val;
+            calcAbsen(sid);
+
+            // Lompat otomatis ke input berikutnya dalam baris yang sama
+            if (val !== '') {
+                let currentTd = input.parentElement;
+                let nextTd = currentTd.nextElementSibling;
+                if (nextTd && nextTd.querySelector('.tgl-input')) {
+                    nextTd.querySelector('.tgl-input').focus();
+                    nextTd.querySelector('.tgl-input').select();
+                }
+            }
         }
 
         function calcAbsen(sid) {
@@ -1300,6 +1341,62 @@
                 state.pengaturan = p; 
                 renderDashboard();
             } catch (err) {}
+        }
+
+        async function exportAllData() {
+            showLoader("Menyiapkan Ekspor Data...");
+            try {
+                const data = await fetchAPI('export_all');
+                // Tambahkan data jurnal (lokal) ke dalam ekspor
+                data.jurnal = state.jurnal || [];
+                
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = `Backup_App_Guru_${new Date().toISOString().slice(0,10)}.json`;
+                a.click();
+                
+                showToast("Seluruh Data Berhasil Diekspor!");
+            } catch(e) {
+                Dialog.show("Gagal", "Terjadi kesalahan saat mengekspor data.");
+            }
+            hideLoader();
+        }
+
+        function handleImportData(event) {
+            const file = event.target.files[0];
+            if(!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                try {
+                    const dataToImport = JSON.parse(e.target.result);
+                    
+                    Dialog.confirm("Peringatan Impor", "Data yang ada saat ini di Server (Siswa, Absen, Nilai) akan DITIMPA SEPENUHNYA oleh file backup ini. Lanjutkan?", async () => {
+                        showLoader("Mengimpor Seluruh Data...");
+                        try {
+                            await fetchAPI('import_all', dataToImport);
+                            
+                            // Pulihkan jurnal lokal jika ada
+                            if(dataToImport.jurnal) {
+                                state.jurnal = dataToImport.jurnal;
+                                localStorage.setItem('app_jurnal', JSON.stringify(state.jurnal));
+                            }
+                            
+                            showToast("Impor Berhasil! Memuat ulang sistem...");
+                            setTimeout(() => location.reload(), 1500);
+                        } catch(err) {
+                            Dialog.show("Gagal", "Gagal mengimpor ke server database.");
+                        }
+                        hideLoader();
+                    });
+                } catch (err) {
+                    Dialog.show("Gagal", "Format file JSON tidak valid.");
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = ''; // Reset input
         }
 
 
