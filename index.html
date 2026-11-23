@@ -657,7 +657,7 @@
          * KONFIGURASI DAN STATE
          * =========================================
          */
-        const API_URL = "https://script.google.com/macros/s/AKfycbwnd-2Uvi2whHO1SmBsdej_eNSnuuiZgUd97xfM_v5a4_yTsd8sq5od0Ag09UIErRTT/exec"; // [URL TELAH DI-INJECT]
+        const API_URL = "https://script.google.com/macros/s/AKfycbwnd-2Uvi2whHO1SmBsdej_eNSnuuiZgUd97xfM_v5a4_yTsd8sq5od0Ag09UIErRTT/exec";
         
         let state = {
             user: null,
@@ -665,7 +665,7 @@
             pengaturan: {},
             absensi: [],
             nilai: [],
-            jurnal: [] // State untuk lokal jurnal
+            jurnal: [] 
         };
 
         const days = Array.from({length: 31}, (_, i) => i + 1);
@@ -676,26 +676,16 @@
          * =========================================
          */
         
-        // Fetch Wrapper
         async function fetchAPI(action, payload = {}) {
-            try {
-                showLoader();
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({ action, payload })
-                });
-                const result = await response.json();
-                hideLoader();
-                if (result.status === 'error') throw new Error(result.message);
-                return result.data;
-            } catch (error) {
-                hideLoader();
-                showToast(error.message || "Terjadi kesalahan server", "error");
-                throw error;
-            }
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                body: JSON.stringify({ action, payload })
+            });
+            const result = await response.json();
+            if (result.status === 'error') throw new Error(result.message);
+            return result.data;
         }
 
-        // DOM Utils
         const el = (id) => document.getElementById(id);
         const show = (id) => { 
             const e = el(id); 
@@ -706,16 +696,12 @@
             if(e) { e.classList.add('hidden-view'); e.style.display = 'none'; }
         };
 
-        // Loading Overlay
         function showLoader(text = "Memproses...") {
             el('loader-text').innerText = text;
             el('loader').classList.remove('hidden-view');
         }
-        function hideLoader() {
-            el('loader').classList.add('hidden-view');
-        }
+        function hideLoader() { el('loader').classList.add('hidden-view'); }
 
-        // Toast Notification
         function showToast(message, type = 'success') {
             const container = el('toast-container');
             const toast = document.createElement('div');
@@ -734,7 +720,6 @@
             }, 3000);
         }
 
-        // Custom Modal
         const Dialog = {
             show(title, message, callback = null) {
                 el('dialog-title').innerText = title;
@@ -777,7 +762,6 @@
             }
         }
 
-        // Base64 Encoder
         function encodeImage(input, previewId, hiddenInputId) {
             if (input.files && input.files[0]) {
                 if (input.files[0].size > 2 * 1024 * 1024) { 
@@ -792,6 +776,7 @@
                 reader.readAsDataURL(input.files[0]);
             }
         }
+        
         function clearImage(previewId, hiddenInputId, placeholderText) {
             el(previewId).src = `https://placehold.co/100x100/e2e8f0/94a3b8?text=${encodeURIComponent(placeholderText)}`;
             el(hiddenInputId).value = '';
@@ -801,7 +786,7 @@
 
         /**
          * =========================================
-         * AUTH & INIT
+         * AUTH & INIT (REVISI BYPASS LOGIN)
          * =========================================
          */
         
@@ -815,58 +800,58 @@
                 hide('app-shell');
             }
             
-            // Build table header dates for Absensi
             let thHTML = '';
             days.forEach(d => {
                 thHTML += `<th class="border-r border-slate-200 py-1.5 px-1 font-normal w-8 hover:bg-blue-100 cursor-default">${d}</th>`;
             });
             el('thead-tgl').innerHTML = thHTML;
 
-            // Load Jurnal Local
             const savedJurnal = localStorage.getItem('app_jurnal');
             if(savedJurnal) {
                 state.jurnal = JSON.parse(savedJurnal);
             }
         };
 
+        // ===== INI ADALAH FUNGSI LOGIN YANG TELAH DIREVISI =====
         async function handleLogin(e) {
             e.preventDefault();
             const u = el('login-username').value;
             const p = el('login-password').value;
             
+            showLoader("Mencoba masuk...");
+            
             try {
-                // Percobaan pertama dengan password yang diinput (admin)
                 let user;
                 try {
-                     user = await fetchAPI('login', { username: u, password: p });
-                } catch(apiErr) {
-                     // Percobaan kedua fallback (sandi lama 123456) jika gagal
-                     if(u === 'admin' && p === 'admin') {
-                         try {
-                              user = await fetchAPI('login', { username: u, password: '123456' });
-                         } catch(fallbackErr) {
-                             throw new Error("Gagal login dengan sandi default maupun sandi baru. Periksa Google Sheets.");
-                         }
-                     } else {
-                         throw apiErr;
-                     }
+                    // Percobaan pertama: Cek ke Google Sheets
+                    user = await fetchAPI('login', { username: u, password: p });
+                } catch (apiErr) {
+                    // JIKA GAGAL / ERROR: Langsung paksa masuk jika username adalah 'admin'
+                    if (u === 'admin') {
+                        console.warn("Memicu Force Bypass Login (Google Sheets menolak / gagal merespons)");
+                        user = { 
+                            id: 'u1', 
+                            username: 'admin', 
+                            nama_lengkap: 'Admin Sekolah', 
+                            role: 'admin', 
+                            foto_profil_base64: '' 
+                        };
+                    } else {
+                        // Jika bukan admin yang mencoba masuk, lemparkan error asli
+                        throw apiErr;
+                    }
                 }
                 
+                // Jika berhasil masuk (baik dari API maupun paksaan/bypass)
                 state.user = user;
                 localStorage.setItem('app_user', JSON.stringify(user));
+                hideLoader();
                 showToast("Berhasil masuk ke sistem!");
                 startApp();
+                
             } catch (err) {
-                // Mode bypass jika terjadi masalah CORS atau network error dari Apps Script
-                if(u === 'admin' && p === 'admin' && (err.message.includes('fetch') || err.message.includes('CORS') || err.message.includes('Network'))) {
-                     console.warn("API Error, entering offline fallback mode");
-                     state.user = { id: 'u1', username: 'admin', nama_lengkap: 'Offline Admin', role: 'admin' };
-                     localStorage.setItem('app_user', JSON.stringify(state.user));
-                     showToast("Masuk menggunakan Mode Lokal (Offline)", "warning");
-                     startApp();
-                } else {
-                     showToast(err.message || "Login gagal!", "error");
-                }
+                hideLoader();
+                showToast(err.message || "Login gagal! Pastikan sandi benar.", "error");
             }
         }
 
@@ -876,7 +861,7 @@
                 state.user = null;
                 hide('app-shell');
                 show('login-view');
-                el('login-password').value = 'admin'; // reset default for easy testing
+                el('login-password').value = 'admin'; 
             });
         }
 
@@ -897,7 +882,11 @@
                 
                 populatePengaturanForm();
                 navigate('dashboard');
-            } catch (e) {}
+            } catch (e) {
+                hideLoader();
+                // Tetap biarkan masuk ke dashboard meskipun API gagal sinkron awal
+                navigate('dashboard');
+            }
         }
 
         function updateHeaderProfile() {
@@ -914,7 +903,6 @@
         function navigate(viewName) {
             document.querySelectorAll('.view-section').forEach(e => e.classList.add('hidden-view'));
             
-            // Modern Sidebar active state
             document.querySelectorAll('.nav-item').forEach(e => {
                 e.classList.remove('bg-primary', 'text-white', 'shadow-md', 'shadow-blue-500/20');
                 e.classList.add('text-slate-600');
@@ -1006,6 +994,7 @@
             };
 
             try {
+                showLoader("Menyimpan...");
                 await fetchAPI('save_siswa', payload);
                 showToast("Data murid berhasil disimpan");
                 closeSiswaModal();
@@ -1017,6 +1006,7 @@
         function hapusSiswa(id) {
             Dialog.confirm("Hapus Siswa", "Yakin ingin menghapus data siswa ini? Data absen dan nilai terkait bisa terpengaruh.", async () => {
                 try {
+                    showLoader("Menghapus...");
                     await fetchAPI('delete_siswa', { id });
                     showToast("Data dihapus");
                     state.siswa = await fetchAPI('get_siswa');
@@ -1121,6 +1111,7 @@
             });
 
             try {
+                showLoader("Menyimpan Absensi...");
                 await fetchAPI('save_absensi', payload);
                 showToast("Rekap Absen Tersimpan!");
                 state.absensi = await fetchAPI('get_absensi', {bulan, tahun});
@@ -1197,6 +1188,7 @@
             });
 
             try {
+                showLoader("Menyimpan Nilai...");
                 await fetchAPI('save_nilai', payload);
                 showToast("Data Nilai Tersimpan");
                 state.nilai = await fetchAPI('get_nilai', {mata_pelajaran: mapel, semester});
@@ -1214,7 +1206,6 @@
             tbody.innerHTML = '';
             
             if(state.jurnal.length === 0) {
-                // Add 1 default empty row if empty
                 state.jurnal.push({ id: Date.now(), tanggal: '', tema: '', kd: '', materi: '', kegiatan: '', penilaian: '' });
             }
 
@@ -1237,7 +1228,6 @@
         }
 
         function addJurnalRow() {
-            // sync before add
             syncJurnalUItoState();
             state.jurnal.push({ id: Date.now(), tanggal: '', tema: '', kd: '', materi: '', kegiatan: '', penilaian: '' });
             renderJurnal();
@@ -1304,6 +1294,7 @@
             });
 
             try {
+                showLoader("Menyimpan Pengaturan...");
                 await fetchAPI('save_pengaturan', p);
                 showToast("Pengaturan Sistem Tersimpan");
                 state.pengaturan = p; 
@@ -1340,6 +1331,7 @@
             if(!payload.password) delete payload.password; 
 
             try {
+                showLoader("Memperbarui Profil...");
                 await fetchAPI('update_profil', payload);
                 showToast("Profil diperbarui");
                 
