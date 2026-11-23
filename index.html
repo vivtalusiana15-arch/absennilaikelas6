@@ -434,14 +434,21 @@
                             </table>
                         </div>
                     </div>
-                </div>
-
-                <!-- VIEW: REKAP ABSENSI (TAMPILAN HARIAN H, I, S, A) -->
+                <!-- VIEW: REKAP ABSENSI (TAMPILAN HARIAN H, I, S, A & REKAP BULANAN EDITABLE) -->
                 <div id="view-absensi" class="view-section hidden-view">
                     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col h-[calc(100vh-140px)] overflow-hidden">
                         <div class="p-5 border-b border-slate-100 flex flex-wrap gap-3 justify-between items-center bg-white">
                             <div class="flex flex-wrap items-center gap-2">
-                                <div class="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5">
+                                <!-- Switcher Mode Harian vs Rekap Bulanan -->
+                                <div class="inline-flex rounded-lg bg-slate-100 p-1 border border-slate-200">
+                                    <button type="button" id="btn-mode-harian" onclick="switchAbsenMode('harian')" class="px-3 py-1.5 rounded-md text-xs font-bold bg-primary text-white shadow-xs transition">
+                                        <i class="fas fa-user-check mr-1"></i> Harian
+                                    </button>
+                                    <button type="button" id="btn-mode-bulanan" onclick="switchAbsenMode('bulanan')" class="px-3 py-1.5 rounded-md text-xs font-bold text-slate-600 hover:text-slate-900 transition">
+                                        <i class="fas fa-calendar-alt mr-1"></i> Rekap Bulanan
+                                    </button>
+                                </div>
+                                <div id="wrap-filter-tanggal" class="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5">
                                     <span class="text-xs font-bold text-slate-500">Tgl:</span>
                                     <select id="filter-tanggal" onchange="renderTableAbsensi()" class="bg-transparent text-sm font-extrabold text-primary outline-none cursor-pointer">
                                         <!-- 1-31 injected via JS -->
@@ -462,7 +469,7 @@
                                     <option value="Desember">Desember</option>
                                 </select>
                                 <input type="number" id="filter-tahun" value="2026" onchange="loadAbsensiData()" class="border border-slate-200 rounded-lg px-3 py-2 text-sm font-bold text-slate-700 bg-slate-50 w-24 outline-none focus:border-primary">
-                                <button onclick="setSemuaHadirHariIni()" class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-2 rounded-lg hover:bg-emerald-100 text-xs font-bold transition" title="Tandai semua siswa Hadir (.) pada tanggal dipilih">
+                                <button id="btn-hadir-semua" onclick="setSemuaHadirHariIni()" class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-2 rounded-lg hover:bg-emerald-100 text-xs font-bold transition" title="Tandai semua siswa Hadir (.) pada tanggal dipilih">
                                     <i class="fas fa-check-double mr-1"></i> Hadir Semua (H)
                                 </button>
                             </div>
@@ -484,15 +491,8 @@
                         </div>
                         <div class="p-0 flex-1 overflow-auto">
                             <table class="w-full text-left border-collapse text-sm">
-                                <thead class="sticky top-0 bg-slate-50 z-20 shadow-xs text-slate-600">
-                                    <tr class="border-b border-slate-200 text-xs uppercase tracking-wider">
-                                        <th class="py-3 px-3 border-r border-slate-200 text-center w-12">No</th>
-                                        <th class="py-3 px-4 border-r border-slate-200 min-w-[200px]">Nama Siswa</th>
-                                        <th class="py-3 px-4 border-r border-slate-200 text-center w-64">Pilih Status Kehadiran</th>
-                                        <th class="py-3 px-3 border-r border-slate-200 text-center w-36 bg-blue-50/50 text-primary">Tercatat di Kolom<br><span class="text-[10px] font-normal lowercase">(H otomatis titik .)</span></th>
-                                        <th class="py-3 px-3 border-r border-slate-200 text-center w-36 bg-slate-100/70">Rekap Bulan Ini<br><span class="text-[10px] font-normal">S | I | A</span></th>
-                                        <th class="py-3 px-3 min-w-[160px]">Keterangan</th>
-                                    </tr>
+                                <thead id="thead-absensi" class="sticky top-0 bg-slate-50 z-20 shadow-xs text-slate-600">
+                                    <!-- Header dinamis (Harian / Rekap Bulanan) injected via JS -->
                                 </thead>
                                 <tbody id="tbody-absensi" class="divide-y divide-slate-200">
                                     <!-- Rendered via JS -->
@@ -953,93 +953,260 @@
 
         /**
          * =========================================
-         * UTILITAS
+         * MODUL ABSENSI HARIAN & REKAP BULANAN EDITABLE
          * =========================================
          */
-        
-        async function fetchAPI(action, payload = {}) {
-            const response = await fetch(API_URL, {
-                method: 'POST',
-                body: JSON.stringify({ action, payload })
+        let absenViewMode = 'harian'; // 'harian' atau 'bulanan'
+
+        function switchAbsenMode(mode) {
+            absenViewMode = mode;
+            const btnHarian = el('btn-mode-harian');
+            const btnBulanan = el('btn-mode-bulanan');
+            const wrapTgl = el('wrap-filter-tanggal');
+            const btnHadirSemua = el('btn-hadir-semua');
+
+            if (mode === 'harian') {
+                btnHarian.className = 'px-3 py-1.5 rounded-md text-xs font-bold bg-primary text-white shadow-xs transition';
+                btnBulanan.className = 'px-3 py-1.5 rounded-md text-xs font-bold text-slate-600 hover:text-slate-900 transition';
+                if (wrapTgl) wrapTgl.style.display = 'flex';
+                if (btnHadirSemua) btnHadirSemua.style.display = 'inline-flex';
+            } else {
+                btnBulanan.className = 'px-3 py-1.5 rounded-md text-xs font-bold bg-primary text-white shadow-xs transition';
+                btnHarian.className = 'px-3 py-1.5 rounded-md text-xs font-bold text-slate-600 hover:text-slate-900 transition';
+                if (wrapTgl) wrapTgl.style.display = 'none';
+                if (btnHadirSemua) btnHadirSemua.style.display = 'none';
+            }
+            renderTableAbsensi();
+        }
+
+        async function loadAbsensiData() {
+            if(state.siswa.length === 0) {
+                Dialog.show("Perhatian", "Data siswa masih kosong. Tambahkan siswa terlebih dahulu di menu Data Siswa.");
+                return;
+            }
+
+            const bulan = el('filter-bulan').value;
+            const tahun = el('filter-tahun').value;
+            const cacheKey = `app_absensi_${bulan}_${tahun}`;
+            
+            // Muat dari cache lokal dulu agar langsung tampil
+            const cached = localStorage.getItem(cacheKey);
+            if (cached) {
+                state.absensi = JSON.parse(cached);
+                renderTableAbsensi();
+            }
+
+            try {
+                const serverData = await fetchAPI('get_absensi', { bulan, tahun });
+                if (serverData && serverData.length > 0) {
+                    state.absensi = serverData;
+                    localStorage.setItem(cacheKey, JSON.stringify(serverData));
+                }
+                renderTableAbsensi();
+            } catch (err) {
+                renderTableAbsensi();
+            }
+        }
+
+        function getOrCreateAbsenRecord(siswaId) {
+            const bulan = el('filter-bulan').value;
+            const tahun = el('filter-tahun').value;
+            let rec = state.absensi.find(a => a.id_siswa == siswaId);
+            if (!rec) {
+                rec = { id: '', id_siswa: siswaId, bulan, tahun, s: '', i: '', a: '', jml: '', keterangan: '' };
+                days.forEach(d => rec[`tgl_${d}`] = '');
+                state.absensi.push(rec);
+            }
+            return rec;
+        }
+
+        function hitungRekapBulananRecord(rec) {
+            let sCount = 0, iCount = 0, aCount = 0;
+            days.forEach(d => {
+                const v = (rec[`tgl_${d}`] || '').toUpperCase();
+                if (v === 'S') sCount++;
+                if (v === 'I') iCount++;
+                if (v === 'A') aCount++;
             });
-            const result = await response.json();
-            if (result.status === 'error') throw new Error(result.message);
-            return result.data;
+            rec.s = sCount || '';
+            rec.i = iCount || '';
+            rec.a = aCount || '';
+            rec.jml = (sCount + iCount + aCount) || '';
         }
 
-        const el = (id) => document.getElementById(id);
-        const show = (id) => { 
-            const e = el(id); 
-            if(e) { e.classList.remove('hidden-view'); e.style.display = ''; }
-        };
-        const hide = (id) => { 
-            const e = el(id); 
-            if(e) { e.classList.add('hidden-view'); e.style.display = 'none'; }
-        };
+        function renderTableAbsensi() {
+            const thead = el('thead-absensi');
+            const tbody = el('tbody-absensi');
+            if (!tbody || !thead) return;
+            tbody.innerHTML = '';
 
-        function showLoader(text = "Memproses...") {
-            el('loader-text').innerText = text;
-            el('loader').classList.remove('hidden-view');
-        }
-        function hideLoader() { el('loader').classList.add('hidden-view'); }
+            if (state.siswa.length === 0) {
+                thead.innerHTML = '';
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-10 text-slate-500 font-medium">Belum ada data siswa. Silakan tambahkan siswa di menu Data Siswa.</td></tr>`;
+                return;
+            }
 
-        function showToast(message, type = 'success') {
-            const container = el('toast-container');
-            const toast = document.createElement('div');
-            const color = type === 'success' ? 'bg-emerald-500' : 'bg-red-500';
-            const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
-            
-            toast.className = `${color} text-white px-5 py-3.5 rounded-xl shadow-lg flex items-center gap-3 transform transition-all duration-300 translate-x-full opacity-0 pointer-events-auto font-bold`;
-            toast.innerHTML = `<i class="fas ${icon} text-lg"></i> <span class="text-sm">${message}</span>`;
-            
-            container.appendChild(toast);
-            
-            setTimeout(() => { toast.classList.remove('translate-x-full', 'opacity-0'); }, 10);
-            setTimeout(() => {
-                toast.classList.add('translate-x-full', 'opacity-0');
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
-        }
-
-        const Dialog = {
-            show(title, message, callback = null) {
-                el('dialog-title').innerText = title;
-                el('dialog-message').innerText = message;
-                const actions = el('dialog-actions');
-                actions.innerHTML = `<button id="btn-dialog-ok" class="bg-primary text-white px-5 py-2 rounded-lg font-bold hover:bg-blue-700">OK, Mengerti</button>`;
-                
-                show('dialog-overlay');
-                setTimeout(() => el('dialog-overlay').children[0].classList.replace('scale-95', 'scale-100'), 10);
-                setTimeout(() => el('dialog-overlay').classList.replace('opacity-0', 'opacity-100'), 10);
-                
-                el('btn-dialog-ok').onclick = () => {
-                    this.close();
-                    if(callback) callback();
-                };
-            },
-            confirm(title, message, onConfirm) {
-                el('dialog-title').innerText = title;
-                el('dialog-message').innerText = message;
-                const actions = el('dialog-actions');
-                actions.innerHTML = `
-                    <button id="btn-dialog-cancel" class="px-5 py-2 border border-slate-200 rounded-lg hover:bg-slate-50 font-medium">Batal</button>
-                    <button id="btn-dialog-yes" class="bg-red-600 text-white px-5 py-2 rounded-lg font-bold hover:bg-red-700">Ya, Lanjutkan</button>
+            // MODE 1: TAMPILAN HARIAN (TOMBOL CEPAT H, I, S, A)
+            if (absenViewMode === 'harian') {
+                thead.innerHTML = `
+                    <tr class="border-b border-slate-200 text-xs uppercase tracking-wider">
+                        <th class="py-3 px-3 border-r border-slate-200 text-center w-12">No</th>
+                        <th class="py-3 px-4 border-r border-slate-200 min-w-[200px]">Nama Siswa</th>
+                        <th class="py-3 px-4 border-r border-slate-200 text-center w-64">Pilih Status Kehadiran</th>
+                        <th class="py-3 px-3 border-r border-slate-200 text-center w-36 bg-blue-50/50 text-primary">Tercatat di Kolom<br><span class="text-[10px] font-normal lowercase">(H otomatis titik .)</span></th>
+                        <th class="py-3 px-3 border-r border-slate-200 text-center w-36 bg-slate-100/70">Rekap Bulan Ini<br><span class="text-[10px] font-normal">S | I | A</span></th>
+                        <th class="py-3 px-3 min-w-[160px]">Keterangan</th>
+                    </tr>
                 `;
-                
-                show('dialog-overlay');
-                setTimeout(() => el('dialog-overlay').children[0].classList.replace('scale-95', 'scale-100'), 10);
-                setTimeout(() => el('dialog-overlay').classList.replace('opacity-0', 'opacity-100'), 10);
-                
-                el('btn-dialog-cancel').onclick = () => this.close();
-                el('btn-dialog-yes').onclick = () => {
-                    this.close();
-                    onConfirm();
-                };
-            },
-            close() {
-                el('dialog-overlay').children[0].classList.replace('scale-100', 'scale-95');
-                el('dialog-overlay').classList.replace('opacity-100', 'opacity-0');
-                setTimeout(() => hide('dialog-overlay'), 300);
+
+                const tgl = el('filter-tanggal').value;
+                state.siswa.forEach((s, index) => {
+                    const rec = getOrCreateAbsenRecord(s.id);
+                    hitungRekapBulananRecord(rec);
+                    const valTgl = (rec[`tgl_${tgl}`] || '').toUpperCase();
+
+                    const btnStyle = (code, activeClass) => {
+                        const isActive = (code === 'H' && valTgl === '.') || (code === valTgl);
+                        return isActive
+                            ? `${activeClass} text-white shadow-sm scale-105 ring-2 ring-offset-1`
+                            : `bg-slate-100 text-slate-600 hover:bg-slate-200`;
+                    };
+
+                    const statusLabel = valTgl === '.' 
+                        ? `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-700 font-extrabold text-xs border border-emerald-200"><span class="text-base leading-none">.</span> (Hadir)</span>`
+                        : valTgl === 'S'
+                        ? `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-amber-50 text-amber-700 font-extrabold text-xs border border-amber-200">S (Sakit)</span>`
+                        : valTgl === 'I'
+                        ? `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-blue-50 text-blue-700 font-extrabold text-xs border border-blue-200">I (Izin)</span>`
+                        : valTgl === 'A'
+                        ? `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-red-50 text-red-700 font-extrabold text-xs border border-red-200">A (Alpa)</span>`
+                        : `<span class="text-xs text-slate-400 italic">Belum diisi</span>`;
+
+                    const tr = document.createElement('tr');
+                    tr.className = 'hover:bg-slate-50/80 transition-colors';
+                    tr.innerHTML = `
+                        <td class="py-3 px-3 border-r border-slate-200 text-center font-medium text-slate-600">${index + 1}</td>
+                        <td class="py-3 px-4 border-r border-slate-200 font-bold text-slate-800">${s.nama_siswa}</td>
+                        <td class="py-2.5 px-3 border-r border-slate-200">
+                            <div class="flex items-center justify-center gap-1.5">
+                                <button type="button" onclick="setStatusHarian('${s.id}', 'H')" class="w-10 h-9 rounded-lg font-extrabold text-xs transition ${btnStyle('H', 'bg-emerald-600 ring-emerald-400')}" title="Hadir (Tercatat titik .)">H</button>
+                                <button type="button" onclick="setStatusHarian('${s.id}', 'I')" class="w-10 h-9 rounded-lg font-extrabold text-xs transition ${btnStyle('I', 'bg-blue-600 ring-blue-400')}" title="Izin">I</button>
+                                <button type="button" onclick="setStatusHarian('${s.id}', 'S')" class="w-10 h-9 rounded-lg font-extrabold text-xs transition ${btnStyle('S', 'bg-amber-500 ring-amber-300')}" title="Sakit">S</button>
+                                <button type="button" onclick="setStatusHarian('${s.id}', 'A')" class="w-10 h-9 rounded-lg font-extrabold text-xs transition ${btnStyle('A', 'bg-red-600 ring-red-400')}" title="Alpa">A</button>
+                                ${valTgl ? `<button type="button" onclick="setStatusHarian('${s.id}', '')" class="w-7 h-9 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 text-xs transition" title="Hapus Pilihan"><i class="fas fa-eraser"></i></button>` : ''}
+                            </div>
+                        </td>
+                        <td class="py-3 px-3 border-r border-slate-200 text-center bg-blue-50/20">${statusLabel}</td>
+                        <td class="py-3 px-3 border-r border-slate-200 text-center text-xs font-bold bg-slate-50/60">
+                            <span class="text-amber-600">S:${rec.s || 0}</span> &bull; 
+                            <span class="text-blue-600">I:${rec.i || 0}</span> &bull; 
+                            <span class="text-red-600">A:${rec.a || 0}</span>
+                        </td>
+                        <td class="py-2 px-3">
+                            <input type="text" value="${rec.keterangan || ''}" oninput="updateKeteranganAbsen('${s.id}', this.value)" placeholder="Catatan..." class="w-full border border-slate-200 rounded-md px-2.5 py-1.5 text-xs outline-none focus:border-primary bg-white">
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+                return;
+            }
+
+            // MODE 2: REKAP BULANAN (TABEL 31 HARI YANG DAPAT DIEDIT LANGSUNG)
+            let dayHeaders = '';
+            days.forEach(d => {
+                dayHeaders += `<th class="py-1.5 border-r border-slate-200 w-8 min-w-[30px] text-center font-bold text-[11px]">${d}</th>`;
+            });
+
+            thead.innerHTML = `
+                <tr class="border-b border-slate-200 text-[11px] uppercase tracking-wider text-center">
+                    <th rowspan="2" class="py-2 px-2 border-r border-slate-200 sticky-col bg-slate-50 w-10">No</th>
+                    <th rowspan="2" class="py-2 px-3 border-r border-slate-200 sticky-col-2 bg-slate-50 text-left min-w-[175px]">Nama Siswa</th>
+                    <th colspan="31" class="py-1.5 border-r border-slate-200 bg-blue-50/70 text-primary font-extrabold">Tanggal (Ketik: . / H untuk Hadir, S, I, A)</th>
+                    <th rowspan="2" class="py-2 px-1.5 border-r border-slate-200 bg-amber-50 text-amber-700 w-9">S</th>
+                    <th rowspan="2" class="py-2 px-1.5 border-r border-slate-200 bg-blue-50 text-blue-700 w-9">I</th>
+                    <th rowspan="2" class="py-2 px-1.5 border-r border-slate-200 bg-red-50 text-red-700 w-9">A</th>
+                    <th rowspan="2" class="py-2 px-1.5 border-r border-slate-200 bg-slate-100 text-slate-800 w-10">Jml</th>
+                    <th rowspan="2" class="py-2 px-3 min-w-[140px] text-left">Keterangan</th>
+                </tr>
+                <tr class="border-b border-slate-200 bg-slate-50">
+                    ${dayHeaders}
+                </tr>
+            `;
+
+            state.siswa.forEach((s, index) => {
+                const rec = getOrCreateAbsenRecord(s.id);
+                hitungRekapBulananRecord(rec);
+
+                let dayCells = '';
+                days.forEach(d => {
+                    const val = (rec[`tgl_${d}`] || '').toUpperCase();
+                    const colorClass = val === '.' ? 'text-emerald-600 font-black' : val === 'S' ? 'text-amber-600 bg-amber-50/60 font-bold' : val === 'I' ? 'text-blue-600 bg-blue-50/60 font-bold' : val === 'A' ? 'text-red-600 bg-red-50/60 font-bold' : 'text-slate-700';
+                    dayCells += `
+                        <td class="border-r border-slate-200 p-0 text-center">
+                            <input type="text" maxlength="1" value="${val}" 
+                                oninput="handleEditRekapBulanan(this, '${s.id}', ${d})"
+                                onfocus="this.select()"
+                                class="tbl-input text-xs uppercase ${colorClass}" title="Tgl ${d}: ketik . / H, S, I, atau A">
+                        </td>
+                    `;
+                });
+
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-blue-50/30 transition-colors';
+                tr.innerHTML = `
+                    <td class="py-1.5 px-2 border-r border-slate-200 text-center sticky-col bg-white font-medium text-xs text-slate-600">${index + 1}</td>
+                    <td class="py-1.5 px-3 border-r border-slate-200 sticky-col-2 bg-white font-bold text-xs text-slate-800 truncate max-w-[175px]" title="${s.nama_siswa}">${s.nama_siswa}</td>
+                    ${dayCells}
+                    <td id="rekap-s-${s.id}" class="py-1.5 px-1 border-r border-slate-200 text-center text-xs font-bold text-amber-700 bg-amber-50/30">${rec.s || ''}</td>
+                    <td id="rekap-i-${s.id}" class="py-1.5 px-1 border-r border-slate-200 text-center text-xs font-bold text-blue-700 bg-blue-50/30">${rec.i || ''}</td>
+                    <td id="rekap-a-${s.id}" class="py-1.5 px-1 border-r border-slate-200 text-center text-xs font-bold text-red-700 bg-red-50/30">${rec.a || ''}</td>
+                    <td id="rekap-jml-${s.id}" class="py-1.5 px-1 border-r border-slate-200 text-center text-xs font-extrabold text-slate-800 bg-slate-100/50">${rec.jml || ''}</td>
+                    <td class="py-1 px-2">
+                        <input type="text" value="${rec.keterangan || ''}" oninput="updateKeteranganAbsen('${s.id}', this.value)" placeholder="..." class="w-full text-xs outline-none bg-transparent focus:bg-blue-50 px-1 py-0.5 rounded">
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function handleEditRekapBulanan(inputEl, siswaId, tgl) {
+            let val = inputEl.value.trim().toUpperCase();
+            // Jika user mengetik H, otomatis ubah menjadi titik (.)
+            if (val === 'H') val = '.';
+            
+            // Hanya izinkan karakter valid: ., S, I, A, atau kosong
+            if (!['.', 'S', 'I', 'A', ''].includes(val)) {
+                inputEl.value = '';
+                val = '';
+            } else {
+                inputEl.value = val;
+            }
+
+            // Perbarui warna sel secara langsung
+            inputEl.className = 'tbl-input text-xs uppercase ' + (
+                val === '.' ? 'text-emerald-600 font-black' :
+                val === 'S' ? 'text-amber-600 bg-amber-50/60 font-bold' :
+                val === 'I' ? 'text-blue-600 bg-blue-50/60 font-bold' :
+                val === 'A' ? 'text-red-600 bg-red-50/60 font-bold' : 'text-slate-700'
+            );
+
+            const rec = getOrCreateAbsenRecord(siswaId);
+            rec[`tgl_${tgl}`] = val;
+            hitungRekapBulananRecord(rec);
+
+            // Update angka S, I, A, Jml di ujung kanan baris tanpa merender ulang seluruh tabel
+            if (el(`rekap-s-${siswaId}`)) el(`rekap-s-${siswaId}`).innerText = rec.s || '';
+            if (el(`rekap-i-${siswaId}`)) el(`rekap-i-${siswaId}`).innerText = rec.i || '';
+            if (el(`rekap-a-${siswaId}`)) el(`rekap-a-${siswaId}`).innerText = rec.a || '';
+            if (el(`rekap-jml-${siswaId}`)) el(`rekap-jml-${siswaId}`).innerText = rec.jml || '';
+
+            // Pindahkan fokus otomatis ke kolom tanggal berikutnya jika terisi
+            if (val !== '') {
+                const nextTd = inputEl.parentElement.nextElementSibling;
+                if (nextTd) {
+                    const nextInput = nextTd.querySelector('input.tbl-input');
+                    if (nextInput) nextInput.focus();
+                }
             }
         }
 
