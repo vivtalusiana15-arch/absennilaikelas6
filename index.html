@@ -1229,8 +1229,12 @@
             show(`view-${viewName}`);
             const nav = el(`nav-${viewName}`);
             if(nav) {
+                nav.classList.remove('text-slate-600');
+                nav.classList.add('bg-primary', 'text-white', 'shadow-md', 'shadow-blue-500/20');
+            }
+
             const titles = { dashboard: 'Dashboard', siswa: 'Data Master Siswa', absensi: 'Absensi Harian Siswa', nilai: 'Daftar Nilai Siswa', jurnal: 'Jurnal Harian Guru', perangkat: 'Perangkat Pembelajaran', pengaturan: 'Sistem & Pengaturan' };
-            el('header-title').innerText = titles[viewName];
+            el('header-title').innerText = titles[viewName] || 'Dashboard';
 
             if(viewName === 'dashboard') renderDashboard();
             if(viewName === 'siswa') renderTableSiswa();
@@ -2066,7 +2070,6 @@
             try {
                 localStorage.setItem('app_pengaturan_cache', JSON.stringify(p));
             } catch (storageErr) {
-                // Jika kuota localStorage penuh karena gambar, simpan tanpa gambar di cache lokal
                 const pLight = { ...p, logo_kiri_base64: '', logo_kanan_base64: '' };
                 localStorage.setItem('app_pengaturan_cache', JSON.stringify(pLight));
             }
@@ -2090,24 +2093,6 @@
             } finally {
                 hideLoader();
             }
-        }
-
-        async function savePengaturan(e) {
-            e.preventDefault();
-            const p = {};
-            const fields = ['nama_sekolah', 'tahun_ajaran', 'kelas', 'kepala_sekolah', 'nip_kepsek', 'guru_kelas', 'nip_guru', 'kop_baris_1', 'kop_baris_2', 'kop_baris_3', 'kop_baris_4', 'logo_kiri_base64', 'logo_kanan_base64'];
-            
-            fields.forEach(f => {
-                p[f] = el(`set-${f}`).value;
-            });
-
-            try {
-                showLoader("Menyimpan Pengaturan...");
-                await fetchAPI('save_pengaturan', p);
-                showToast("Pengaturan Sistem Tersimpan");
-                state.pengaturan = p; 
-                renderDashboard();
-            } catch (err) {}
         }
 
         async function exportAllData() {
