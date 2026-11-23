@@ -22,119 +22,6 @@
             }
         }
     </script>
-    <script>
-        // ===== INI ADALAH FUNGSI LOGIN YANG TELAH DIPERCEPAT (INSTAN) =====
-        async function handleLogin(e) {
-            e.preventDefault();
-            const u = el('login-username').value.trim();
-            const p = el('login-password').value.trim();
-            
-            // 1. Jika menggunakan akun default 'admin', langsung masuk SECARA INSTAN sebagai Guru yang Bertugas
-            if (u === 'admin' && (p === 'admin' || p === '123456')) {
-                const cachedUser = JSON.parse(localStorage.getItem('app_user_profile') || 'null');
-                const fastUser = cachedUser || { 
-                    id: 'u1', 
-                    username: 'admin', 
-                    nama_lengkap: 'Guru yang Bertugas', 
-                    role: 'Guru Kelas', 
-                    foto_profil_base64: '' 
-                };
-                
-                state.user = fastUser;
-                localStorage.setItem('app_user', JSON.stringify(fastUser));
-                showToast("Login berhasil! Selamat bertugas.");
-                startApp();
-                
-                // Sinkronkan profil terbaru dari server di latar belakang (non-blocking)
-                fetchAPI('login', { username: u, password: p }).then(serverUser => {
-                    if (serverUser) {
-                        if (serverUser.nama_lengkap === 'Admin Sekolah' || serverUser.nama_lengkap === 'Admin') {
-                            serverUser.nama_lengkap = cachedUser?.nama_lengkap || 'Guru yang Bertugas';
-                        }
-                        if (!serverUser.foto_profil_base64 && cachedUser?.foto_profil_base64) {
-                            serverUser.foto_profil_base64 = cachedUser.foto_profil_base64;
-                        }
-                        state.user = serverUser;
-                        localStorage.setItem('app_user', JSON.stringify(serverUser));
-                        localStorage.setItem('app_user_profile', JSON.stringify(serverUser));
-                        updateHeaderProfile();
-                    }
-                }).catch(() => {});
-                return;
-            }
-
-            // 2. Jika menggunakan akun kustom lain, gunakan timeout cepat maksimal 3 detik
-            showLoader("Memverifikasi akun...");
-            try {
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 3000);
-                
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({ action: 'login', payload: { username: u, password: p } }),
-                    signal: controller.signal
-                });
-                clearTimeout(timeoutId);
-                
-                const result = await response.json();
-                if (result.status === 'error') throw new Error(result.message);
-                
-                state.user = result.data;
-                localStorage.setItem('app_user', JSON.stringify(result.data));
-                localStorage.setItem('app_user_profile', JSON.stringify(result.data));
-                hideLoader();
-                showToast("Berhasil masuk ke sistem!");
-                startApp();
-            } catch (err) {
-                hideLoader();
-                const msg = err.name === 'AbortError' ? "Koneksi server lambat. Gunakan 'admin' untuk masuk instan." : (err.message || "Username atau Password salah!");
-                showToast(msg, "error");
-            }
-        }
-
-        function handleLogout() {
-            Dialog.confirm("Logout", "Yakin ingin keluar dari sistem?", () => {
-                localStorage.removeItem('app_user');
-                state.user = null;
-                hide('app-shell');
-                show('login-view');
-                el('login-password').value = 'admin'; 
-            });
-        }
-
-        async function startApp() {
-            hide('login-view');
-            show('app-shell');
-            updateHeaderProfile();
-
-            // Muat cache lokal terlebih dahulu agar Dashboard langsung tampil tanpa layar loading
-            const cachedCfg = localStorage.getItem('app_pengaturan_cache');
-            const cachedSiswa = localStorage.getItem('app_siswa_cache');
-            if (cachedCfg) state.pengaturan = JSON.parse(cachedCfg);
-            if (cachedSiswa) state.siswa = JSON.parse(cachedSiswa);
-            
-            populatePengaturanForm();
-            navigate('dashboard');
-            
-            // Lakukan sinkronisasi data terbaru dari Google Sheets di latar belakang
-            try {
-                const [cfg, ssw] = await Promise.all([
-                    fetchAPI('get_pengaturan'),
-                    fetchAPI('get_siswa')
-                ]);
-                state.pengaturan = cfg;
-                state.siswa = ssw;
-                localStorage.setItem('app_pengaturan_cache', JSON.stringify(cfg));
-                localStorage.setItem('app_siswa_cache', JSON.stringify(ssw));
-                
-                populatePengaturanForm();
-                renderDashboard();
-                if (!el('view-siswa').classList.contains('hidden-view')) renderTableSiswa();
-            } catch (e) {
-                console.warn("Berjalan menggunakan data cache lokal.");
-            }
-        }
-    </script>
     
     <style>
         /* Custom Scrollbar */
@@ -434,6 +321,8 @@
                             </table>
                         </div>
                     </div>
+                </div>
+
                 <!-- VIEW: REKAP ABSENSI (TAMPILAN HARIAN H, I, S, A & REKAP BULANAN EDITABLE) -->
                 <div id="view-absensi" class="view-section hidden-view">
                     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col h-[calc(100vh-140px)] overflow-hidden">
@@ -934,11 +823,75 @@
     <script>
         /**
          * =========================================
-         * KONFIGURASI DAN STATE
+         * KONFIGURASI, UTILITAS INTI & STATE
          * =========================================
          */
         const API_URL = "https://script.google.com/macros/s/AKfycbwnd-2Uvi2whHO1SmBsdej_eNSnuuiZgUd97xfM_v5a4_yTsd8sq5od0Ag09UIErRTT/exec";
         
+        // Fungsi Helper DOM & UI (Wajib ada agar Login & Semua Tombol Berfungsi)
+        const el = (id) => document.getElementById(id);
+        const show = (id) => { if (el(id)) el(id).classList.remove('hidden-view'); };
+        const hide = (id) => { if (el(id)) el(id).classList.add('hidden-view'); };
+
+        function showLoader(text = "Memuat Data...") {
+            if (el('loader-text')) el('loader-text').innerText = text;
+            show('loader');
+        }
+        function hideLoader() { hide('loader'); }
+
+        function showToast(msg, type = "success") {
+            const container = el('toast-container');
+            if (!container) return;
+            const toast = document.createElement('div');
+            const bg = type === 'error' ? 'bg-red-600' : 'bg-emerald-600';
+            const icon = type === 'error' ? 'fa-exclamation-circle' : 'fa-check-circle';
+            toast.className = `${bg} text-white px-4 py-3 rounded-xl shadow-lg flex items-center gap-2.5 text-sm font-semibold pointer-events-auto transition-all duration-300`;
+            toast.innerHTML = `<i class="fas ${icon}"></i> <span>${msg}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        const Dialog = {
+            show(title, message) {
+                el('dialog-title').innerText = title;
+                el('dialog-message').innerText = message;
+                el('dialog-actions').innerHTML = `<button type="button" onclick="Dialog.close()" class="bg-primary text-white px-5 py-2 rounded-lg text-sm font-bold hover:bg-blue-700 transition">Tutup</button>`;
+                show('dialog-overlay');
+                setTimeout(() => el('dialog-overlay').classList.replace('opacity-0', 'opacity-100'), 10);
+            },
+            confirm(title, message, onConfirm) {
+                el('dialog-title').innerText = title;
+                el('dialog-message').innerText = message;
+                el('dialog-actions').innerHTML = `
+                    <button type="button" onclick="Dialog.close()" class="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 transition">Batal</button>
+                    <button type="button" id="dialog-confirm-btn" class="bg-primary text-white px-5 py-2 rounded-lg text-sm font-bold hover:bg-blue-700 transition">Ya, Lanjutkan</button>
+                `;
+                show('dialog-overlay');
+                setTimeout(() => el('dialog-overlay').classList.replace('opacity-0', 'opacity-100'), 10);
+                el('dialog-confirm-btn').onclick = () => {
+                    Dialog.close();
+                    if (onConfirm) onConfirm();
+                };
+            },
+            close() {
+                el('dialog-overlay').classList.replace('opacity-100', 'opacity-0');
+                setTimeout(() => hide('dialog-overlay'), 250);
+            }
+        };
+
+        async function fetchAPI(action, payload = {}) {
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                body: JSON.stringify({ action, payload })
+            });
+            const result = await response.json();
+            if (result.status === 'error') throw new Error(result.message);
+            return result.data;
+        }
+
         let state = {
             user: null,
             siswa: [],
@@ -950,61 +903,86 @@
         };
 
         const days = Array.from({length: 31}, (_, i) => i + 1);
-
-        /**
-         * =========================================
-         * MODUL ABSENSI HARIAN & REKAP BULANAN EDITABLE
-         * =========================================
-         */
-        let absenViewMode = 'harian'; // 'harian' atau 'bulanan'
-
-        function switchAbsenMode(mode) {
-            absenViewMode = mode;
-            const btnHarian = el('btn-mode-harian');
-            const btnBulanan = el('btn-mode-bulanan');
-            const wrapTgl = el('wrap-filter-tanggal');
-            const btnHadirSemua = el('btn-hadir-semua');
-
-            if (mode === 'harian') {
-                btnHarian.className = 'px-3 py-1.5 rounded-md text-xs font-bold bg-primary text-white shadow-xs transition';
-                btnBulanan.className = 'px-3 py-1.5 rounded-md text-xs font-bold text-slate-600 hover:text-slate-900 transition';
-                if (wrapTgl) wrapTgl.style.display = 'flex';
-                if (btnHadirSemua) btnHadirSemua.style.display = 'inline-flex';
-            } else {
-                btnBulanan.className = 'px-3 py-1.5 rounded-md text-xs font-bold bg-primary text-white shadow-xs transition';
-                btnHarian.className = 'px-3 py-1.5 rounded-md text-xs font-bold text-slate-600 hover:text-slate-900 transition';
-                if (wrapTgl) wrapTgl.style.display = 'none';
-                if (btnHadirSemua) btnHadirSemua.style.display = 'none';
-            }
-            renderTableAbsensi();
-        }
-
-        async function loadAbsensiData() {
-            if(state.siswa.length === 0) {
-                Dialog.show("Perhatian", "Data siswa masih kosong. Tambahkan siswa terlebih dahulu di menu Data Siswa.");
+        // ===== INI ADALAH FUNGSI LOGIN INSTAN (0 DETIK) =====
+        async function handleLogin(e) {
+            if (e) e.preventDefault();
+            const u = (el('login-username')?.value || '').trim();
+            const p = (el('login-password')?.value || '').trim();
+            
+            if (u === 'admin' && (p === 'admin' || p === '123456')) {
+                const cachedUser = JSON.parse(localStorage.getItem('app_user_profile') || 'null');
+                const fastUser = cachedUser || { 
+                    id: 'u1', 
+                    username: 'admin', 
+                    nama_lengkap: 'Guru yang Bertugas', 
+                    role: 'Guru Kelas', 
+                    foto_profil_base64: '' 
+                };
+                state.user = fastUser;
+                localStorage.setItem('app_user', JSON.stringify(fastUser));
+                showToast("Login berhasil! Selamat bertugas.");
+                startApp();
                 return;
             }
 
-            const bulan = el('filter-bulan').value;
-            const tahun = el('filter-tahun').value;
-            const cacheKey = `app_absensi_${bulan}_${tahun}`;
-            
-            // Muat dari cache lokal dulu agar langsung tampil
-            const cached = localStorage.getItem(cacheKey);
-            if (cached) {
-                state.absensi = JSON.parse(cached);
-                renderTableAbsensi();
-            }
-
+            showLoader("Memverifikasi akun...");
             try {
-                const serverData = await fetchAPI('get_absensi', { bulan, tahun });
-                if (serverData && serverData.length > 0) {
-                    state.absensi = serverData;
-                    localStorage.setItem(cacheKey, JSON.stringify(serverData));
-                }
-                renderTableAbsensi();
+                const user = await fetchAPI('login', { username: u, password: p });
+                state.user = user;
+                localStorage.setItem('app_user', JSON.stringify(user));
+                localStorage.setItem('app_user_profile', JSON.stringify(user));
+                hideLoader();
+                showToast("Berhasil masuk ke sistem!");
+                startApp();
             } catch (err) {
-                renderTableAbsensi();
+                hideLoader();
+                showToast(err.message || "Username atau Password salah!", "error");
+            }
+        }
+
+        function handleLogout() {
+            Dialog.confirm("Logout", "Yakin ingin keluar dari sistem?", () => {
+                localStorage.removeItem('app_user');
+                state.user = null;
+                hide('app-shell');
+                show('login-view');
+                el('login-password').value = 'admin'; 
+            });
+        }
+
+        async function startApp() {
+            hide('login-view');
+            show('app-shell');
+            updateHeaderProfile();
+
+            // Muat cache lokal terlebih dahulu agar langsung tampil instan
+            const cachedCfg = localStorage.getItem('app_pengaturan_cache');
+            const cachedSiswa = localStorage.getItem('app_siswa_cache');
+            if (cachedCfg) state.pengaturan = JSON.parse(cachedCfg);
+            if (cachedSiswa) state.siswa = JSON.parse(cachedSiswa);
+            
+            populatePengaturanForm();
+            navigate('dashboard');
+            
+            // Sinkronisasi data terbaru dari Google Sheets di latar belakang
+            try {
+                const [cfg, ssw] = await Promise.all([
+                    fetchAPI('get_pengaturan'),
+                    fetchAPI('get_siswa')
+                ]);
+                if (cfg) {
+                    state.pengaturan = cfg;
+                    localStorage.setItem('app_pengaturan_cache', JSON.stringify(cfg));
+                }
+                if (ssw) {
+                    state.siswa = ssw;
+                    localStorage.setItem('app_siswa_cache', JSON.stringify(ssw));
+                }
+                populatePengaturanForm();
+                renderDashboard();
+                if (!el('view-siswa').classList.contains('hidden-view')) renderTableSiswa();
+            } catch (e) {
+                console.warn("Berjalan menggunakan data cache lokal.");
             }
         }
 
@@ -1592,7 +1570,7 @@
 
         /**
          * =========================================
-         * MODUL ABSENSI HARIAN (H -> '.', I, S, A)
+         * MODUL ABSENSI HARIAN & REKAP BULANAN
          * =========================================
          */
         async function loadAbsensiData() {
@@ -1605,7 +1583,6 @@
             const tahun = el('filter-tahun').value;
             const cacheKey = `app_absensi_${bulan}_${tahun}`;
             
-            // Muat dari cache lokal dulu agar langsung tampil
             const cached = localStorage.getItem(cacheKey);
             if (cached) {
                 state.absensi = JSON.parse(cached);
@@ -1624,98 +1601,9 @@
             }
         }
 
-        function getOrCreateAbsenRecord(siswaId) {
-            const bulan = el('filter-bulan').value;
-            const tahun = el('filter-tahun').value;
-            let rec = state.absensi.find(a => a.id_siswa == siswaId);
-            if (!rec) {
-                rec = { id: '', id_siswa: siswaId, bulan, tahun, s: '', i: '', a: '', jml: '', keterangan: '' };
-                days.forEach(d => rec[`tgl_${d}`] = '');
-                state.absensi.push(rec);
-            }
-            return rec;
-        }
-
-        function hitungRekapBulananRecord(rec) {
-            let sCount = 0, iCount = 0, aCount = 0;
-            days.forEach(d => {
-                const v = (rec[`tgl_${d}`] || '').toUpperCase();
-                if (v === 'S') sCount++;
-                if (v === 'I') iCount++;
-                if (v === 'A') aCount++;
-            });
-            rec.s = sCount || '';
-            rec.i = iCount || '';
-            rec.a = aCount || '';
-            rec.jml = (sCount + iCount + aCount) || '';
-        }
-
-        function renderTableAbsensi() {
-            const tbody = el('tbody-absensi');
-            if (!tbody) return;
-            tbody.innerHTML = '';
-
-            if (state.siswa.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-10 text-slate-500 font-medium">Belum ada data siswa. Silakan tambahkan siswa di menu Data Siswa.</td></tr>`;
-                return;
-            }
-
-            const tgl = el('filter-tanggal').value;
-            
-            state.siswa.forEach((s, index) => {
-                const rec = getOrCreateAbsenRecord(s.id);
-                hitungRekapBulananRecord(rec);
-                const valTgl = (rec[`tgl_${tgl}`] || '').toUpperCase();
-
-                const btnStyle = (code, activeClass) => {
-                    const isActive = (code === 'H' && valTgl === '.') || (code === valTgl);
-                    return isActive
-                        ? `${activeClass} text-white shadow-sm scale-105 ring-2 ring-offset-1`
-                        : `bg-slate-100 text-slate-600 hover:bg-slate-200`;
-                };
-
-                const statusLabel = valTgl === '.' 
-                    ? `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-700 font-extrabold text-xs border border-emerald-200"><span class="text-base leading-none">.</span> (Hadir)</span>`
-                    : valTgl === 'S'
-                    ? `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-amber-50 text-amber-700 font-extrabold text-xs border border-amber-200">S (Sakit)</span>`
-                    : valTgl === 'I'
-                    ? `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-blue-50 text-blue-700 font-extrabold text-xs border border-blue-200">I (Izin)</span>`
-                    : valTgl === 'A'
-                    ? `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-red-50 text-red-700 font-extrabold text-xs border border-red-200">A (Alpa)</span>`
-                    : `<span class="text-xs text-slate-400 italic">Belum diisi</span>`;
-
-                const tr = document.createElement('tr');
-                tr.className = 'hover:bg-slate-50/80 transition-colors';
-                tr.innerHTML = `
-                    <td class="py-3 px-3 border-r border-slate-200 text-center font-medium text-slate-600">${index + 1}</td>
-                    <td class="py-3 px-4 border-r border-slate-200 font-bold text-slate-800">${s.nama_siswa}</td>
-                    <td class="py-2.5 px-3 border-r border-slate-200">
-                        <div class="flex items-center justify-center gap-1.5">
-                            <button type="button" onclick="setStatusHarian('${s.id}', 'H')" class="w-10 h-9 rounded-lg font-extrabold text-xs transition ${btnStyle('H', 'bg-emerald-600 ring-emerald-400')}" title="Hadir (Tercatat titik .)">H</button>
-                            <button type="button" onclick="setStatusHarian('${s.id}', 'I')" class="w-10 h-9 rounded-lg font-extrabold text-xs transition ${btnStyle('I', 'bg-blue-600 ring-blue-400')}" title="Izin">I</button>
-                            <button type="button" onclick="setStatusHarian('${s.id}', 'S')" class="w-10 h-9 rounded-lg font-extrabold text-xs transition ${btnStyle('S', 'bg-amber-500 ring-amber-300')}" title="Sakit">S</button>
-                            <button type="button" onclick="setStatusHarian('${s.id}', 'A')" class="w-10 h-9 rounded-lg font-extrabold text-xs transition ${btnStyle('A', 'bg-red-600 ring-red-400')}" title="Alpa">A</button>
-                            ${valTgl ? `<button type="button" onclick="setStatusHarian('${s.id}', '')" class="w-7 h-9 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 text-xs transition" title="Hapus Pilihan"><i class="fas fa-eraser"></i></button>` : ''}
-                        </div>
-                    </td>
-                    <td class="py-3 px-3 border-r border-slate-200 text-center bg-blue-50/20">${statusLabel}</td>
-                    <td class="py-3 px-3 border-r border-slate-200 text-center text-xs font-bold bg-slate-50/60">
-                        <span class="text-amber-600">S:${rec.s || 0}</span> &bull; 
-                        <span class="text-blue-600">I:${rec.i || 0}</span> &bull; 
-                        <span class="text-red-600">A:${rec.a || 0}</span>
-                    </td>
-                    <td class="py-2 px-3">
-                        <input type="text" value="${rec.keterangan || ''}" oninput="updateKeteranganAbsen('${s.id}', this.value)" placeholder="Catatan..." class="w-full border border-slate-200 rounded-md px-2.5 py-1.5 text-xs outline-none focus:border-primary bg-white">
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
         function setStatusHarian(siswaId, pilihan) {
             const tgl = el('filter-tanggal').value;
             const rec = getOrCreateAbsenRecord(siswaId);
-            // Jika memilih H, maka yang ditulis di kolom adalah . (titik)
             const nilaiKolom = pilihan === 'H' ? '.' : pilihan;
             rec[`tgl_${tgl}`] = nilaiKolom;
             hitungRekapBulananRecord(rec);
