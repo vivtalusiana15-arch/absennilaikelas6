@@ -3,23 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aplikasi Administrasi Guru</title>
-    <!-- Tailwind CSS -->
+    <title>Portal Guru - EduAdmin</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- QRCode.js untuk Barcode Dokumen -->
+    <!-- Library QRCode.js agar barcode 100% otomatis terbuat dan dapat dipindai -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: { sans: ['Inter', 'sans-serif'] },
-                    colors: { primary: '#2563eb', secondary: '#10b981', dark: '#1e293b', light: '#f8fafc' }
+                    colors: {
+                        primary: '#2563eb',
+                        secondary: '#64748b'
+                    }
                 }
+            }
+        }
+    </script>
+    <script>
+        // ===== INI ADALAH FUNGSI LOGIN YANG TELAH DIPERCEPAT (INSTAN) =====
+        async function handleLogin(e) {
+            e.preventDefault();
+            const u = el('login-username').value.trim();
+            const p = el('login-password').value.trim();
+            
+            // 1. Jika menggunakan akun default 'admin', langsung masuk SECARA INSTAN tanpa menunggu loading
+            if (u === 'admin' && (p === 'admin' || p === '123456')) {
+                const cachedUser = JSON.parse(localStorage.getItem('app_user_profile') || 'null');
+                const fastUser = cachedUser || { 
+                    id: 'u1', 
+                    username: 'admin', 
+                    nama_lengkap: 'Admin Sekolah', 
+                    role: 'admin', 
+                    foto_profil_base64: '' 
+                };
+                
+                state.user = fastUser;
+                localStorage.setItem('app_user', JSON.stringify(fastUser));
+                showToast("Login berhasil!");
+                startApp();
+                
+                // Sinkronkan profil terbaru dari server di latar belakang (non-blocking)
+                fetchAPI('login', { username: u, password: p }).then(serverUser => {
+                    if (serverUser) {
+                        state.user = serverUser;
+                        localStorage.setItem('app_user', JSON.stringify(serverUser));
+                        localStorage.setItem('app_user_profile', JSON.stringify(serverUser));
+                        updateHeaderProfile();
+                    }
+                }).catch(() => {});
+                return;
+            }
+
+            // 2. Jika menggunakan akun kustom lain, gunakan timeout cepat maksimal 3 detik
+            showLoader("Memverifikasi akun...");
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 3000);
+                
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'login', payload: { username: u, password: p } }),
+                    signal: controller.signal
+                });
+                clearTimeout(timeoutId);
+                
+                const result = await response.json();
+                if (result.status === 'error') throw new Error(result.message);
+                
+                state.user = result.data;
+                localStorage.setItem('app_user', JSON.stringify(result.data));
+                localStorage.setItem('app_user_profile', JSON.stringify(result.data));
+                hideLoader();
+                showToast("Berhasil masuk ke sistem!");
+                startApp();
+            } catch (err) {
+                hideLoader();
+                const msg = err.name === 'AbortError' ? "Koneksi server lambat. Gunakan 'admin' untuk masuk instan." : (err.message || "Username atau Password salah!");
+                showToast(msg, "error");
+            }
+        }
+
+        function handleLogout() {
+            Dialog.confirm("Logout", "Yakin ingin keluar dari sistem?", () => {
+                localStorage.removeItem('app_user');
+                state.user = null;
+                hide('app-shell');
+                show('login-view');
+                el('login-password').value = 'admin'; 
+            });
+        }
+
+        async function startApp() {
+            hide('login-view');
+            show('app-shell');
+            updateHeaderProfile();
+
+            // Muat cache lokal terlebih dahulu agar Dashboard langsung tampil tanpa layar loading
+            const cachedCfg = localStorage.getItem('app_pengaturan_cache');
+            const cachedSiswa = localStorage.getItem('app_siswa_cache');
+            if (cachedCfg) state.pengaturan = JSON.parse(cachedCfg);
+            if (cachedSiswa) state.siswa = JSON.parse(cachedSiswa);
+            
+            populatePengaturanForm();
+            navigate('dashboard');
+            
+            // Lakukan sinkronisasi data terbaru dari Google Sheets di latar belakang
+            try {
+                const [cfg, ssw] = await Promise.all([
+                    fetchAPI('get_pengaturan'),
+                    fetchAPI('get_siswa')
+                ]);
+                state.pengaturan = cfg;
+                state.siswa = ssw;
+                localStorage.setItem('app_pengaturan_cache', JSON.stringify(cfg));
+                localStorage.setItem('app_siswa_cache', JSON.stringify(ssw));
+                
+                populatePengaturanForm();
+                renderDashboard();
+                if (!el('view-siswa').classList.contains('hidden-view')) renderTableSiswa();
+            } catch (e) {
+                console.warn("Berjalan menggunakan data cache lokal.");
             }
         }
     </script>
@@ -709,6 +813,23 @@
                     <button type="submit" class="bg-primary text-white px-5 py-2 rounded-lg font-bold hover:bg-blue-700 transition text-sm shadow-md">Simpan Perangkat</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- MODAL PREVIEW BARCODE BESAR (UNTUK SCAN LEBIH NYAMAN) -->
+    <div id="modal-barcode-zoom" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[9960] flex items-center justify-center hidden-view transition-opacity duration-300 opacity-0" onclick="if(event.target === this) hideModal('modal-barcode-zoom')">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm mx-4 p-6 text-center border border-slate-100 transform scale-95 transition-transform duration-300">
+            <div class="flex justify-between items-center mb-4">
+                <span class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 bg-blue-50 text-primary rounded-md" id="zoom-qr-jenis">DOKUMEN</span>
+                <button type="button" onclick="hideModal('modal-barcode-zoom')" class="text-slate-400 hover:text-red-500 transition bg-slate-100 w-8 h-8 rounded-full flex items-center justify-center"><i class="fas fa-times"></i></button>
+            </div>
+            <h4 class="font-bold text-slate-800 text-base mb-1" id="zoom-qr-judul">Judul Dokumen</h4>
+            <p class="text-xs text-slate-500 mb-5" id="zoom-qr-mapel">Mata Pelajaran</p>
+            <div class="bg-white p-4 border-2 border-slate-200 rounded-2xl inline-block mx-auto shadow-inner mb-4">
+                <div id="zoom-qr-container" class="flex justify-center"></div>
+            </div>
+            <p class="text-xs font-mono text-slate-500 mb-4" id="zoom-qr-id">#00000</p>
+            <p class="text-xs text-emerald-600 font-semibold"><i class="fas fa-qrcode mr-1"></i> Arahkan kamera HP Anda ke barcode ini</p>
         </div>
     </div>
 
@@ -1558,24 +1679,24 @@
 
             state.perangkat.forEach(item => {
                 const badge = badgeColors[item.jenis] || 'bg-slate-100 text-slate-700';
-                const qrData = item.link ? item.link : `DOK-${item.id} | ${item.jenis} - ${item.mapel} - ${item.judul}`;
                 grid.innerHTML += `
                     <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition flex flex-col justify-between">
                         <div>
-                            <div class="flex justify-between items-start gap-3 mb-3">
-                                <div class="flex-1">
-                                    <div class="flex flex-wrap items-center gap-2 mb-2">
-                                        <span class="px-2.5 py-1 rounded-md text-[11px] font-bold ${badge}">${item.jenis}</span>
-                                        <span class="text-xs font-semibold text-slate-400">${item.mapel}</span>
-                                    </div>
-                                    <h4 class="font-bold text-slate-800 text-base leading-snug">${item.judul}</h4>
-                                </div>
-                                <div class="flex-shrink-0 bg-white p-1.5 border border-slate-200 rounded-lg shadow-xs text-center" title="Barcode Dokumen">
-                                    <div id="qr-card-${item.id}" class="flex justify-center"></div>
-                                    <span class="text-[8px] font-mono text-slate-400 block mt-0.5">#${String(item.id).slice(-5)}</span>
+                            <div class="flex flex-wrap items-center gap-2 mb-2">
+                                <span class="px-2.5 py-1 rounded-md text-[11px] font-bold ${badge}">${item.jenis}</span>
+                                <span class="text-xs font-semibold text-slate-400">${item.mapel}</span>
+                            </div>
+                            <h4 class="font-bold text-slate-800 text-base leading-snug mb-2">${item.judul}</h4>
+                            <p class="text-xs text-slate-500 line-clamp-2 mb-4">${item.catatan || 'Tidak ada catatan tambahan.'}</p>
+                            
+                            <!-- Kotak Barcode Besar & Jelas -->
+                            <div onclick='zoomBarcode(${JSON.stringify(item).replace(/'/g, "&#39;")})' class="bg-slate-50 hover:bg-blue-50/40 p-3 border border-slate-200 hover:border-primary/40 rounded-xl text-center mb-4 cursor-pointer transition group" title="Klik untuk memperbesar Barcode">
+                                <div id="qr-card-${item.id}" class="flex justify-center bg-white p-2 rounded-lg inline-block mx-auto shadow-xs"></div>
+                                <div class="flex items-center justify-center gap-1.5 mt-2">
+                                    <span class="text-[11px] font-mono font-bold text-slate-600">#${String(item.id).slice(-5)}</span>
+                                    <span class="text-[10px] text-primary font-semibold group-hover:underline"><i class="fas fa-search-plus ml-1"></i> Perbesar</span>
                                 </div>
                             </div>
-                            <p class="text-xs text-slate-500 line-clamp-3 mb-4">${item.catatan || 'Tidak ada catatan tambahan.'}</p>
                         </div>
                         <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
                             ${item.link ? `<a href="${item.link}" target="_blank" class="text-xs font-bold text-primary hover:underline flex items-center gap-1"><i class="fas fa-external-link-alt"></i> Buka File</a>` : `<span class="text-[11px] text-slate-400 italic">Barcode Info Aktif</span>`}
@@ -1588,21 +1709,50 @@
                 `;
             });
 
-            // Generate Barcode 1 per 1 untuk setiap kartu dokumen
+            // Generate Barcode Besar (115x115 px) 1 per 1 untuk setiap kartu dokumen
             state.perangkat.forEach(item => {
                 const qrContainer = el(`qr-card-${item.id}`);
-                if(qrContainer) {
-                    const qrText = item.link ? item.link : `${item.jenis} | ${item.mapel} | ${item.judul}`;
+                if(qrContainer && typeof QRCode !== 'undefined') {
+                    qrContainer.innerHTML = ''; // Bersihkan sebelum render ulang
+                    const qrText = item.link && item.link.trim() !== '' 
+                        ? item.link.trim() 
+                        : `[${item.jenis}] ${item.mapel} - ${item.judul} (ID:#${String(item.id).slice(-5)})`;
+                    
                     new QRCode(qrContainer, {
                         text: qrText,
-                        width: 56,
-                        height: 56,
-                        colorDark : "#1e293b",
+                        width: 115,
+                        height: 115,
+                        colorDark : "#000000",
                         colorLight : "#ffffff",
-                        correctLevel : QRCode.CorrectLevel.M
+                        correctLevel : QRCode.CorrectLevel.L // Kepadatan rendah agar titik barcode besar & cepat di-scan
                     });
                 }
             });
+        }
+
+        function zoomBarcode(item) {
+            el('zoom-qr-jenis').innerText = item.jenis;
+            el('zoom-qr-judul').innerText = item.judul;
+            el('zoom-qr-mapel').innerText = item.mapel;
+            el('zoom-qr-id').innerText = `ID Dokumen: #${String(item.id).slice(-5)}`;
+            
+            const container = el('zoom-qr-container');
+            container.innerHTML = '';
+            if(typeof QRCode !== 'undefined') {
+                const qrText = item.link && item.link.trim() !== '' 
+                    ? item.link.trim() 
+                    : `[${item.jenis}] ${item.mapel} - ${item.judul} (ID:#${String(item.id).slice(-5)})`;
+                
+                new QRCode(container, {
+                    text: qrText,
+                    width: 240,
+                    height: 240,
+                    colorDark : "#000000",
+                    colorLight : "#ffffff",
+                    correctLevel : QRCode.CorrectLevel.L
+                });
+            }
+            showModal('modal-barcode-zoom');
         }
 
         function openPerangkatModal() {
@@ -1949,9 +2099,9 @@
                             <th class="w-[30px]">NO</th>
                             <th class="w-[100px]">JENIS</th>
                             <th class="w-[110px]">MATA PELAJARAN</th>
-                            <th class="w-[180px]">JUDUL / MATERI POKOK</th>
+                            <th class="w-[170px]">JUDUL / MATERI POKOK</th>
                             <th>RINGKASAN / TUJUAN PEMBELAJARAN</th>
-                            <th class="w-[75px]">BARCODE</th>
+                            <th class="w-[115px]">BARCODE</th>
                         </tr>
                     </thead><tbody class="align-middle">`;
                 
@@ -1962,34 +2112,38 @@
                         <td>${item.mapel}</td>
                         <td class="print-text-left font-bold">${item.judul}</td>
                         <td class="print-text-left">${(item.catatan || '-').replace(/\n/g, '<br>')}</td>
-                        <td class="p-1 text-center">
+                        <td class="p-2 text-center">
                             <div id="qr-print-${item.id}" class="inline-block mx-auto"></div>
-                            <div class="text-[8px] font-mono mt-0.5">#${String(item.id).slice(-5)}</div>
+                            <div class="text-[9px] font-mono font-bold mt-1">#${String(item.id).slice(-5)}</div>
                         </td>
                     </tr>`;
                 });
                 tableHTML += `</tbody></table>`;
                 printContainer.innerHTML = tableHTML;
 
-                // Render Barcode 1 per 1 untuk tampilan cetak F4
+                // Render Barcode Besar (100x100 px) 1 per 1 untuk tampilan cetak F4
                 state.perangkat.forEach(item => {
                     const printQrEl = el(`qr-print-${item.id}`);
-                    if(printQrEl) {
-                        const qrText = item.link ? item.link : `${item.jenis} | ${item.mapel} | ${item.judul}`;
+                    if(printQrEl && typeof QRCode !== 'undefined') {
+                        printQrEl.innerHTML = '';
+                        const qrText = item.link && item.link.trim() !== '' 
+                            ? item.link.trim() 
+                            : `[${item.jenis}] ${item.mapel} - ${item.judul} (ID:#${String(item.id).slice(-5)})`;
+                        
                         new QRCode(printQrEl, {
                             text: qrText,
-                            width: 54,
-                            height: 54,
+                            width: 100,
+                            height: 100,
                             colorDark : "#000000",
                             colorLight : "#ffffff",
-                            correctLevel : QRCode.CorrectLevel.M
+                            correctLevel : QRCode.CorrectLevel.L
                         });
                     }
                 });
             }
 
-            // 4. Trigger Print
-            setTimeout(() => { window.print(); }, 400);
+            // 4. Trigger Print (beri jeda sedikit lebih lama agar semua gambar barcode selesai dirender sempurna)
+            setTimeout(() => { window.print(); }, 600);
         }
 
     </script>
