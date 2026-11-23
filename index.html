@@ -419,8 +419,175 @@
                         </div>
                         <div class="p-0 flex-1 overflow-auto">
                             <table class="w-full text-left border-collapse text-sm">
-                                <thead>
-                                    <tr class="bg-slate-50 text-slate-600 border-b border-slate-200 text-xs uppercase tracking-wider">
+                                <thead class="sticky top-0 bg-slate-50 z-10 shadow-xs">
+                                    <tr class="text-slate-600 border-b border-slate-200 text-xs uppercase tracking-wider">
+                                        <th class="py-3.5 px-4 font-bold w-14 text-center">No</th>
+                                        <th class="py-3.5 px-4 font-bold w-40">NISN / NIS</th>
+                                        <th class="py-3.5 px-4 font-bold">Nama Lengkap Siswa</th>
+                                        <th class="py-3.5 px-4 font-bold w-24 text-center">L / P</th>
+                                        <th class="py-3.5 px-4 font-bold w-28 text-center">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbody-siswa" class="divide-y divide-slate-100">
+                                    <!-- Rendered via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VIEW: REKAP ABSENSI -->
+                <div id="view-absensi" class="view-section hidden-view">
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col h-[calc(100vh-140px)] overflow-hidden">
+                        <div class="p-5 border-b border-slate-100 flex flex-wrap gap-3 justify-between items-center bg-white">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <select id="filter-bulan" onchange="loadAbsensiData()" class="border border-slate-200 rounded-lg px-3 py-2 text-sm font-bold text-slate-700 bg-slate-50 outline-none focus:border-primary">
+                                    <option value="Januari">Januari</option>
+                                    <option value="Februari">Februari</option>
+                                    <option value="Maret">Maret</option>
+                                    <option value="April">April</option>
+                                    <option value="Mei">Mei</option>
+                                    <option value="Juni">Juni</option>
+                                    <option value="Juli" selected>Juli</option>
+                                    <option value="Agustus">Agustus</option>
+                                    <option value="September">September</option>
+                                    <option value="Oktober">Oktober</option>
+                                    <option value="November">November</option>
+                                    <option value="Desember">Desember</option>
+                                </select>
+                                <input type="number" id="filter-tahun" value="2026" onchange="loadAbsensiData()" class="border border-slate-200 rounded-lg px-3 py-2 text-sm font-bold text-slate-700 bg-slate-50 w-24 outline-none focus:border-primary">
+                                <button onclick="loadAbsensiData()" class="bg-slate-100 text-slate-700 px-3 py-2 rounded-lg hover:bg-slate-200 text-xs font-bold transition" title="Muat Ulang Data">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                                <span class="text-[11px] text-slate-400 hidden xl:inline ml-2">Ketik: <b>.</b> (Hadir), <b>S</b>, <b>I</b>, <b>A</b> (otomatis geser)</span>
+                            </div>
+                            <div class="flex flex-wrap items-center gap-2">
+                                <input type="file" id="import-absen-csv" accept=".csv" class="hidden" onchange="importAbsenCSV(event)">
+                                <button onclick="exportAbsenCSV()" class="bg-blue-50 text-blue-700 border border-blue-200 px-3 py-2 rounded-lg hover:bg-blue-100 transition text-xs font-bold">
+                                    <i class="fas fa-file-export mr-1"></i> Ekspor CSV
+                                </button>
+                                <button onclick="document.getElementById('import-absen-csv').click()" class="bg-amber-50 text-amber-700 border border-amber-200 px-3 py-2 rounded-lg hover:bg-amber-100 transition text-xs font-bold">
+                                    <i class="fas fa-file-import mr-1"></i> Impor CSV
+                                </button>
+                                <button onclick="saveAbsensi()" class="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition text-xs font-bold shadow-sm">
+                                    <i class="fas fa-save mr-1"></i> Simpan Data
+                                </button>
+                                <button onclick="printView('absensi')" class="bg-white text-slate-700 border border-slate-200 px-4 py-2 rounded-lg hover:bg-slate-50 transition text-xs font-bold shadow-sm">
+                                    <i class="fas fa-print mr-1"></i> Cetak F4
+                                </button>
+                            </div>
+                        </div>
+                        <div class="p-0 flex-1 overflow-auto">
+                            <table class="w-full text-left border-collapse text-xs">
+                                <thead class="sticky top-0 bg-slate-50 z-20 shadow-xs text-slate-600">
+                                    <tr class="border-b border-slate-200 text-center">
+                                        <th rowspan="2" class="py-2 px-2 border-r border-slate-200 sticky-col bg-slate-50 w-10">No</th>
+                                        <th rowspan="2" class="py-2 px-3 border-r border-slate-200 sticky-col-2 bg-slate-50 text-left min-w-[180px]">Nama Siswa</th>
+                                        <th colspan="31" class="py-1 border-r border-slate-200 bg-blue-50/50 text-primary font-bold">Tanggal</th>
+                                        <th rowspan="2" class="py-2 px-1.5 border-r border-slate-200 bg-amber-50 text-amber-700 w-9">S</th>
+                                        <th rowspan="2" class="py-2 px-1.5 border-r border-slate-200 bg-blue-50 text-blue-700 w-9">I</th>
+                                        <th rowspan="2" class="py-2 px-1.5 border-r border-slate-200 bg-red-50 text-red-700 w-9">A</th>
+                                        <th rowspan="2" class="py-2 px-1.5 border-r border-slate-200 bg-slate-100 text-slate-800 w-10">Jml</th>
+                                        <th rowspan="2" class="py-2 px-3 min-w-[110px]">Keterangan</th>
+                                    </tr>
+                                    <tr id="thead-tgl" class="border-b border-slate-200 text-center bg-slate-50">
+                                        <!-- 1-31 injected via JS -->
+                                    </tr>
+                                </thead>
+                                <tbody id="tbody-absensi" class="divide-y divide-slate-200">
+                                    <!-- Rendered via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VIEW: DAFTAR NILAI -->
+                <div id="view-nilai" class="view-section hidden-view">
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col h-[calc(100vh-140px)] overflow-hidden">
+                        <div class="p-5 border-b border-slate-100 flex flex-wrap gap-3 justify-between items-center bg-white">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <input type="text" id="filter-mapel" value="Matematika" placeholder="Nama Mata Pelajaran..." class="border border-slate-200 rounded-lg px-3 py-2 text-sm font-bold text-slate-700 bg-slate-50 w-44 outline-none focus:border-primary">
+                                <select id="filter-semester" onchange="loadNilaiData()" class="border border-slate-200 rounded-lg px-3 py-2 text-sm font-bold text-slate-700 bg-slate-50 outline-none focus:border-primary">
+                                    <option value="1 (Ganjil)">Semester 1 (Ganjil)</option>
+                                    <option value="2 (Genap)">Semester 2 (Genap)</option>
+                                </select>
+                                <button onclick="loadNilaiData()" class="bg-primary text-white px-3.5 py-2 rounded-lg hover:bg-blue-700 text-xs font-bold transition shadow-xs">
+                                    <i class="fas fa-search mr-1"></i> Tampilkan
+                                </button>
+                            </div>
+                            <div class="flex flex-wrap items-center gap-2">
+                                <input type="file" id="import-nilai-csv" accept=".csv" class="hidden" onchange="importNilaiCSV(event)">
+                                <button onclick="exportNilaiCSV()" class="bg-blue-50 text-blue-700 border border-blue-200 px-3 py-2 rounded-lg hover:bg-blue-100 transition text-xs font-bold">
+                                    <i class="fas fa-file-export mr-1"></i> Ekspor CSV
+                                </button>
+                                <button onclick="document.getElementById('import-nilai-csv').click()" class="bg-amber-50 text-amber-700 border border-amber-200 px-3 py-2 rounded-lg hover:bg-amber-100 transition text-xs font-bold">
+                                    <i class="fas fa-file-import mr-1"></i> Impor CSV
+                                </button>
+                                <button onclick="saveNilai()" class="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition text-xs font-bold shadow-sm">
+                                    <i class="fas fa-save mr-1"></i> Simpan Data
+                                </button>
+                                <button onclick="printView('nilai')" class="bg-white text-slate-700 border border-slate-200 px-4 py-2 rounded-lg hover:bg-slate-50 transition text-xs font-bold shadow-sm">
+                                    <i class="fas fa-print mr-1"></i> Cetak F4
+                                </button>
+                            </div>
+                        </div>
+                        <div class="p-0 flex-1 overflow-auto">
+                            <table class="w-full text-left border-collapse text-xs">
+                                <thead class="sticky top-0 bg-slate-50 z-20 shadow-xs text-slate-600">
+                                    <tr class="border-b border-slate-200 text-center">
+                                        <th rowspan="2" class="py-2 px-2 border-r border-slate-200 sticky-col bg-slate-50 w-10">No</th>
+                                        <th rowspan="2" class="py-2 px-3 border-r border-slate-200 sticky-col-2 bg-slate-50 text-left min-w-[180px]">Nama Siswa</th>
+                                        <th colspan="6" class="py-1.5 border-r border-slate-200 bg-blue-50/60 text-blue-700 font-bold">Formatif Lingkup Materi (TP)</th>
+                                        <th colspan="5" class="py-1.5 border-r border-slate-200 bg-emerald-50/60 text-emerald-700 font-bold">Sumatif Lingkup Materi (LM)</th>
+                                        <th rowspan="2" class="py-2 px-2 bg-purple-50 text-purple-700 font-bold w-24">Sumatif Akhir<br>(SAS)</th>
+                                    </tr>
+                                    <tr class="border-b border-slate-200 text-center bg-slate-50">
+                                        <th class="py-1.5 border-r border-slate-200 w-14">TP 1</th>
+                                        <th class="py-1.5 border-r border-slate-200 w-14">TP 2</th>
+                                        <th class="py-1.5 border-r border-slate-200 w-14">TP 3</th>
+                                        <th class="py-1.5 border-r border-slate-200 w-14">TP 4</th>
+                                        <th class="py-1.5 border-r border-slate-200 w-14">TP 5</th>
+                                        <th class="py-1.5 border-r border-slate-200 w-14">TP 6</th>
+                                        <th class="py-1.5 border-r border-slate-200 bg-emerald-50/30 w-14">LM 1</th>
+                                        <th class="py-1.5 border-r border-slate-200 bg-emerald-50/30 w-14">LM 2</th>
+                                        <th class="py-1.5 border-r border-slate-200 bg-emerald-50/30 w-14">LM 3</th>
+                                        <th class="py-1.5 border-r border-slate-200 bg-emerald-50/30 w-14">LM 4</th>
+                                        <th class="py-1.5 border-r border-slate-200 bg-emerald-50/30 w-14">LM 5</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbody-nilai" class="divide-y divide-slate-200">
+                                    <!-- Rendered via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VIEW: JURNAL HARIAN LOKAL -->
+                <div id="view-jurnal" class="view-section hidden-view">
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col h-[calc(100vh-140px)] overflow-hidden">
+                        <div class="p-5 border-b border-slate-100 flex flex-wrap gap-3 justify-between items-center bg-white">
+                            <div>
+                                <h3 class="font-bold text-slate-800 text-lg">Jurnal Kegiatan Pembelajaran Harian</h3>
+                                <p class="text-xs text-slate-500">Catat aktivitas mengajar harian Anda (Tersimpan otomatis di browser)</p>
+                            </div>
+                            <div class="flex flex-wrap items-center gap-2">
+                                <button onclick="addJurnalRow()" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition text-xs font-bold shadow-sm">
+                                    <i class="fas fa-plus mr-1"></i> Tambah Baris
+                                </button>
+                                <button onclick="saveJurnal()" class="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition text-xs font-bold shadow-sm">
+                                    <i class="fas fa-save mr-1"></i> Simpan Jurnal
+                                </button>
+                                <button onclick="printView('jurnal')" class="bg-white text-slate-700 border border-slate-200 px-4 py-2 rounded-lg hover:bg-slate-50 transition text-xs font-bold shadow-sm">
+                                    <i class="fas fa-print mr-1"></i> Cetak F4
+                                </button>
+                            </div>
+                        </div>
+                        <div class="p-0 flex-1 overflow-auto">
+                            <table class="w-full text-left border-collapse text-sm">
+                                <thead class="sticky top-0 bg-slate-50 z-10 shadow-xs">
+                                    <tr class="text-slate-600 border-b border-slate-200 text-xs uppercase tracking-wider">
                                         <th class="py-3 px-3 font-bold w-32 border-r border-slate-200">Hari/Tanggal</th>
                                         <th class="py-3 px-3 font-bold w-48 border-r border-slate-200">Tema/Mupel</th>
                                         <th class="py-3 px-3 font-bold w-32 border-r border-slate-200">Kompetensi Dasar</th>
@@ -1789,7 +1956,7 @@
          */
         function populatePengaturanForm() {
             const p = state.pengaturan;
-            const fields = ['nama_sekolah', 'tahun_ajaran', 'kelas', 'kepala_sekolah', 'nip_kepsek', 'guru_kelas', 'nip_guru', 'kop_baris_1', 'kop_baris_2', 'kop_baris_3', 'kop_baris_4'];
+            const fields = ['tahun_ajaran', 'kelas', 'kepala_sekolah', 'nip_kepsek', 'guru_kelas', 'nip_guru', 'kop_baris_1', 'kop_baris_2', 'kop_baris_3', 'kop_baris_4'];
             fields.forEach(f => {
                 if(el(`set-${f}`) && p[f]) el(`set-${f}`).value = p[f];
             });
@@ -1802,6 +1969,33 @@
             if(p.logo_kanan_base64) {
                 el('set-logo_kanan_base64').value = p.logo_kanan_base64;
                 el('preview-logo-kanan').src = p.logo_kanan_base64;
+            }
+        }
+
+        async function savePengaturan(e) {
+            e.preventDefault();
+            const p = { ...state.pengaturan };
+            const fields = ['tahun_ajaran', 'kelas', 'kepala_sekolah', 'nip_kepsek', 'guru_kelas', 'nip_guru', 'kop_baris_1', 'kop_baris_2', 'kop_baris_3', 'kop_baris_4', 'logo_kiri_base64', 'logo_kanan_base64'];
+            
+            fields.forEach(f => {
+                const inputEl = el(`set-${f}`);
+                if (inputEl) p[f] = inputEl.value;
+            });
+            p.nama_sekolah = p.kop_baris_3 || p.nama_sekolah || '';
+
+            showLoader("Menyimpan Pengaturan...");
+            state.pengaturan = p;
+            localStorage.setItem('app_pengaturan_cache', JSON.stringify(p));
+            updateHeaderProfile();
+            renderDashboard();
+
+            try {
+                await fetchAPI('save_pengaturan', p);
+                showToast("Seluruh Pengaturan Berhasil Disimpan!");
+            } catch (err) {
+                showToast("Pengaturan tersimpan di perangkat lokal!");
+            } finally {
+                hideLoader();
             }
         }
 
