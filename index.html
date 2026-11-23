@@ -16,7 +16,7 @@
             theme: {
                 extend: {
                     fontFamily: { sans: ['Inter', 'sans-serif'] },
-                    colors: { primary: '#2563eb', secondary: '#10b981', dark: '#1e293b' }
+                    colors: { primary: '#2563eb', secondary: '#10b981', dark: '#1e293b', light: '#f8fafc' }
                 }
             }
         }
@@ -30,8 +30,8 @@
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
         /* Sticky Columns for Tables */
-        .sticky-col { position: sticky; left: 0; background-color: #f8fafc; z-index: 10; border-right: 2px solid #e2e8f0; }
-        .sticky-col-2 { position: sticky; left: 40px; background-color: #f8fafc; z-index: 10; border-right: 2px solid #e2e8f0; }
+        .sticky-col { position: sticky; left: 0; background-color: #fff; z-index: 10; border-right: 2px solid #e2e8f0; }
+        .sticky-col-2 { position: sticky; left: 40px; background-color: #fff; z-index: 10; border-right: 2px solid #e2e8f0; }
         
         /* Table Input Styling */
         .tbl-input { width: 100%; height: 100%; border: none; background: transparent; text-align: center; outline: none; min-width: 25px;}
@@ -48,12 +48,12 @@
             #print-area { position: absolute; left: 0; top: 0; width: 100%; color: #000; background: #fff;}
             
             /* Reset colors for print */
-            .print-table th, .print-table td { border: 1px solid #000 !important; padding: 4px; font-size: 11px; text-align: center; background-color: transparent !important; }
+            .print-table th, .print-table td { border: 1px solid #000 !important; padding: 4px; font-size: 11px; text-align: center; background-color: transparent !important; color: #000 !important; }
             .print-table th { font-weight: bold; }
             .print-text-left { text-align: left !important; padding-left: 5px !important; }
             
             /* Kop Surat border */
-            .border-kop { border-bottom: 4px double #000; margin-bottom: 15px; padding-bottom: 10px; }
+            .border-kop { border-bottom: 4px double #000; margin-bottom: 15px; padding-bottom: 5px; }
         }
     </style>
 </head>
@@ -71,7 +71,7 @@
     <!-- CUSTOM DIALOG / MODAL (No Alert/Confirm) -->
     <div id="dialog-overlay" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[9900] flex items-center justify-center hidden-view transition-opacity duration-300 opacity-0">
         <div class="bg-white rounded-xl shadow-xl w-full max-w-md mx-4 transform scale-95 transition-transform duration-300 p-6">
-            <h3 id="dialog-title" class="text-lg font-bold mb-2">Title</h3>
+            <h3 id="dialog-title" class="text-lg font-bold mb-2 text-slate-800">Title</h3>
             <p id="dialog-message" class="text-slate-600 mb-6">Message</p>
             <div class="flex justify-end gap-3" id="dialog-actions">
                 <!-- Buttons injected via JS -->
@@ -80,32 +80,32 @@
     </div>
 
     <!-- LOGIN SCREEN -->
-    <div id="login-view" class="fixed inset-0 bg-slate-100 z-50 flex items-center justify-center">
-        <div class="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md">
+    <div id="login-view" class="fixed inset-0 bg-slate-50 z-50 flex items-center justify-center">
+        <div class="bg-white p-8 rounded-2xl shadow-xl border border-slate-100 w-full max-w-md">
             <div class="text-center mb-8">
-                <div class="w-16 h-16 bg-primary text-white rounded-full flex items-center justify-center mx-auto mb-4 text-2xl shadow-lg shadow-blue-200">
-                    <i class="fas fa-school"></i>
+                <div class="w-16 h-16 bg-primary text-white rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl shadow-lg shadow-blue-200 transform rotate-3">
+                    <i class="fas fa-graduation-cap -rotate-3"></i>
                 </div>
-                <h1 class="text-2xl font-bold text-slate-800">Sistem Sekolah</h1>
-                <p class="text-slate-500">Silakan login untuk melanjutkan</p>
+                <h1 class="text-2xl font-bold text-slate-800">Portal Guru</h1>
+                <p class="text-slate-500 text-sm mt-1">Smart Admin, Better Future</p>
             </div>
             <form id="login-form" onsubmit="handleLogin(event)">
                 <div class="mb-4">
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Username</label>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Username</label>
                     <div class="relative">
                         <i class="fas fa-user absolute left-3 top-3 text-slate-400"></i>
-                        <input type="text" id="login-username" class="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:outline-none" required value="admin">
+                        <input type="text" id="login-username" class="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none transition" required value="admin">
                     </div>
                 </div>
                 <div class="mb-6">
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Password</label>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Password</label>
                     <div class="relative">
                         <i class="fas fa-lock absolute left-3 top-3 text-slate-400"></i>
-                        <input type="password" id="login-password" class="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:outline-none" required value="admin">
+                        <input type="password" id="login-password" class="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none transition" required value="admin">
                     </div>
                 </div>
-                <button type="submit" class="w-full bg-primary text-white font-semibold py-2.5 rounded-lg hover:bg-blue-700 transition">
-                    Login
+                <button type="submit" class="w-full bg-primary text-white font-bold py-3 rounded-lg hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-500/30 transition-all">
+                    Masuk Sekarang <i class="fas fa-arrow-right ml-2"></i>
                 </button>
             </form>
         </div>
@@ -114,111 +114,167 @@
     <!-- APP SHELL (Sidebar & Main Content) -->
     <div id="app-shell" class="flex w-full h-full hidden-view">
         
-        <!-- SIDEBAR -->
-        <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col transition-all duration-300 flex-shrink-0">
-            <div class="p-4 bg-slate-950 flex items-center gap-3">
-                <i class="fas fa-graduation-cap text-2xl text-blue-400"></i>
-                <span class="text-lg font-bold text-white tracking-wide">EduAdmin</span>
+        <!-- SIDEBAR (Modern Light Theme) -->
+        <aside class="w-64 bg-white border-r border-slate-200 flex flex-col transition-all duration-300 flex-shrink-0 shadow-sm z-20">
+            <div class="p-5 flex items-center gap-3 border-b border-slate-100">
+                <div class="bg-primary/10 text-primary p-2 rounded-lg">
+                    <i class="fas fa-book-open text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-extrabold text-slate-800 tracking-tight leading-none">EduAdmin</h1>
+                    <span class="text-[10px] text-slate-500 font-medium uppercase tracking-wider">Teacher Portal</span>
+                </div>
             </div>
-            <nav class="flex-1 px-3 py-6 space-y-2 overflow-y-auto">
-                <a href="#" onclick="navigate('dashboard')" id="nav-dashboard" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition bg-slate-800 text-white">
-                    <i class="fas fa-chart-pie w-5"></i> Dashboard
+            
+            <nav class="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto">
+                <p class="px-2 text-xs font-bold text-slate-400 uppercase mb-2 mt-4 tracking-wider">Menu Utama</p>
+                
+                <a href="#" onclick="navigate('dashboard')" id="nav-dashboard" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-50 text-slate-600 transition nav-item">
+                    <i class="fas fa-home w-5 text-center"></i> Dashboard
                 </a>
-                <a href="#" onclick="navigate('siswa')" id="nav-siswa" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition">
-                    <i class="fas fa-users w-5"></i> Data Siswa
+                <a href="#" onclick="navigate('siswa')" id="nav-siswa" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-50 text-slate-600 transition nav-item">
+                    <i class="fas fa-user-graduate w-5 text-center"></i> Data Siswa
                 </a>
-                <a href="#" onclick="navigate('absensi')" id="nav-absensi" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition">
-                    <i class="fas fa-calendar-check w-5"></i> Absensi
+                <a href="#" onclick="navigate('absensi')" id="nav-absensi" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-50 text-slate-600 transition nav-item">
+                    <i class="fas fa-calendar-check w-5 text-center"></i> Rekap Absensi
                 </a>
-                <a href="#" onclick="navigate('nilai')" id="nav-nilai" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition">
-                    <i class="fas fa-star w-5"></i> Daftar Nilai
+                <a href="#" onclick="navigate('nilai')" id="nav-nilai" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-50 text-slate-600 transition nav-item">
+                    <i class="fas fa-award w-5 text-center"></i> Daftar Nilai
                 </a>
-                <a href="#" onclick="navigate('pengaturan')" id="nav-pengaturan" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition">
-                    <i class="fas fa-cog w-5"></i> Pengaturan
+                <a href="#" onclick="navigate('jurnal')" id="nav-jurnal" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-50 text-slate-600 transition nav-item relative">
+                    <i class="fas fa-book w-5 text-center"></i> Jurnal Harian
+                    <span class="absolute right-2 top-1/2 -translate-y-1/2 bg-amber-100 text-amber-700 text-[10px] px-1.5 py-0.5 rounded font-bold">Lokal</span>
+                </a>
+                
+                <p class="px-2 text-xs font-bold text-slate-400 uppercase mb-2 mt-6 tracking-wider">Sistem</p>
+                
+                <a href="https://docs.google.com/spreadsheets/d/1Qw6vma3QCkdxNDmHms88Aa6eS4GYjOxAedg-k5l9l4o/edit?hl=id&pli=1&gid=1721728408#gid=1721728408" target="_blank" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-emerald-50 text-emerald-600 transition">
+                    <i class="fas fa-database w-5 text-center"></i> Buka Database
+                </a>
+                <a href="#" onclick="navigate('pengaturan')" id="nav-pengaturan" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-50 text-slate-600 transition nav-item">
+                    <i class="fas fa-cog w-5 text-center"></i> Pengaturan
                 </a>
             </nav>
-            <div class="p-4 border-t border-slate-800">
-                <button onclick="handleLogout()" class="flex items-center justify-center w-full gap-2 px-4 py-2 bg-red-500/10 text-red-400 rounded-lg hover:bg-red-500 hover:text-white transition">
-                    <i class="fas fa-sign-out-alt"></i> Logout
+
+            <div class="p-4 border-t border-slate-100">
+                <button onclick="handleLogout()" class="flex items-center justify-center w-full gap-2 px-4 py-2.5 bg-slate-50 text-slate-600 font-medium rounded-lg hover:bg-red-50 hover:text-red-600 transition border border-slate-200 hover:border-red-200">
+                    <i class="fas fa-sign-out-alt"></i> Keluar
                 </button>
             </div>
         </aside>
 
         <!-- MAIN CONTENT AREA -->
-        <main class="flex-1 flex flex-col h-full bg-slate-50 relative">
+        <main class="flex-1 flex flex-col h-full bg-slate-50 relative overflow-hidden">
             
             <!-- HEADER -->
-            <header class="bg-white shadow-sm h-16 flex items-center justify-between px-6 flex-shrink-0 z-10">
+            <header class="bg-white border-b border-slate-200 h-16 flex items-center justify-between px-8 flex-shrink-0 z-10">
                 <div class="flex items-center gap-4">
-                    <h2 class="text-xl font-semibold text-slate-800" id="header-title">Dashboard</h2>
+                    <h2 class="text-lg font-bold text-slate-800" id="header-title">Dashboard</h2>
                 </div>
-                <div class="flex items-center gap-4">
+                <div class="flex items-center gap-5">
+                    <!-- Notification Icon (Dummy) -->
+                    <button class="text-slate-400 hover:text-primary transition relative">
+                        <i class="fas fa-bell text-xl"></i>
+                        <span class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>
+                    </button>
+                    <div class="w-px h-6 bg-slate-200"></div>
                     <!-- Profile Widget -->
-                    <div class="flex items-center gap-3 cursor-pointer p-1.5 hover:bg-slate-100 rounded-lg transition" onclick="openProfilModal()">
-                        <img id="user-avatar" src="https://placehold.co/40x40/2563eb/ffffff?text=U" alt="Profile" class="w-9 h-9 rounded-full object-cover border-2 border-slate-200">
-                        <div class="hidden md:block text-sm text-right">
-                            <p class="font-semibold text-slate-700 leading-tight" id="user-name-display">Admin</p>
-                            <p class="text-xs text-slate-500" id="user-role-display">Guru Kelas</p>
+                    <div class="flex items-center gap-3 cursor-pointer p-1 rounded-xl hover:bg-slate-50 transition" onclick="openProfilModal()">
+                        <div class="text-right hidden sm:block">
+                            <p class="font-bold text-slate-700 text-sm leading-none" id="user-name-display">Admin</p>
+                            <p class="text-[11px] text-slate-500 font-medium mt-1" id="user-role-display">Guru Kelas</p>
                         </div>
+                        <img id="user-avatar" src="https://placehold.co/40x40/2563eb/ffffff?text=U" alt="Profile" class="w-9 h-9 rounded-full object-cover border-2 border-primary/20">
+                        <i class="fas fa-chevron-down text-xs text-slate-400 ml-1"></i>
                     </div>
                 </div>
             </header>
 
             <!-- VIEWS CONTAINER -->
-            <div class="flex-1 p-6 overflow-y-auto" id="views-container">
+            <div class="flex-1 p-8 overflow-y-auto" id="views-container">
                 
                 <!-- VIEW: DASHBOARD -->
                 <div id="view-dashboard" class="view-section">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex items-center gap-4">
-                            <div class="w-14 h-14 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-2xl">
-                                <i class="fas fa-users"></i>
-                            </div>
-                            <div>
-                                <p class="text-slate-500 text-sm font-medium">Total Siswa</p>
-                                <h3 class="text-2xl font-bold text-slate-800" id="dash-total-siswa">0</h3>
+                    <!-- Welcome Banner -->
+                    <div class="bg-primary rounded-2xl p-8 text-white mb-8 shadow-lg shadow-blue-500/20 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6">
+                        <div class="relative z-10">
+                            <h2 class="text-3xl font-bold mb-2">Selamat Datang, <span id="dash-welcome-name">Guru</span>! <span class="text-2xl">👋</span></h2>
+                            <p class="text-blue-100 mb-6 max-w-xl">Siap untuk mengelola kelas Anda hari ini? Pantau kehadiran, kelola nilai siswa, dan cetak laporan administrasi dengan mudah dalam satu platform terpusat.</p>
+                            <div class="flex gap-3">
+                                <button onclick="navigate('absensi')" class="bg-white text-primary px-5 py-2.5 rounded-lg font-bold hover:bg-blue-50 transition shadow-sm">
+                                    <i class="fas fa-edit mr-2"></i> Isi Absensi
+                                </button>
+                                <button onclick="navigate('nilai')" class="bg-blue-700/50 text-white border border-blue-400 px-5 py-2.5 rounded-lg font-medium hover:bg-blue-600 transition">
+                                    <i class="fas fa-star mr-2"></i> Kelola Nilai
+                                </button>
                             </div>
                         </div>
-                        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex items-center gap-4">
-                            <div class="w-14 h-14 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-2xl">
-                                <i class="fas fa-school"></i>
-                            </div>
-                            <div>
-                                <p class="text-slate-500 text-sm font-medium">Tahun Ajaran</p>
-                                <h3 class="text-xl font-bold text-slate-800" id="dash-ta">-</h3>
-                            </div>
+                        <!-- Decorative background elements -->
+                        <div class="absolute right-0 top-0 w-64 h-64 bg-white opacity-5 rounded-full -translate-y-1/4 translate-x-1/4 blur-3xl"></div>
+                        <div class="absolute right-32 bottom-0 w-40 h-40 bg-blue-300 opacity-20 rounded-full translate-y-1/2 blur-2xl"></div>
+                        
+                        <div class="hidden md:block relative z-10 bg-white/10 p-4 rounded-xl border border-white/20 backdrop-blur-sm text-center min-w-[150px]">
+                            <p class="text-blue-100 text-sm font-medium mb-1">Total Siswa Aktif</p>
+                            <h3 class="text-4xl font-extrabold" id="dash-total-siswa">0</h3>
                         </div>
                     </div>
-                    
-                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
-                        <h3 class="text-lg font-bold mb-4"><i class="fas fa-info-circle mr-2 text-primary"></i> Selamat Datang</h3>
-                        <p class="text-slate-600 mb-2">Gunakan menu di samping untuk mengelola administrasi kelas Anda.</p>
-                        <ul class="list-disc pl-5 text-slate-600 space-y-1">
-                            <li>Data Master: Kelola daftar siswa.</li>
-                            <li>Absensi & Nilai: Input data dan cetak laporan.</li>
-                            <li>Pengaturan: Atur profil, nama sekolah, kop surat, dan tanda tangan (Cetak F4).</li>
-                        </ul>
+
+                    <!-- Stats Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between group hover:border-primary/30 transition cursor-pointer" onclick="navigate('siswa')">
+                            <div>
+                                <p class="text-slate-500 text-sm font-semibold mb-1">Data Master Siswa</p>
+                                <p class="text-slate-400 text-xs">Kelola identitas lengkap siswa</p>
+                            </div>
+                            <div class="w-12 h-12 rounded-xl bg-blue-50 text-primary flex items-center justify-center text-xl group-hover:scale-110 transition">
+                                <i class="fas fa-users"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between">
+                            <div>
+                                <p class="text-slate-500 text-sm font-semibold mb-1">Tahun Ajaran</p>
+                                <h3 class="text-xl font-bold text-slate-800" id="dash-ta">-</h3>
+                            </div>
+                            <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-500 flex items-center justify-center text-xl">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                        </div>
+
+                        <!-- Database Access Card -->
+                        <a href="https://docs.google.com/spreadsheets/d/1Qw6vma3QCkdxNDmHms88Aa6eS4GYjOxAedg-k5l9l4o/edit?hl=id&pli=1&gid=1721728408#gid=1721728408" target="_blank" class="bg-gradient-to-br from-slate-800 to-slate-900 p-6 rounded-2xl shadow-md flex items-center justify-between group hover:shadow-lg transition">
+                            <div>
+                                <p class="text-slate-300 text-sm font-semibold mb-1">Google Sheets</p>
+                                <p class="text-white font-bold text-md">Buka Database Master <i class="fas fa-external-link-alt text-xs ml-1 opacity-50"></i></p>
+                            </div>
+                            <div class="w-12 h-12 rounded-xl bg-white/10 text-emerald-400 flex items-center justify-center text-xl group-hover:rotate-12 transition">
+                                <i class="fas fa-table"></i>
+                            </div>
+                        </a>
                     </div>
                 </div>
 
                 <!-- VIEW: DATA SISWA -->
                 <div id="view-siswa" class="view-section hidden-view">
-                    <div class="bg-white rounded-xl shadow-sm border border-slate-100 flex flex-col h-full max-h-full">
-                        <div class="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50 rounded-t-xl">
-                            <h3 class="font-bold text-slate-700">Daftar Siswa</h3>
-                            <button onclick="openSiswaModal()" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition text-sm font-medium">
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col h-[calc(100vh-140px)] overflow-hidden">
+                        <div class="p-5 border-b border-slate-100 flex justify-between items-center bg-white">
+                            <div>
+                                <h3 class="font-bold text-slate-800 text-lg">Daftar Siswa</h3>
+                                <p class="text-xs text-slate-500">Kelola data murid di kelas Anda</p>
+                            </div>
+                            <button onclick="openSiswaModal()" class="bg-primary text-white px-4 py-2.5 rounded-lg hover:bg-blue-700 transition text-sm font-bold shadow-sm shadow-blue-500/30">
                                 <i class="fas fa-plus mr-1"></i> Tambah Siswa
                             </button>
                         </div>
                         <div class="p-0 flex-1 overflow-auto">
                             <table class="w-full text-left border-collapse text-sm">
                                 <thead>
-                                    <tr class="bg-slate-100 text-slate-600 border-b border-slate-200">
-                                        <th class="py-3 px-4 font-semibold w-16 text-center">No</th>
-                                        <th class="py-3 px-4 font-semibold">NISN</th>
-                                        <th class="py-3 px-4 font-semibold">Nama Siswa</th>
-                                        <th class="py-3 px-4 font-semibold text-center w-24">L/P</th>
-                                        <th class="py-3 px-4 font-semibold text-center w-32">Aksi</th>
+                                    <tr class="bg-slate-50 text-slate-600 border-b border-slate-200 text-xs uppercase tracking-wider">
+                                        <th class="py-3 px-4 font-bold w-16 text-center">No</th>
+                                        <th class="py-3 px-4 font-bold">NISN</th>
+                                        <th class="py-3 px-4 font-bold">Nama Lengkap Siswa</th>
+                                        <th class="py-3 px-4 font-bold text-center w-24">L/P</th>
+                                        <th class="py-3 px-4 font-bold text-center w-32">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody id="tbody-siswa" class="divide-y divide-slate-100">
@@ -231,10 +287,10 @@
 
                 <!-- VIEW: ABSENSI -->
                 <div id="view-absensi" class="view-section hidden-view">
-                    <div class="bg-white rounded-xl shadow-sm border border-slate-100 flex flex-col h-[calc(100vh-140px)]">
-                        <div class="p-4 border-b border-slate-100 flex flex-wrap gap-4 justify-between items-center bg-slate-50 rounded-t-xl">
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col h-[calc(100vh-140px)] overflow-hidden">
+                        <div class="p-5 border-b border-slate-100 flex flex-wrap gap-4 justify-between items-center bg-white">
                             <div class="flex items-center gap-3">
-                                <select id="filter-bulan" class="border rounded-lg px-3 py-1.5 text-sm focus:ring-primary focus:border-primary outline-none bg-white">
+                                <select id="filter-bulan" class="border border-slate-200 rounded-lg px-4 py-2 text-sm font-medium focus:ring-2 focus:ring-primary/20 outline-none bg-slate-50 text-slate-700">
                                     <option value="Juli">Juli</option><option value="Agustus">Agustus</option>
                                     <option value="September">September</option><option value="Oktober">Oktober</option>
                                     <option value="November">November</option><option value="Desember">Desember</option>
@@ -242,40 +298,42 @@
                                     <option value="Maret">Maret</option><option value="April">April</option>
                                     <option value="Mei">Mei</option><option value="Juni">Juni</option>
                                 </select>
-                                <input type="number" id="filter-tahun" class="border rounded-lg px-3 py-1.5 text-sm w-24 focus:ring-primary outline-none" value="2023">
-                                <button onclick="loadAbsensiData()" class="bg-slate-800 text-white px-3 py-1.5 rounded-lg hover:bg-slate-700 text-sm">
-                                    <i class="fas fa-search"></i> Tampilkan
+                                <input type="number" id="filter-tahun" class="border border-slate-200 rounded-lg px-4 py-2 text-sm font-medium w-24 focus:ring-2 focus:ring-primary/20 outline-none bg-slate-50" value="2023">
+                                <button onclick="loadAbsensiData()" class="bg-slate-800 text-white px-4 py-2 rounded-lg hover:bg-slate-700 font-medium text-sm transition">
+                                    Tampilkan
                                 </button>
                             </div>
-                            <div class="flex items-center gap-2">
-                                <button onclick="saveAbsensi()" class="bg-secondary text-white px-4 py-2 rounded-lg hover:bg-emerald-600 transition text-sm font-medium">
+                            <div class="flex items-center gap-3">
+                                <button onclick="saveAbsensi()" class="bg-emerald-500 text-white px-5 py-2 rounded-lg hover:bg-emerald-600 transition text-sm font-bold shadow-sm shadow-emerald-500/20">
                                     <i class="fas fa-save mr-1"></i> Simpan Data
                                 </button>
-                                <button onclick="printView('absensi')" class="bg-slate-200 text-slate-700 border border-slate-300 px-4 py-2 rounded-lg hover:bg-slate-300 transition text-sm font-medium">
+                                <button onclick="printView('absensi')" class="bg-white text-slate-700 border border-slate-200 px-5 py-2 rounded-lg hover:bg-slate-50 transition text-sm font-bold shadow-sm">
                                     <i class="fas fa-print mr-1"></i> Cetak F4
                                 </button>
                             </div>
                         </div>
-                        <!-- Table Wrapper with horizontal scroll -->
+                        <!-- Table Wrapper -->
                         <div class="p-0 flex-1 overflow-auto bg-white">
-                            <p class="text-xs text-slate-500 p-2 italic">*Ketik 'S' (Sakit), 'I' (Izin), 'A' (Alpa) pada kolom tanggal. Angka rekap akan terhitung otomatis.</p>
+                            <div class="bg-blue-50 text-blue-800 text-xs px-4 py-2 border-b border-blue-100 font-medium">
+                                <i class="fas fa-info-circle mr-1"></i> Ketik <strong>S</strong> (Sakit), <strong>I</strong> (Izin), <strong>A</strong> (Alpa) pada kolom tanggal. Angka rekap dihitungkan otomatis.
+                            </div>
                             <table class="w-full text-left border-collapse text-xs whitespace-nowrap">
                                 <thead>
-                                    <tr class="bg-slate-100 text-slate-600 border-b border-t border-slate-200 uppercase">
-                                        <th rowspan="2" class="border-r border-slate-200 py-2 px-2 text-center sticky-col min-w-[40px]">No</th>
-                                        <th rowspan="2" class="border-r border-slate-200 py-2 px-4 sticky-col-2 min-w-[150px]">Nama Siswa</th>
-                                        <th colspan="31" class="border-r border-slate-200 py-1 text-center bg-blue-50">TANGGAL</th>
-                                        <th rowspan="2" class="border-r border-slate-200 py-2 px-1 text-center font-bold">S</th>
-                                        <th rowspan="2" class="border-r border-slate-200 py-2 px-1 text-center font-bold">I</th>
-                                        <th rowspan="2" class="border-r border-slate-200 py-2 px-1 text-center font-bold">A</th>
-                                        <th rowspan="2" class="border-r border-slate-200 py-2 px-1 text-center font-bold">Jml</th>
-                                        <th rowspan="2" class="py-2 px-2 text-center">Ket</th>
+                                    <tr class="bg-slate-50 text-slate-600 border-b border-slate-200 uppercase">
+                                        <th rowspan="2" class="border-r border-slate-200 py-3 px-2 text-center sticky-col min-w-[40px] font-bold">No</th>
+                                        <th rowspan="2" class="border-r border-slate-200 py-3 px-4 sticky-col-2 min-w-[180px] font-bold">Nama Siswa</th>
+                                        <th colspan="31" class="border-r border-slate-200 py-1.5 text-center bg-blue-50/50 font-bold tracking-wider">TANGGAL</th>
+                                        <th rowspan="2" class="border-r border-slate-200 py-3 px-1 text-center font-bold bg-slate-100">S</th>
+                                        <th rowspan="2" class="border-r border-slate-200 py-3 px-1 text-center font-bold bg-slate-100">I</th>
+                                        <th rowspan="2" class="border-r border-slate-200 py-3 px-1 text-center font-bold bg-slate-100">A</th>
+                                        <th rowspan="2" class="border-r border-slate-200 py-3 px-1 text-center font-bold bg-slate-200">Jml</th>
+                                        <th rowspan="2" class="py-3 px-3 text-center font-bold">Keterangan</th>
                                     </tr>
-                                    <tr class="bg-slate-50 text-slate-600 border-b border-slate-200" id="thead-tgl">
+                                    <tr class="bg-slate-50 text-slate-500 border-b border-slate-200 font-medium" id="thead-tgl">
                                         <!-- Days 1-31 injected via JS -->
                                     </tr>
                                 </thead>
-                                <tbody id="tbody-absensi" class="divide-y divide-slate-200">
+                                <tbody id="tbody-absensi" class="divide-y divide-slate-100">
                                     <!-- Rendered via JS -->
                                 </tbody>
                             </table>
@@ -285,23 +343,23 @@
 
                 <!-- VIEW: NILAI -->
                 <div id="view-nilai" class="view-section hidden-view">
-                    <div class="bg-white rounded-xl shadow-sm border border-slate-100 flex flex-col h-[calc(100vh-140px)]">
-                        <div class="p-4 border-b border-slate-100 flex flex-wrap gap-4 justify-between items-center bg-slate-50 rounded-t-xl">
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col h-[calc(100vh-140px)] overflow-hidden">
+                        <div class="p-5 border-b border-slate-100 flex flex-wrap gap-4 justify-between items-center bg-white">
                             <div class="flex items-center gap-3">
-                                <input type="text" id="filter-mapel" class="border rounded-lg px-3 py-1.5 text-sm focus:ring-primary focus:border-primary outline-none bg-white placeholder-slate-400 w-48" placeholder="Nama Mata Pelajaran">
-                                <select id="filter-semester" class="border rounded-lg px-3 py-1.5 text-sm focus:ring-primary outline-none">
+                                <input type="text" id="filter-mapel" class="border border-slate-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-primary/20 outline-none bg-slate-50 placeholder-slate-400 w-56 font-medium" placeholder="Mata Pelajaran (Cth: IPAS)">
+                                <select id="filter-semester" class="border border-slate-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-primary/20 outline-none bg-slate-50 font-medium">
                                     <option value="1 (Satu)">Semester 1</option>
                                     <option value="2 (Dua)">Semester 2</option>
                                 </select>
-                                <button onclick="loadNilaiData()" class="bg-slate-800 text-white px-3 py-1.5 rounded-lg hover:bg-slate-700 text-sm">
-                                    <i class="fas fa-search"></i> Tampilkan
+                                <button onclick="loadNilaiData()" class="bg-slate-800 text-white px-4 py-2 rounded-lg hover:bg-slate-700 font-medium text-sm transition">
+                                    Tampilkan
                                 </button>
                             </div>
-                            <div class="flex items-center gap-2">
-                                <button onclick="saveNilai()" class="bg-secondary text-white px-4 py-2 rounded-lg hover:bg-emerald-600 transition text-sm font-medium">
+                            <div class="flex items-center gap-3">
+                                <button onclick="saveNilai()" class="bg-emerald-500 text-white px-5 py-2 rounded-lg hover:bg-emerald-600 transition text-sm font-bold shadow-sm shadow-emerald-500/20">
                                     <i class="fas fa-save mr-1"></i> Simpan Data
                                 </button>
-                                <button onclick="printView('nilai')" class="bg-slate-200 text-slate-700 border border-slate-300 px-4 py-2 rounded-lg hover:bg-slate-300 transition text-sm font-medium">
+                                <button onclick="printView('nilai')" class="bg-white text-slate-700 border border-slate-200 px-5 py-2 rounded-lg hover:bg-slate-50 transition text-sm font-bold shadow-sm">
                                     <i class="fas fa-print mr-1"></i> Cetak F4
                                 </button>
                             </div>
@@ -309,28 +367,69 @@
                         <div class="p-0 flex-1 overflow-auto bg-white">
                             <table class="w-full text-left border-collapse text-xs whitespace-nowrap">
                                 <thead>
-                                    <tr class="bg-slate-100 text-slate-600 border-b border-t border-slate-200">
-                                        <th rowspan="2" class="border-r border-slate-200 py-2 px-2 text-center sticky-col min-w-[40px]">No</th>
-                                        <th rowspan="2" class="border-r border-slate-200 py-2 px-4 sticky-col-2 min-w-[150px]">Nama Siswa</th>
-                                        <th colspan="6" class="border-r border-slate-200 py-1 text-center bg-blue-50 text-xs">FORMATIF (TP)</th>
-                                        <th colspan="5" class="border-r border-slate-200 py-1 text-center bg-emerald-50 text-xs">SUMATIF LINGKUP MATERI</th>
-                                        <th rowspan="2" class="py-2 px-2 text-center bg-purple-50 font-bold whitespace-normal min-w-[80px]">Sumatif<br>Akhir (SAS)</th>
+                                    <tr class="bg-slate-50 text-slate-600 border-b border-slate-200">
+                                        <th rowspan="2" class="border-r border-slate-200 py-3 px-2 text-center sticky-col min-w-[40px] font-bold">No</th>
+                                        <th rowspan="2" class="border-r border-slate-200 py-3 px-4 sticky-col-2 min-w-[180px] font-bold">Nama Siswa</th>
+                                        <th colspan="6" class="border-r border-slate-200 py-1.5 text-center bg-blue-50/50 font-bold tracking-wider">FORMATIF (TP)</th>
+                                        <th colspan="5" class="border-r border-slate-200 py-1.5 text-center bg-emerald-50/50 font-bold tracking-wider">SUMATIF LINGKUP MATERI</th>
+                                        <th rowspan="2" class="py-3 px-2 text-center bg-purple-100 font-bold whitespace-normal min-w-[80px]">Sumatif<br>Akhir (SAS)</th>
                                     </tr>
-                                    <tr class="bg-slate-50 text-slate-600 border-b border-slate-200 text-center">
-                                        <th class="border-r border-slate-200 py-1 px-1 font-normal">TP1</th>
-                                        <th class="border-r border-slate-200 py-1 px-1 font-normal">TP2</th>
-                                        <th class="border-r border-slate-200 py-1 px-1 font-normal">TP3</th>
-                                        <th class="border-r border-slate-200 py-1 px-1 font-normal">TP4</th>
-                                        <th class="border-r border-slate-200 py-1 px-1 font-normal">TP5</th>
-                                        <th class="border-r border-slate-200 py-1 px-1 font-normal">TP6</th>
-                                        <th class="border-r border-slate-200 py-1 px-1 font-normal">LM1</th>
-                                        <th class="border-r border-slate-200 py-1 px-1 font-normal">LM2</th>
-                                        <th class="border-r border-slate-200 py-1 px-1 font-normal">LM3</th>
-                                        <th class="border-r border-slate-200 py-1 px-1 font-normal">LM4</th>
-                                        <th class="border-r border-slate-200 py-1 px-1 font-normal">LM5</th>
+                                    <tr class="bg-slate-50 text-slate-500 border-b border-slate-200 text-center font-medium">
+                                        <th class="border-r border-slate-200 py-1.5 px-1">TP1</th>
+                                        <th class="border-r border-slate-200 py-1.5 px-1">TP2</th>
+                                        <th class="border-r border-slate-200 py-1.5 px-1">TP3</th>
+                                        <th class="border-r border-slate-200 py-1.5 px-1">TP4</th>
+                                        <th class="border-r border-slate-200 py-1.5 px-1">TP5</th>
+                                        <th class="border-r border-slate-200 py-1.5 px-1">TP6</th>
+                                        <th class="border-r border-slate-200 py-1.5 px-1">LM1</th>
+                                        <th class="border-r border-slate-200 py-1.5 px-1">LM2</th>
+                                        <th class="border-r border-slate-200 py-1.5 px-1">LM3</th>
+                                        <th class="border-r border-slate-200 py-1.5 px-1">LM4</th>
+                                        <th class="border-r border-slate-200 py-1.5 px-1">LM5</th>
                                     </tr>
                                 </thead>
-                                <tbody id="tbody-nilai" class="divide-y divide-slate-200">
+                                <tbody id="tbody-nilai" class="divide-y divide-slate-100">
+                                    <!-- Rendered via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VIEW: JURNAL HARIAN (NEW) -->
+                <div id="view-jurnal" class="view-section hidden-view">
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col h-[calc(100vh-140px)] overflow-hidden">
+                        <div class="p-5 border-b border-slate-100 flex justify-between items-center bg-white">
+                            <div>
+                                <h3 class="font-bold text-slate-800 text-lg">Jurnal Harian Guru</h3>
+                                <p class="text-xs text-slate-500">Tersimpan secara lokal di browser <i class="fas fa-hdd ml-1"></i></p>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="addJurnalRow()" class="bg-blue-100 text-blue-700 px-4 py-2 rounded-lg hover:bg-blue-200 transition text-sm font-bold">
+                                    <i class="fas fa-plus mr-1"></i> Tambah Baris
+                                </button>
+                                <button onclick="saveJurnal()" class="bg-emerald-500 text-white px-4 py-2 rounded-lg hover:bg-emerald-600 transition text-sm font-bold shadow-sm">
+                                    <i class="fas fa-save mr-1"></i> Simpan
+                                </button>
+                                <button onclick="printView('jurnal')" class="bg-white text-slate-700 border border-slate-200 px-4 py-2 rounded-lg hover:bg-slate-50 transition text-sm font-bold shadow-sm">
+                                    <i class="fas fa-print mr-1"></i> Cetak
+                                </button>
+                            </div>
+                        </div>
+                        <div class="p-0 flex-1 overflow-auto">
+                            <table class="w-full text-left border-collapse text-sm">
+                                <thead>
+                                    <tr class="bg-slate-50 text-slate-600 border-b border-slate-200 text-xs uppercase tracking-wider">
+                                        <th class="py-3 px-3 font-bold w-32 border-r border-slate-200">Hari/Tanggal</th>
+                                        <th class="py-3 px-3 font-bold w-48 border-r border-slate-200">Tema/Mupel</th>
+                                        <th class="py-3 px-3 font-bold w-32 border-r border-slate-200">Kompetensi Dasar</th>
+                                        <th class="py-3 px-3 font-bold border-r border-slate-200">Materi Pokok</th>
+                                        <th class="py-3 px-3 font-bold border-r border-slate-200">Kegiatan Pembelajaran</th>
+                                        <th class="py-3 px-3 font-bold w-32 border-r border-slate-200">Penilaian</th>
+                                        <th class="py-3 px-2 font-bold w-12 text-center">X</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbody-jurnal" class="divide-y divide-slate-100 align-top">
                                     <!-- Rendered via JS -->
                                 </tbody>
                             </table>
@@ -340,87 +439,94 @@
 
                 <!-- VIEW: PENGATURAN -->
                 <div id="view-pengaturan" class="view-section hidden-view">
-                    <form id="form-pengaturan" onsubmit="savePengaturan(event)" class="max-w-4xl mx-auto space-y-6">
+                    <form id="form-pengaturan" onsubmit="savePengaturan(event)" class="max-w-5xl mx-auto space-y-6">
                         
                         <!-- Panel Identitas & Penandatangan -->
-                        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
-                            <h3 class="text-lg font-bold text-slate-700 border-b pb-2 mb-4"><i class="fas fa-school mr-2"></i> Identitas & Penandatangan</h3>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-sm font-medium mb-1">Nama Sekolah</label>
-                                    <input type="text" id="set-nama_sekolah" class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:border-primary">
+                        <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+                            <h3 class="text-lg font-bold text-slate-800 border-b border-slate-100 pb-3 mb-6"><i class="fas fa-school text-primary mr-2"></i> Identitas Laporan & Penandatangan</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-semibold text-slate-700 mb-1">Tahun Ajaran</label>
+                                        <input type="text" id="set-tahun_ajaran" class="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/10">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-semibold text-slate-700 mb-1">Kelas</label>
+                                        <input type="text" id="set-kelas" class="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/10">
+                                    </div>
                                 </div>
-                                <div>
-                                    <label class="block text-sm font-medium mb-1">Tahun Ajaran</label>
-                                    <input type="text" id="set-tahun_ajaran" class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:border-primary">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium mb-1">Kelas</label>
-                                    <input type="text" id="set-kelas" class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:border-primary">
-                                </div>
-                                <div></div>
                                 
-                                <div class="bg-slate-50 p-3 rounded-lg border border-slate-100">
-                                    <label class="block text-sm font-bold text-slate-700 mb-2">Kepala Sekolah (Kiri Bawah)</label>
-                                    <label class="block text-xs text-slate-500 mb-1">Nama Kepala Sekolah</label>
-                                    <input type="text" id="set-kepala_sekolah" class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:border-primary mb-2">
-                                    <label class="block text-xs text-slate-500 mb-1">NIP Kepala Sekolah</label>
-                                    <input type="text" id="set-nip_kepsek" class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:border-primary">
-                                </div>
-                                <div class="bg-slate-50 p-3 rounded-lg border border-slate-100">
-                                    <label class="block text-sm font-bold text-slate-700 mb-2">Guru Kelas (Kanan Bawah)</label>
-                                    <label class="block text-xs text-slate-500 mb-1">Nama Guru</label>
-                                    <input type="text" id="set-guru_kelas" class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:border-primary mb-2">
-                                    <label class="block text-xs text-slate-500 mb-1">NIP Guru</label>
-                                    <input type="text" id="set-nip_guru" class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:border-primary">
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 col-span-2 sm:col-span-1">
+                                        <label class="block text-sm font-bold text-slate-800 mb-3 text-center border-b pb-2">Kepala Sekolah<br><span class="text-[10px] text-slate-400 font-normal">(Kiri Bawah)</span></label>
+                                        <label class="block text-xs text-slate-500 mb-1">Nama Lengkap</label>
+                                        <input type="text" id="set-kepala_sekolah" class="w-full border border-slate-200 rounded-md px-3 py-1.5 text-sm mb-3">
+                                        <label class="block text-xs text-slate-500 mb-1">NIP</label>
+                                        <input type="text" id="set-nip_kepsek" class="w-full border border-slate-200 rounded-md px-3 py-1.5 text-sm">
+                                    </div>
+                                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 col-span-2 sm:col-span-1">
+                                        <label class="block text-sm font-bold text-slate-800 mb-3 text-center border-b pb-2">Guru Kelas<br><span class="text-[10px] text-slate-400 font-normal">(Kanan Bawah)</span></label>
+                                        <label class="block text-xs text-slate-500 mb-1">Nama Lengkap</label>
+                                        <input type="text" id="set-guru_kelas" class="w-full border border-slate-200 rounded-md px-3 py-1.5 text-sm mb-3">
+                                        <label class="block text-xs text-slate-500 mb-1">NIP</label>
+                                        <input type="text" id="set-nip_guru" class="w-full border border-slate-200 rounded-md px-3 py-1.5 text-sm">
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Panel Kop Surat -->
-                        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
-                            <h3 class="text-lg font-bold text-slate-700 border-b pb-2 mb-4"><i class="fas fa-envelope-open-text mr-2"></i> Pengaturan Kop Surat (Untuk Cetak)</h3>
+                        <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+                            <h3 class="text-lg font-bold text-slate-800 border-b border-slate-100 pb-3 mb-6"><i class="fas fa-envelope-open-text text-primary mr-2"></i> Pengaturan Kop Surat (Untuk Cetak)</h3>
                             
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
                                 <!-- Logo Kiri -->
-                                <div class="border rounded-lg p-4 text-center bg-slate-50">
-                                    <label class="block text-sm font-medium mb-2">Logo Kiri</label>
-                                    <img id="preview-logo-kiri" src="https://placehold.co/100x100/e2e8f0/94a3b8?text=Logo+Kiri" class="h-20 object-contain mx-auto mb-3 bg-white border">
-                                    <input type="file" id="file-logo-kiri" accept="image/*" class="text-xs w-full mb-1" onchange="encodeImage(this, 'preview-logo-kiri', 'set-logo_kiri_base64')">
-                                    <button type="button" onclick="clearImage('preview-logo-kiri', 'set-logo_kiri_base64', 'Logo Kiri')" class="text-xs text-red-500 underline">Hapus</button>
+                                <div class="border border-slate-200 rounded-xl p-4 text-center bg-slate-50 col-span-1">
+                                    <label class="block text-sm font-bold text-slate-700 mb-3">Logo Kiri</label>
+                                    <div class="bg-white p-2 rounded-lg border border-dashed border-slate-300 mb-3">
+                                        <img id="preview-logo-kiri" src="https://placehold.co/100x100/e2e8f0/94a3b8?text=Logo" class="h-20 w-auto object-contain mx-auto">
+                                    </div>
+                                    <input type="file" id="file-logo-kiri" accept="image/*" class="text-[10px] w-full mb-2 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-primary hover:file:bg-blue-100" onchange="encodeImage(this, 'preview-logo-kiri', 'set-logo_kiri_base64')">
+                                    <button type="button" onclick="clearImage('preview-logo-kiri', 'set-logo_kiri_base64', 'Logo')" class="text-xs text-red-500 hover:text-red-700 font-medium">Hapus Logo</button>
                                     <input type="hidden" id="set-logo_kiri_base64">
                                 </div>
                                 
-                                <!-- Teks Tengah -->
-                                <div class="space-y-3">
+                                <!-- Teks Tengah (4 Baris) -->
+                                <div class="col-span-1 md:col-span-2 space-y-3 bg-white p-4 rounded-xl border border-slate-200">
                                     <div>
-                                        <label class="block text-xs text-slate-500 mb-1">Teks Baris 1 (Misal: Pemerintah Daerah...)</label>
-                                        <input type="text" id="set-kop_baris_1" class="w-full border rounded-lg px-3 py-1.5 text-sm font-bold text-center outline-none focus:border-primary">
+                                        <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Baris 1 (Pemerintah/Yayasan)</label>
+                                        <input type="text" id="set-kop_baris_1" placeholder="PEMERINTAH KABUPATEN JEMBER" class="w-full border-b border-slate-200 px-2 py-1 text-sm font-bold text-center outline-none focus:border-primary">
                                     </div>
                                     <div>
-                                        <label class="block text-xs text-slate-500 mb-1">Teks Baris 2 (Nama Instansi/Sekolah)</label>
-                                        <input type="text" id="set-kop_baris_2" class="w-full border rounded-lg px-3 py-1.5 text-lg font-extrabold text-center outline-none focus:border-primary">
+                                        <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1 mt-2">Baris 2 (Dinas/Kementerian)</label>
+                                        <input type="text" id="set-kop_baris_2" placeholder="DINAS PENDIDIKAN" class="w-full border-b border-slate-200 px-2 py-1 text-md font-bold text-center outline-none focus:border-primary">
                                     </div>
                                     <div>
-                                        <label class="block text-xs text-slate-500 mb-1">Teks Baris 3 (Alamat / Kontak)</label>
-                                        <textarea id="set-kop_baris_3" rows="2" class="w-full border rounded-lg px-3 py-1.5 text-xs text-center outline-none focus:border-primary"></textarea>
+                                        <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1 mt-2 text-primary">Baris 3 (Nama Sekolah)</label>
+                                        <input type="text" id="set-kop_baris_3" placeholder="SD NEGERI 01 CONTOH" class="w-full border-b border-primary px-2 py-1 text-lg font-extrabold text-center outline-none focus:border-primary text-primary">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1 mt-2">Baris 4 (Alamat & Kontak)</label>
+                                        <textarea id="set-kop_baris_4" rows="2" placeholder="Jl. Raya Pendidikan No. 123, Telp. (0331) 123456" class="w-full border border-slate-200 rounded bg-slate-50 px-3 py-2 text-xs text-center outline-none focus:border-primary focus:bg-white"></textarea>
                                     </div>
                                 </div>
 
                                 <!-- Logo Kanan -->
-                                <div class="border rounded-lg p-4 text-center bg-slate-50">
-                                    <label class="block text-sm font-medium mb-2">Logo Kanan</label>
-                                    <img id="preview-logo-kanan" src="https://placehold.co/100x100/e2e8f0/94a3b8?text=Logo+Kanan" class="h-20 object-contain mx-auto mb-3 bg-white border">
-                                    <input type="file" id="file-logo-kanan" accept="image/*" class="text-xs w-full mb-1" onchange="encodeImage(this, 'preview-logo-kanan', 'set-logo_kanan_base64')">
-                                    <button type="button" onclick="clearImage('preview-logo-kanan', 'set-logo_kanan_base64', 'Logo Kanan')" class="text-xs text-red-500 underline">Hapus</button>
+                                <div class="border border-slate-200 rounded-xl p-4 text-center bg-slate-50 col-span-1">
+                                    <label class="block text-sm font-bold text-slate-700 mb-3">Logo Kanan</label>
+                                    <div class="bg-white p-2 rounded-lg border border-dashed border-slate-300 mb-3">
+                                        <img id="preview-logo-kanan" src="https://placehold.co/100x100/e2e8f0/94a3b8?text=Logo" class="h-20 w-auto object-contain mx-auto">
+                                    </div>
+                                    <input type="file" id="file-logo-kanan" accept="image/*" class="text-[10px] w-full mb-2 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-primary hover:file:bg-blue-100" onchange="encodeImage(this, 'preview-logo-kanan', 'set-logo_kanan_base64')">
+                                    <button type="button" onclick="clearImage('preview-logo-kanan', 'set-logo_kanan_base64', 'Logo')" class="text-xs text-red-500 hover:text-red-700 font-medium">Hapus Logo</button>
                                     <input type="hidden" id="set-logo_kanan_base64">
                                 </div>
                             </div>
                         </div>
 
-                        <div class="flex justify-end pt-2">
-                            <button type="submit" class="bg-primary text-white px-6 py-2.5 rounded-lg hover:bg-blue-700 transition font-medium">
-                                <i class="fas fa-save mr-2"></i> Simpan Pengaturan
+                        <div class="flex justify-end pt-2 pb-10">
+                            <button type="submit" class="bg-primary text-white px-8 py-3 rounded-xl hover:bg-blue-700 transition font-bold shadow-lg shadow-blue-500/30">
+                                <i class="fas fa-check-circle mr-2"></i> Simpan Seluruh Pengaturan
                             </button>
                         </div>
                     </form>
@@ -431,31 +537,31 @@
 
     <!-- MODAL FORM SISWA -->
     <div id="modal-siswa" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[9950] flex items-center justify-center hidden-view transition-opacity duration-300 opacity-0">
-        <div class="bg-white rounded-xl shadow-xl w-full max-w-md mx-4 p-6">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-bold" id="modal-siswa-title">Tambah Siswa</h3>
-                <button type="button" onclick="closeSiswaModal()" class="text-slate-400 hover:text-slate-600"><i class="fas fa-times text-xl"></i></button>
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-md mx-4 overflow-hidden border border-slate-100">
+            <div class="flex justify-between items-center p-5 border-b border-slate-100 bg-slate-50">
+                <h3 class="text-lg font-bold text-slate-800" id="modal-siswa-title">Tambah Siswa</h3>
+                <button type="button" onclick="closeSiswaModal()" class="text-slate-400 hover:text-red-500 transition bg-white w-8 h-8 rounded-full flex items-center justify-center shadow-sm"><i class="fas fa-times"></i></button>
             </div>
-            <form id="form-siswa" onsubmit="submitSiswa(event)">
+            <form id="form-siswa" onsubmit="submitSiswa(event)" class="p-6">
                 <input type="hidden" id="siswa-id">
                 <div class="mb-4">
-                    <label class="block text-sm font-medium mb-1">NISN / NIS</label>
-                    <input type="text" id="siswa-nisn" required class="w-full border rounded-lg px-3 py-2 outline-none focus:border-primary">
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">NISN / NIS</label>
+                    <input type="text" id="siswa-nisn" required class="w-full border border-slate-200 rounded-lg px-4 py-2.5 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
                 </div>
                 <div class="mb-4">
-                    <label class="block text-sm font-medium mb-1">Nama Lengkap</label>
-                    <input type="text" id="siswa-nama" required class="w-full border rounded-lg px-3 py-2 outline-none focus:border-primary">
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Nama Lengkap</label>
+                    <input type="text" id="siswa-nama" required class="w-full border border-slate-200 rounded-lg px-4 py-2.5 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
                 </div>
-                <div class="mb-6">
-                    <label class="block text-sm font-medium mb-1">Jenis Kelamin</label>
-                    <select id="siswa-jk" required class="w-full border rounded-lg px-3 py-2 outline-none focus:border-primary bg-white">
+                <div class="mb-8">
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Jenis Kelamin</label>
+                    <select id="siswa-jk" required class="w-full border border-slate-200 rounded-lg px-4 py-2.5 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 bg-white">
                         <option value="L">Laki-laki (L)</option>
                         <option value="P">Perempuan (P)</option>
                     </select>
                 </div>
-                <div class="flex justify-end gap-3">
-                    <button type="button" onclick="closeSiswaModal()" class="px-4 py-2 border rounded-lg hover:bg-slate-50">Batal</button>
-                    <button type="submit" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-blue-700">Simpan</button>
+                <div class="flex justify-end gap-3 pt-4 border-t border-slate-100">
+                    <button type="button" onclick="closeSiswaModal()" class="px-5 py-2.5 font-medium rounded-lg text-slate-600 hover:bg-slate-100 transition">Batal</button>
+                    <button type="submit" class="bg-primary text-white px-5 py-2.5 rounded-lg font-bold hover:bg-blue-700 transition shadow-md shadow-blue-500/20">Simpan Data</button>
                 </div>
             </form>
         </div>
@@ -463,31 +569,33 @@
 
     <!-- MODAL PROFIL GURU -->
     <div id="modal-profil" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[9950] flex items-center justify-center hidden-view transition-opacity duration-300 opacity-0">
-        <div class="bg-white rounded-xl shadow-xl w-full max-w-sm mx-4 p-6">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-bold">Profil Akun</h3>
-                <button type="button" onclick="closeProfilModal()" class="text-slate-400 hover:text-slate-600"><i class="fas fa-times text-xl"></i></button>
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm mx-4 overflow-hidden border border-slate-100">
+            <div class="flex justify-between items-center p-5 border-b border-slate-100 bg-slate-50">
+                <h3 class="text-lg font-bold text-slate-800">Profil Akun</h3>
+                <button type="button" onclick="closeProfilModal()" class="text-slate-400 hover:text-red-500 transition bg-white w-8 h-8 rounded-full flex items-center justify-center shadow-sm"><i class="fas fa-times"></i></button>
             </div>
-            <form id="form-profil" onsubmit="saveProfil(event)">
-                <div class="text-center mb-4 relative group">
-                    <img id="preview-profil" src="https://placehold.co/100x100/2563eb/ffffff?text=U" class="w-24 h-24 rounded-full object-cover border-4 border-slate-100 mx-auto">
-                    <label for="file-profil" class="absolute bottom-0 right-1/2 translate-x-12 bg-white rounded-full p-2 shadow-md cursor-pointer border hover:bg-slate-50">
-                        <i class="fas fa-camera text-slate-600 text-sm"></i>
-                    </label>
+            <form id="form-profil" onsubmit="saveProfil(event)" class="p-6">
+                <div class="text-center mb-6 relative group">
+                    <div class="relative inline-block">
+                        <img id="preview-profil" src="https://placehold.co/100x100/2563eb/ffffff?text=U" class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-md mx-auto">
+                        <label for="file-profil" class="absolute bottom-0 right-0 bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center shadow-lg cursor-pointer hover:scale-110 transition border-2 border-white">
+                            <i class="fas fa-camera text-xs"></i>
+                        </label>
+                    </div>
                     <input type="file" id="file-profil" accept="image/*" class="hidden" onchange="encodeImage(this, 'preview-profil', 'profil-base64')">
                     <input type="hidden" id="profil-base64">
                 </div>
                 <div class="mb-4">
-                    <label class="block text-sm font-medium mb-1">Nama Lengkap</label>
-                    <input type="text" id="profil-nama" required class="w-full border rounded-lg px-3 py-2 outline-none focus:border-primary">
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Nama Lengkap</label>
+                    <input type="text" id="profil-nama" required class="w-full border border-slate-200 rounded-lg px-4 py-2.5 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
                 </div>
-                <div class="mb-6">
-                    <label class="block text-sm font-medium mb-1">Ganti Password (Opsional)</label>
-                    <input type="password" id="profil-password" placeholder="Kosongkan jika tidak diubah" class="w-full border rounded-lg px-3 py-2 outline-none focus:border-primary">
+                <div class="mb-8">
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Ganti Password <span class="text-xs font-normal text-slate-400">(Opsional)</span></label>
+                    <input type="password" id="profil-password" placeholder="Kosongkan jika tidak diubah" class="w-full border border-slate-200 rounded-lg px-4 py-2.5 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
                 </div>
-                <div class="flex justify-end gap-3">
-                    <button type="button" onclick="closeProfilModal()" class="px-4 py-2 border rounded-lg hover:bg-slate-50">Batal</button>
-                    <button type="submit" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-blue-700">Simpan Profil</button>
+                <div class="flex justify-end gap-3 pt-4 border-t border-slate-100">
+                    <button type="button" onclick="closeProfilModal()" class="px-5 py-2.5 font-medium rounded-lg text-slate-600 hover:bg-slate-100 transition">Batal</button>
+                    <button type="submit" class="bg-primary text-white px-5 py-2.5 rounded-lg font-bold hover:bg-blue-700 transition shadow-md shadow-blue-500/20">Simpan</button>
                 </div>
             </form>
         </div>
@@ -500,10 +608,11 @@
             <div class="w-24 flex justify-center">
                 <img id="print-logo-kiri" src="" class="max-h-24 object-contain">
             </div>
-            <div class="flex-1 text-center px-4">
+            <div class="flex-1 text-center px-4 space-y-0.5">
                 <p id="print-kop-1" class="font-bold text-sm tracking-wider uppercase m-0 leading-tight"></p>
-                <h1 id="print-kop-2" class="font-extrabold text-xl m-0 leading-tight"></h1>
-                <p id="print-kop-3" class="text-xs m-0 mt-1"></p>
+                <p id="print-kop-2" class="font-bold text-md tracking-wide uppercase m-0 leading-tight"></p>
+                <h1 id="print-kop-3" class="font-extrabold text-2xl uppercase m-0 leading-tight mt-1"></h1>
+                <p id="print-kop-4" class="text-xs m-0 mt-1 italic"></p>
             </div>
             <div class="w-24 flex justify-center">
                 <img id="print-logo-kanan" src="" class="max-h-24 object-contain">
@@ -511,9 +620,9 @@
         </div>
 
         <!-- Judul Laporan -->
-        <div class="text-center mb-4">
-            <h2 id="print-judul-laporan" class="font-bold text-md uppercase underline">DAFTAR HADIR SISWA</h2>
-            <p id="print-sub-laporan" class="text-sm m-0">TAHUN AJARAN <span id="print-lbl-ta">...</span> <span class="mx-3">|</span> KELAS <span id="print-lbl-kelas">...</span></p>
+        <div class="text-center mb-4 mt-2">
+            <h2 id="print-judul-laporan" class="font-bold text-lg uppercase">DAFTAR HADIR SISWA</h2>
+            <p id="print-sub-laporan" class="text-sm m-0 font-medium">TAHUN AJARAN <span id="print-lbl-ta">...</span> <span class="mx-3">|</span> KELAS <span id="print-lbl-kelas">...</span></p>
         </div>
 
         <div class="mb-2">
@@ -555,7 +664,8 @@
             siswa: [],
             pengaturan: {},
             absensi: [],
-            nilai: []
+            nilai: [],
+            jurnal: [] // State untuk lokal jurnal
         };
 
         const days = Array.from({length: 31}, (_, i) => i + 1);
@@ -612,28 +722,25 @@
             const color = type === 'success' ? 'bg-emerald-500' : 'bg-red-500';
             const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
             
-            toast.className = `${color} text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-3 transform transition-all duration-300 translate-x-full opacity-0 pointer-events-auto`;
-            toast.innerHTML = `<i class="fas ${icon}"></i> <span class="font-medium text-sm">${message}</span>`;
+            toast.className = `${color} text-white px-5 py-3.5 rounded-xl shadow-lg flex items-center gap-3 transform transition-all duration-300 translate-x-full opacity-0 pointer-events-auto font-bold`;
+            toast.innerHTML = `<i class="fas ${icon} text-lg"></i> <span class="text-sm">${message}</span>`;
             
             container.appendChild(toast);
             
-            setTimeout(() => {
-                toast.classList.remove('translate-x-full', 'opacity-0');
-            }, 10);
-            
+            setTimeout(() => { toast.classList.remove('translate-x-full', 'opacity-0'); }, 10);
             setTimeout(() => {
                 toast.classList.add('translate-x-full', 'opacity-0');
                 setTimeout(() => toast.remove(), 300);
             }, 3000);
         }
 
-        // Custom Modal (Replacement for alert/confirm)
+        // Custom Modal
         const Dialog = {
             show(title, message, callback = null) {
                 el('dialog-title').innerText = title;
                 el('dialog-message').innerText = message;
                 const actions = el('dialog-actions');
-                actions.innerHTML = `<button id="btn-dialog-ok" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-blue-700">OK</button>`;
+                actions.innerHTML = `<button id="btn-dialog-ok" class="bg-primary text-white px-5 py-2 rounded-lg font-bold hover:bg-blue-700">OK, Mengerti</button>`;
                 
                 show('dialog-overlay');
                 setTimeout(() => el('dialog-overlay').children[0].classList.replace('scale-95', 'scale-100'), 10);
@@ -649,8 +756,8 @@
                 el('dialog-message').innerText = message;
                 const actions = el('dialog-actions');
                 actions.innerHTML = `
-                    <button id="btn-dialog-cancel" class="px-4 py-2 border rounded-lg hover:bg-slate-50">Batal</button>
-                    <button id="btn-dialog-yes" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700">Ya, Lanjutkan</button>
+                    <button id="btn-dialog-cancel" class="px-5 py-2 border border-slate-200 rounded-lg hover:bg-slate-50 font-medium">Batal</button>
+                    <button id="btn-dialog-yes" class="bg-red-600 text-white px-5 py-2 rounded-lg font-bold hover:bg-red-700">Ya, Lanjutkan</button>
                 `;
                 
                 show('dialog-overlay');
@@ -673,7 +780,7 @@
         // Base64 Encoder
         function encodeImage(input, previewId, hiddenInputId) {
             if (input.files && input.files[0]) {
-                if (input.files[0].size > 2 * 1024 * 1024) { // 2MB limit
+                if (input.files[0].size > 2 * 1024 * 1024) { 
                     Dialog.show("Gagal", "Ukuran file maksimal 2MB");
                     input.value = ""; return;
                 }
@@ -688,9 +795,8 @@
         function clearImage(previewId, hiddenInputId, placeholderText) {
             el(previewId).src = `https://placehold.co/100x100/e2e8f0/94a3b8?text=${encodeURIComponent(placeholderText)}`;
             el(hiddenInputId).value = '';
-            // reset file input
-            const input = el(previewId).nextElementSibling;
-            if(input.type === 'file') input.value = '';
+            const input = el(previewId).parentElement.nextElementSibling;
+            if(input && input.type === 'file') input.value = '';
         }
 
         /**
@@ -712,9 +818,15 @@
             // Build table header dates for Absensi
             let thHTML = '';
             days.forEach(d => {
-                thHTML += `<th class="border-r border-slate-200 py-1 px-1 font-normal w-8">${d}</th>`;
+                thHTML += `<th class="border-r border-slate-200 py-1.5 px-1 font-normal w-8 hover:bg-blue-100 cursor-default">${d}</th>`;
             });
             el('thead-tgl').innerHTML = thHTML;
+
+            // Load Jurnal Local
+            const savedJurnal = localStorage.getItem('app_jurnal');
+            if(savedJurnal) {
+                state.jurnal = JSON.parse(savedJurnal);
+            }
         };
 
         async function handleLogin(e) {
@@ -726,7 +838,7 @@
                 const user = await fetchAPI('login', { username: u, password: p });
                 state.user = user;
                 localStorage.setItem('app_user', JSON.stringify(user));
-                showToast("Login Berhasil");
+                showToast("Berhasil masuk ke sistem!");
                 startApp();
             } catch (err) {}
         }
@@ -737,7 +849,7 @@
                 state.user = null;
                 hide('app-shell');
                 show('login-view');
-                el('login-password').value = '';
+                el('login-password').value = 'admin'; // reset default for easy testing
             });
         }
 
@@ -747,7 +859,6 @@
             updateHeaderProfile();
             
             try {
-                // Load Master Data Initial
                 showLoader("Sinkronisasi Data...");
                 const [cfg, ssw] = await Promise.all([
                     fetchAPI('get_pengaturan'),
@@ -763,7 +874,9 @@
         }
 
         function updateHeaderProfile() {
-            el('user-name-display').innerText = state.user.nama_lengkap;
+            const nama = state.user.nama_lengkap || 'Admin';
+            el('user-name-display').innerText = nama;
+            el('dash-welcome-name').innerText = nama;
             el('user-role-display').innerText = state.user.role === 'admin' ? 'Guru Kelas / Admin' : state.user.role;
             if (state.user.foto_profil_base64) {
                 el('user-avatar').src = state.user.foto_profil_base64;
@@ -772,30 +885,29 @@
 
         // Navigation
         function navigate(viewName) {
-            // Hide all
-            document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden-view'));
-            // Remove active class from nav
-            document.querySelectorAll('aside nav a').forEach(el => {
-                el.classList.remove('bg-slate-800', 'text-white');
-                el.classList.add('text-slate-300');
+            document.querySelectorAll('.view-section').forEach(e => e.classList.add('hidden-view'));
+            
+            // Modern Sidebar active state
+            document.querySelectorAll('.nav-item').forEach(e => {
+                e.classList.remove('bg-primary', 'text-white', 'shadow-md', 'shadow-blue-500/20');
+                e.classList.add('text-slate-600');
             });
             
-            // Show target
             show(`view-${viewName}`);
             const nav = el(`nav-${viewName}`);
             if(nav) {
-                nav.classList.add('bg-slate-800', 'text-white');
-                nav.classList.remove('text-slate-300');
+                nav.classList.add('bg-primary', 'text-white', 'shadow-md', 'shadow-blue-500/20');
+                nav.classList.remove('text-slate-600', 'hover:bg-slate-50');
             }
             
-            // View specific logic
-            const titles = { dashboard: 'Dashboard', siswa: 'Data Master Siswa', absensi: 'Rekap Absensi Harian', nilai: 'Daftar Nilai Siswa', pengaturan: 'Pengaturan Sekolah & Laporan' };
+            const titles = { dashboard: 'Dashboard', siswa: 'Data Master Siswa', absensi: 'Rekap Absensi Harian', nilai: 'Daftar Nilai Siswa', jurnal: 'Jurnal Harian Guru', pengaturan: 'Sistem & Pengaturan' };
             el('header-title').innerText = titles[viewName];
 
             if(viewName === 'dashboard') renderDashboard();
             if(viewName === 'siswa') renderTableSiswa();
-            if(viewName === 'absensi' && state.absensi.length === 0) loadAbsensiData(); // auto load if empty
+            if(viewName === 'absensi' && state.absensi.length === 0) loadAbsensiData(); 
             if(viewName === 'nilai' && state.nilai.length === 0) loadNilaiData();
+            if(viewName === 'jurnal') renderJurnal();
         }
 
         /**
@@ -818,20 +930,20 @@
             tbody.innerHTML = '';
             
             if(state.siswa.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-8 text-slate-500">Tidak ada data siswa. Klik Tambah Siswa.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-10 text-slate-500 font-medium">Belum ada data murid. Silakan tambahkan.</td></tr>`;
                 return;
             }
 
             state.siswa.forEach((s, index) => {
                 tbody.innerHTML += `
-                    <tr class="hover:bg-slate-50 transition">
-                        <td class="py-3 px-4 text-center">${index + 1}</td>
-                        <td class="py-3 px-4">${s.nisn}</td>
-                        <td class="py-3 px-4 font-medium">${s.nama_siswa}</td>
-                        <td class="py-3 px-4 text-center">${s.jk}</td>
+                    <tr class="hover:bg-blue-50/50 transition">
+                        <td class="py-3 px-4 text-center font-medium text-slate-600">${index + 1}</td>
+                        <td class="py-3 px-4 font-mono text-slate-500">${s.nisn}</td>
+                        <td class="py-3 px-4 font-bold text-slate-800">${s.nama_siswa}</td>
+                        <td class="py-3 px-4 text-center"><span class="px-2 py-1 rounded bg-slate-100 text-xs font-bold text-slate-600">${s.jk}</span></td>
                         <td class="py-3 px-4 text-center">
-                            <button onclick='editSiswa(${JSON.stringify(s)})' class="text-blue-500 hover:text-blue-700 mx-1 p-1" title="Edit"><i class="fas fa-edit"></i></button>
-                            <button onclick="hapusSiswa('${s.id}')" class="text-red-500 hover:text-red-700 mx-1 p-1" title="Hapus"><i class="fas fa-trash"></i></button>
+                            <button onclick='editSiswa(${JSON.stringify(s)})' class="text-blue-500 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 rounded p-2 mx-1 transition" title="Edit"><i class="fas fa-edit"></i></button>
+                            <button onclick="hapusSiswa('${s.id}')" class="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 rounded p-2 mx-1 transition" title="Hapus"><i class="fas fa-trash"></i></button>
                         </td>
                     </tr>
                 `;
@@ -868,19 +980,18 @@
 
             try {
                 await fetchAPI('save_siswa', payload);
-                showToast("Data siswa disimpan");
+                showToast("Data murid berhasil disimpan");
                 closeSiswaModal();
-                // reload data
                 state.siswa = await fetchAPI('get_siswa');
                 renderTableSiswa();
             } catch (err) {}
         }
 
         function hapusSiswa(id) {
-            Dialog.confirm("Hapus Siswa", "Yakin ingin menghapus data siswa ini? Semua data terkait (absen, nilai) mungkin tidak akan tampil jika dihapus.", async () => {
+            Dialog.confirm("Hapus Siswa", "Yakin ingin menghapus data siswa ini? Data absen dan nilai terkait bisa terpengaruh.", async () => {
                 try {
                     await fetchAPI('delete_siswa', { id });
-                    showToast("Siswa dihapus");
+                    showToast("Data dihapus");
                     state.siswa = await fetchAPI('get_siswa');
                     renderTableSiswa();
                 } catch (err) {}
@@ -894,7 +1005,7 @@
          */
         async function loadAbsensiData() {
             if(state.siswa.length === 0) {
-                Dialog.show("Perhatian", "Data siswa masih kosong. Silakan isi master siswa terlebih dahulu.");
+                Dialog.show("Perhatian", "Data siswa masih kosong.");
                 return;
             }
 
@@ -914,35 +1025,31 @@
             tbody.innerHTML = '';
             
             state.siswa.forEach((s, index) => {
-                // Find existing absen for this student
                 let absenData = state.absensi.find(a => a.id_siswa == s.id) || {};
-                
                 let tr = document.createElement('tr');
-                tr.className = 'hover:bg-slate-50';
+                tr.className = 'hover:bg-slate-50 transition-colors';
                 
                 let html = `
-                    <td class="border-r py-1 text-center sticky-col font-medium">${index + 1}</td>
-                    <td class="border-r py-1 px-3 sticky-col-2 truncate max-w-[180px]" title="${s.nama_siswa}">${s.nama_siswa}
+                    <td class="border-r py-1 text-center sticky-col font-medium bg-white">${index + 1}</td>
+                    <td class="border-r py-1 px-3 sticky-col-2 truncate max-w-[180px] font-bold bg-white" title="${s.nama_siswa}">${s.nama_siswa}
                         <input type="hidden" class="absen-input-id" value="${absenData.id || ''}">
                         <input type="hidden" class="absen-input-siswa" value="${s.id}">
                     </td>
                 `;
                 
-                // 31 days inputs
                 days.forEach(d => {
                     let val = absenData[`tgl_${d}`] || '';
                     html += `<td class="border-r py-0 px-0">
-                        <input type="text" maxlength="1" class="tbl-input uppercase tgl-input" data-day="${d}" data-sid="${s.id}" value="${val}" onkeyup="calcAbsen('${s.id}')">
+                        <input type="text" maxlength="1" class="tbl-input uppercase font-bold text-slate-700 tgl-input" data-day="${d}" data-sid="${s.id}" value="${val}" onkeyup="calcAbsen('${s.id}')">
                     </td>`;
                 });
                 
-                // Summary columns (readonly initially, updated via JS)
                 html += `
-                    <td class="border-r py-1 text-center bg-yellow-50"><input type="text" id="absen-s-${s.id}" class="tbl-input font-bold" value="${absenData.s || 0}" readonly></td>
-                    <td class="border-r py-1 text-center bg-blue-50"><input type="text" id="absen-i-${s.id}" class="tbl-input font-bold" value="${absenData.i || 0}" readonly></td>
-                    <td class="border-r py-1 text-center bg-red-50"><input type="text" id="absen-a-${s.id}" class="tbl-input font-bold text-red-600" value="${absenData.a || 0}" readonly></td>
-                    <td class="border-r py-1 text-center bg-slate-100"><input type="text" id="absen-jml-${s.id}" class="tbl-input font-bold" value="${absenData.jml || 0}" readonly></td>
-                    <td class="py-0 px-0"><input type="text" id="absen-ket-${s.id}" class="tbl-input" value="${absenData.keterangan || ''}"></td>
+                    <td class="border-r py-1 text-center bg-amber-50/50"><input type="text" id="absen-s-${s.id}" class="tbl-input font-bold text-amber-600" value="${absenData.s || 0}" readonly></td>
+                    <td class="border-r py-1 text-center bg-blue-50/50"><input type="text" id="absen-i-${s.id}" class="tbl-input font-bold text-blue-600" value="${absenData.i || 0}" readonly></td>
+                    <td class="border-r py-1 text-center bg-red-50/50"><input type="text" id="absen-a-${s.id}" class="tbl-input font-bold text-red-600" value="${absenData.a || 0}" readonly></td>
+                    <td class="border-r py-1 text-center bg-slate-100"><input type="text" id="absen-jml-${s.id}" class="tbl-input font-bold text-slate-800" value="${absenData.jml || 0}" readonly></td>
+                    <td class="py-0 px-0"><input type="text" id="absen-ket-${s.id}" class="tbl-input text-xs" value="${absenData.keterangan || ''}"></td>
                 `;
                 
                 tr.innerHTML = html;
@@ -950,7 +1057,6 @@
             });
         }
 
-        // Auto Calculate on Keyup
         function calcAbsen(sid) {
             let sCount = 0, iCount = 0, aCount = 0;
             document.querySelectorAll(`.tgl-input[data-sid="${sid}"]`).forEach(input => {
@@ -971,16 +1077,12 @@
             let bulan = el('filter-bulan').value;
             let tahun = el('filter-tahun').value;
             
-            const rows = document.querySelectorAll('#tbody-absensi tr');
-            rows.forEach(tr => {
+            document.querySelectorAll('#tbody-absensi tr').forEach(tr => {
                 let id = tr.querySelector('.absen-input-id').value;
                 let id_siswa = tr.querySelector('.absen-input-siswa').value;
                 
                 let item = { id, id_siswa, bulan, tahun };
-                
-                tr.querySelectorAll('.tgl-input').forEach(inp => {
-                    item[`tgl_${inp.dataset.day}`] = inp.value.toUpperCase();
-                });
+                tr.querySelectorAll('.tgl-input').forEach(inp => item[`tgl_${inp.dataset.day}`] = inp.value.toUpperCase());
                 
                 item.s = el(`absen-s-${id_siswa}`).value;
                 item.i = el(`absen-i-${id_siswa}`).value;
@@ -993,8 +1095,7 @@
 
             try {
                 await fetchAPI('save_absensi', payload);
-                showToast("Data Absensi Berhasil Disimpan");
-                // Refresh silently
+                showToast("Rekap Absen Tersimpan!");
                 state.absensi = await fetchAPI('get_absensi', {bulan, tahun});
             } catch (err) {}
         }
@@ -1006,24 +1107,12 @@
          * =========================================
          */
         async function loadNilaiData() {
-            if(state.siswa.length === 0) {
-                Dialog.show("Perhatian", "Data siswa kosong.");
-                return;
-            }
+            if(state.siswa.length === 0) return Dialog.show("Perhatian", "Data siswa kosong.");
             const mapel = el('filter-mapel').value;
-            if(!mapel) {
-                Dialog.show("Peringatan", "Ketik nama Mata Pelajaran terlebih dahulu.");
-                el('filter-mapel').focus();
-                return;
-            }
+            if(!mapel) { el('filter-mapel').focus(); return Dialog.show("Peringatan", "Ketik nama Mata Pelajaran terlebih dahulu."); }
 
-            const payload = {
-                mata_pelajaran: mapel,
-                semester: el('filter-semester').value
-            };
-            
             try {
-                state.nilai = await fetchAPI('get_nilai', payload);
+                state.nilai = await fetchAPI('get_nilai', {mata_pelajaran: mapel, semester: el('filter-semester').value});
                 renderTableNilai();
             } catch (err) {}
         }
@@ -1033,33 +1122,29 @@
             tbody.innerHTML = '';
             
             state.siswa.forEach((s, index) => {
-                let nilaiData = state.nilai.find(n => n.id_siswa == s.id) || {};
+                let nData = state.nilai.find(n => n.id_siswa == s.id) || {};
                 let tr = document.createElement('tr');
                 tr.className = 'hover:bg-slate-50';
                 
                 let html = `
-                    <td class="border-r py-1 text-center sticky-col font-medium">${index + 1}</td>
-                    <td class="border-r py-1 px-3 sticky-col-2 truncate max-w-[180px]" title="${s.nama_siswa}">${s.nama_siswa}
-                        <input type="hidden" class="nilai-input-id" value="${nilaiData.id || ''}">
+                    <td class="border-r py-1 text-center sticky-col font-medium bg-white">${index + 1}</td>
+                    <td class="border-r py-1 px-3 sticky-col-2 truncate max-w-[180px] font-bold bg-white" title="${s.nama_siswa}">${s.nama_siswa}
+                        <input type="hidden" class="nilai-input-id" value="${nData.id || ''}">
                         <input type="hidden" class="nilai-input-siswa" value="${s.id}">
                     </td>
                 `;
                 
-                // Formatif TP1 - TP6
                 for(let i=1; i<=6; i++) {
-                    let v = nilaiData[`tp${i}`] !== undefined ? nilaiData[`tp${i}`] : '';
-                    html += `<td class="border-r py-0 px-0"><input type="number" class="tbl-input n-tp" data-field="tp${i}" value="${v}"></td>`;
+                    let v = nData[`tp${i}`] !== undefined ? nData[`tp${i}`] : '';
+                    html += `<td class="border-r py-0 px-0"><input type="number" class="tbl-input n-tp font-medium" data-field="tp${i}" value="${v}"></td>`;
                 }
-                
-                // Sumatif LM1 - LM5
                 for(let i=1; i<=5; i++) {
-                    let v = nilaiData[`lm${i}`] !== undefined ? nilaiData[`lm${i}`] : '';
-                    html += `<td class="border-r py-0 px-0 bg-emerald-50/30"><input type="number" class="tbl-input n-lm" data-field="lm${i}" value="${v}"></td>`;
+                    let v = nData[`lm${i}`] !== undefined ? nData[`lm${i}`] : '';
+                    html += `<td class="border-r py-0 px-0 bg-emerald-50/20"><input type="number" class="tbl-input n-lm font-medium" data-field="lm${i}" value="${v}"></td>`;
                 }
                 
-                // Akhir
-                let vAkhir = nilaiData.sumatif_akhir !== undefined ? nilaiData.sumatif_akhir : '';
-                html += `<td class="py-0 px-0 bg-purple-50/50"><input type="number" class="tbl-input font-bold n-akhir" data-field="sumatif_akhir" value="${vAkhir}"></td>`;
+                let vAkhir = nData.sumatif_akhir !== undefined ? nData.sumatif_akhir : '';
+                html += `<td class="py-0 px-0 bg-purple-50/50"><input type="number" class="tbl-input font-bold n-akhir text-purple-700" data-field="sumatif_akhir" value="${vAkhir}"></td>`;
                 
                 tr.innerHTML = html;
                 tbody.appendChild(tr);
@@ -1073,25 +1158,89 @@
             let payload = [];
             let semester = el('filter-semester').value;
             
-            const rows = document.querySelectorAll('#tbody-nilai tr');
-            rows.forEach(tr => {
+            document.querySelectorAll('#tbody-nilai tr').forEach(tr => {
                 let id = tr.querySelector('.nilai-input-id').value;
                 let id_siswa = tr.querySelector('.nilai-input-siswa').value;
-                
                 let item = { id, id_siswa, mata_pelajaran: mapel, semester };
                 
                 tr.querySelectorAll('.n-tp').forEach(inp => item[inp.dataset.field] = inp.value);
                 tr.querySelectorAll('.n-lm').forEach(inp => item[inp.dataset.field] = inp.value);
                 item.sumatif_akhir = tr.querySelector('.n-akhir').value;
-                
                 payload.push(item);
             });
 
             try {
                 await fetchAPI('save_nilai', payload);
-                showToast("Data Nilai Berhasil Disimpan");
+                showToast("Data Nilai Tersimpan");
                 state.nilai = await fetchAPI('get_nilai', {mata_pelajaran: mapel, semester});
             } catch (err) {}
+        }
+
+
+        /**
+         * =========================================
+         * MODUL JURNAL HARIAN LOKAL (NEW)
+         * =========================================
+         */
+        function renderJurnal() {
+            const tbody = el('tbody-jurnal');
+            tbody.innerHTML = '';
+            
+            if(state.jurnal.length === 0) {
+                // Add 1 default empty row if empty
+                state.jurnal.push({ id: Date.now(), tanggal: '', tema: '', kd: '', materi: '', kegiatan: '', penilaian: '' });
+            }
+
+            state.jurnal.forEach((j, index) => {
+                let tr = document.createElement('tr');
+                tr.dataset.id = j.id;
+                tr.innerHTML = `
+                    <td class="border-r border-slate-200 py-1 px-1"><textarea class="w-full text-xs outline-none resize-none p-1 bg-transparent j-tanggal" rows="3" placeholder="Senin, 1 Jan">${j.tanggal||''}</textarea></td>
+                    <td class="border-r border-slate-200 py-1 px-1"><textarea class="w-full text-xs outline-none resize-none p-1 bg-transparent j-tema" rows="3" placeholder="Tema...">${j.tema||''}</textarea></td>
+                    <td class="border-r border-slate-200 py-1 px-1"><textarea class="w-full text-xs outline-none resize-none p-1 bg-transparent j-kd" rows="3" placeholder="3.1 ...">${j.kd||''}</textarea></td>
+                    <td class="border-r border-slate-200 py-1 px-1"><textarea class="w-full text-xs outline-none resize-none p-1 bg-transparent j-materi" rows="3">${j.materi||''}</textarea></td>
+                    <td class="border-r border-slate-200 py-1 px-1"><textarea class="w-full text-xs outline-none resize-none p-1 bg-transparent j-kegiatan" rows="3">${j.kegiatan||''}</textarea></td>
+                    <td class="border-r border-slate-200 py-1 px-1"><textarea class="w-full text-xs outline-none resize-none p-1 bg-transparent j-penilaian" rows="3">${j.penilaian||''}</textarea></td>
+                    <td class="py-1 px-1 text-center">
+                        <button onclick="deleteJurnalRow(${j.id})" class="text-red-400 hover:text-red-600 bg-red-50 hover:bg-red-100 rounded w-6 h-6"><i class="fas fa-times"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function addJurnalRow() {
+            // sync before add
+            syncJurnalUItoState();
+            state.jurnal.push({ id: Date.now(), tanggal: '', tema: '', kd: '', materi: '', kegiatan: '', penilaian: '' });
+            renderJurnal();
+        }
+
+        function deleteJurnalRow(id) {
+            syncJurnalUItoState();
+            state.jurnal = state.jurnal.filter(j => j.id !== id);
+            renderJurnal();
+        }
+
+        function syncJurnalUItoState() {
+            const rows = document.querySelectorAll('#tbody-jurnal tr');
+            state.jurnal = Array.from(rows).map(tr => {
+                return {
+                    id: parseInt(tr.dataset.id),
+                    tanggal: tr.querySelector('.j-tanggal').value,
+                    tema: tr.querySelector('.j-tema').value,
+                    kd: tr.querySelector('.j-kd').value,
+                    materi: tr.querySelector('.j-materi').value,
+                    kegiatan: tr.querySelector('.j-kegiatan').value,
+                    penilaian: tr.querySelector('.j-penilaian').value
+                };
+            });
+        }
+
+        function saveJurnal() {
+            syncJurnalUItoState();
+            localStorage.setItem('app_jurnal', JSON.stringify(state.jurnal));
+            showToast("Jurnal Harian Disimpan Lokal");
         }
 
 
@@ -1102,7 +1251,7 @@
          */
         function populatePengaturanForm() {
             const p = state.pengaturan;
-            const fields = ['nama_sekolah', 'tahun_ajaran', 'kelas', 'kepala_sekolah', 'nip_kepsek', 'guru_kelas', 'nip_guru', 'kop_baris_1', 'kop_baris_2', 'kop_baris_3'];
+            const fields = ['nama_sekolah', 'tahun_ajaran', 'kelas', 'kepala_sekolah', 'nip_kepsek', 'guru_kelas', 'nip_guru', 'kop_baris_1', 'kop_baris_2', 'kop_baris_3', 'kop_baris_4'];
             fields.forEach(f => {
                 if(el(`set-${f}`) && p[f]) el(`set-${f}`).value = p[f];
             });
@@ -1121,7 +1270,7 @@
         async function savePengaturan(e) {
             e.preventDefault();
             const p = {};
-            const fields = ['nama_sekolah', 'tahun_ajaran', 'kelas', 'kepala_sekolah', 'nip_kepsek', 'guru_kelas', 'nip_guru', 'kop_baris_1', 'kop_baris_2', 'kop_baris_3', 'logo_kiri_base64', 'logo_kanan_base64'];
+            const fields = ['nama_sekolah', 'tahun_ajaran', 'kelas', 'kepala_sekolah', 'nip_kepsek', 'guru_kelas', 'nip_guru', 'kop_baris_1', 'kop_baris_2', 'kop_baris_3', 'kop_baris_4', 'logo_kiri_base64', 'logo_kanan_base64'];
             
             fields.forEach(f => {
                 p[f] = el(`set-${f}`).value;
@@ -1129,7 +1278,7 @@
 
             try {
                 await fetchAPI('save_pengaturan', p);
-                showToast("Pengaturan Tersimpan");
+                showToast("Pengaturan Sistem Tersimpan");
                 state.pengaturan = p; 
                 renderDashboard();
             } catch (err) {}
@@ -1161,13 +1310,12 @@
                 password: el('profil-password').value,
                 foto_profil_base64: el('profil-base64').value
             };
-            if(!payload.password) delete payload.password; // dont send if empty
+            if(!payload.password) delete payload.password; 
 
             try {
                 await fetchAPI('update_profil', payload);
                 showToast("Profil diperbarui");
                 
-                // update local state
                 state.user.nama_lengkap = payload.nama_lengkap;
                 state.user.foto_profil_base64 = payload.foto_profil_base64;
                 localStorage.setItem('app_user', JSON.stringify(state.user));
@@ -1177,7 +1325,6 @@
             } catch(err) {}
         }
 
-        // Modal Helpers
         function showModal(id) {
             show(id);
             setTimeout(() => el(id).children[0].classList.replace('scale-95', 'scale-100'), 10);
@@ -1198,12 +1345,12 @@
         function printView(type) {
             const p = state.pengaturan;
             
-            // 1. Setup Kop Surat
+            // 1. Setup Kop Surat (4 Baris)
             el('print-kop-1').innerText = p.kop_baris_1 || '';
             el('print-kop-2').innerText = p.kop_baris_2 || '';
             el('print-kop-3').innerText = p.kop_baris_3 || '';
+            el('print-kop-4').innerText = p.kop_baris_4 || '';
             
-            // Handle logo displays (hide if empty)
             if(p.logo_kiri_base64) {
                 el('print-logo-kiri').src = p.logo_kiri_base64;
                 el('print-logo-kiri').style.display = 'block';
@@ -1214,31 +1361,29 @@
                 el('print-logo-kanan').style.display = 'block';
             } else { el('print-logo-kanan').style.display = 'none'; }
 
-            // 2. Setup Header Laporan
+            // 2. Setup Header & Footer
             el('print-lbl-ta').innerText = p.tahun_ajaran || '........';
             el('print-lbl-kelas').innerText = p.kelas || '........';
             
-            // 3. Setup Tanda Tangan
             el('print-ttd-kepsek-nama').innerText = p.kepala_sekolah || '.......................';
             el('print-ttd-kepsek-nip').innerText = p.nip_kepsek || '.......................';
             el('print-ttd-guru-nama').innerText = p.guru_kelas || '.......................';
             el('print-ttd-guru-nip').innerText = p.nip_guru || '.......................';
             
-            // Tanggal dinamis
             const now = new Date();
             const mos = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
             el('print-tgl-ttd').innerText = `Jember, ${now.getDate()} ${mos[now.getMonth()]} ${now.getFullYear()}`;
 
-            // 4. Generate Table Clone for Printing
+            // 3. Generate Table
             const printContainer = el('print-table-container');
-            printContainer.innerHTML = ''; // clear previous
+            printContainer.innerHTML = ''; 
+            el('print-keterangan-kiri').style.display = 'block';
 
             if(type === 'absensi') {
                 el('print-judul-laporan').innerText = "DAFTAR HADIR SISWA";
                 el('print-keterangan-kiri').innerText = `Bulan : ${el('filter-bulan').value} ${el('filter-tahun').value}`;
                 
-                // Clone table structure manually to replace inputs with text
-                let tableHTML = `<table class="w-full border-collapse print-table">
+                let tableHTML = `<table class="w-full border-collapse print-table mt-4">
                     <thead>
                         <tr>
                             <th rowspan="2" class="w-[30px]">NO</th>
@@ -1252,7 +1397,7 @@
                 
                 state.siswa.forEach((s, idx) => {
                     let a = state.absensi.find(x => x.id_siswa == s.id) || {};
-                    tableHTML += `<tr><td>${idx+1}</td><td class="print-text-left whitespace-nowrap">${s.nama_siswa}</td>`;
+                    tableHTML += `<tr><td>${idx+1}</td><td class="print-text-left whitespace-nowrap font-bold">${s.nama_siswa}</td>`;
                     days.forEach(d => tableHTML += `<td>${a['tgl_'+d] || ''}</td>`);
                     tableHTML += `<td>${a.s||''}</td><td>${a.i||''}</td><td>${a.a||''}</td><td>${a.jml||''}</td><td>${a.keterangan||''}</td></tr>`;
                 });
@@ -1263,7 +1408,7 @@
                 el('print-judul-laporan').innerText = "DAFTAR NILAI SISWA";
                 el('print-keterangan-kiri').innerText = `Mata Pelajaran : ${el('filter-mapel').value || '...'} | Semester : ${el('filter-semester').value}`;
                 
-                let tableHTML = `<table class="w-full border-collapse print-table">
+                let tableHTML = `<table class="w-full border-collapse print-table mt-4">
                     <thead>
                         <tr>
                             <th rowspan="2" class="w-[30px]">NO</th>
@@ -1279,20 +1424,50 @@
                 
                 state.siswa.forEach((s, idx) => {
                     let n = state.nilai.find(x => x.id_siswa == s.id) || {};
-                    tableHTML += `<tr><td>${idx+1}</td><td class="print-text-left whitespace-nowrap">${s.nama_siswa}</td>`;
+                    tableHTML += `<tr><td>${idx+1}</td><td class="print-text-left whitespace-nowrap font-bold">${s.nama_siswa}</td>`;
                     for(let i=1;i<=6;i++) tableHTML += `<td>${n['tp'+i] || ''}</td>`;
                     for(let i=1;i<=5;i++) tableHTML += `<td>${n['lm'+i] || ''}</td>`;
-                    tableHTML += `<td>${n.sumatif_akhir || ''}</td></tr>`;
+                    tableHTML += `<td class="font-bold">${n.sumatif_akhir || ''}</td></tr>`;
+                });
+                tableHTML += `</tbody></table>`;
+                printContainer.innerHTML = tableHTML;
+            } 
+            else if (type === 'jurnal') {
+                el('print-judul-laporan').innerText = "JURNAL KEGIATAN PEMBELAJARAN";
+                el('print-keterangan-kiri').style.display = 'none'; // Sembunyikan untuk jurnal
+                
+                syncJurnalUItoState(); // ensure latest inputs are caught
+                
+                let tableHTML = `<table class="w-full border-collapse print-table mt-4">
+                    <thead>
+                        <tr>
+                            <th class="w-[80px]">Hari/Tanggal</th>
+                            <th class="w-[120px]">Tema/Mupel</th>
+                            <th class="w-[80px]">KD</th>
+                            <th>Materi Pokok</th>
+                            <th>Kegiatan Pembelajaran</th>
+                            <th class="w-[120px]">Penilaian</th>
+                        </tr>
+                    </thead><tbody class="align-top">`;
+                
+                state.jurnal.forEach(j => {
+                    // convert newlines to <br> for printing
+                    const pnl = (str) => (str||'').replace(/\n/g, '<br>');
+                    tableHTML += `<tr>
+                        <td class="print-text-left">${pnl(j.tanggal)}</td>
+                        <td class="print-text-left">${pnl(j.tema)}</td>
+                        <td>${pnl(j.kd)}</td>
+                        <td class="print-text-left">${pnl(j.materi)}</td>
+                        <td class="print-text-left">${pnl(j.kegiatan)}</td>
+                        <td class="print-text-left">${pnl(j.penilaian)}</td>
+                    </tr>`;
                 });
                 tableHTML += `</tbody></table>`;
                 printContainer.innerHTML = tableHTML;
             }
 
-            // 5. Trigger Print Command
-            // Slight delay ensures DOM renders properly before printing
-            setTimeout(() => {
-                window.print();
-            }, 300);
+            // 4. Trigger Print
+            setTimeout(() => { window.print(); }, 400);
         }
 
     </script>
