@@ -35,7 +35,7 @@
         .sticky-col-2 { position: sticky; left: 40px; background-color: #fff; z-index: 10; border-right: 2px solid #e2e8f0; }
         
         /* Table Input Styling */
-        .tbl-input { width: 100%; height: 100%; border: none; background: transparent; text-align: center; outline: none; min-width: 25px;}
+        .tbl-input { width: 100%; height: 100%; border: none; background: transparent; text-align: center; outline: none; min-width: 25px; }
         .tbl-input:focus { background-color: #e0f2fe; }
 
         /* Hide elements by default */
@@ -98,9 +98,7 @@
         <div class="bg-white rounded-xl shadow-xl w-full max-w-md mx-4 transform scale-95 transition-transform duration-300 p-6">
             <h3 id="dialog-title" class="text-lg font-bold mb-2 text-slate-800">Title</h3>
             <p id="dialog-message" class="text-slate-600 mb-6">Message</p>
-            <div class="flex justify-end gap-3" id="dialog-actions">
-                <!-- Buttons injected via JS -->
-            </div>
+            <div class="flex justify-end gap-3" id="dialog-actions"></div>
         </div>
     </div>
 
@@ -139,7 +137,7 @@
     <!-- APP SHELL (Sidebar & Main Content) -->
     <div id="app-shell" class="flex w-full h-full hidden-view">
         
-        <!-- SIDEBAR (Modern Light Theme) -->
+        <!-- SIDEBAR -->
         <aside class="w-64 bg-white border-r border-slate-200 flex flex-col transition-all duration-300 flex-shrink-0 shadow-sm z-20">
             <div class="p-5 flex items-center gap-3 border-b border-slate-100">
                 <div class="bg-primary/10 text-primary p-2 rounded-lg">
@@ -161,7 +159,7 @@
                     <i class="fas fa-user-graduate w-5 text-center"></i> Data Siswa
                 </a>
                 <a href="#" onclick="navigate('absensi')" id="nav-absensi" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-50 text-slate-600 transition nav-item">
-                    <i class="fas fa-calendar-check w-5 text-center"></i> Absensi Harian
+                    <i class="fas fa-calendar-check w-5 text-center"></i> Absensi & Rekap
                 </a>
                 <a href="#" onclick="navigate('nilai')" id="nav-nilai" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-50 text-slate-600 transition nav-item">
                     <i class="fas fa-award w-5 text-center"></i> Daftar Nilai
@@ -201,7 +199,6 @@
                     <h2 class="text-lg font-bold text-slate-800" id="header-title">Dashboard</h2>
                 </div>
                 <div class="flex items-center gap-5">
-                    <!-- Notification Icon (Dummy) -->
                     <button class="text-slate-400 hover:text-primary transition relative">
                         <i class="fas fa-bell text-xl"></i>
                         <span class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>
@@ -211,7 +208,7 @@
                     <div class="flex items-center gap-3 cursor-pointer p-1.5 rounded-xl hover:bg-slate-50 border border-transparent hover:border-slate-200 transition" onclick="openProfilModal()" title="Klik untuk ubah Foto & Nama Guru yang Bertugas">
                         <div class="text-right hidden sm:block">
                             <p class="font-bold text-slate-700 text-sm leading-none" id="user-name-display">Guru yang Bertugas</p>
-                            <p class="text-[11px] text-primary font-semibold mt-1" id="user-role-display">Guru Kelas <i class="fas fa-camera text-[10px] ml-1"></i></p>
+                            <p class="text-[11px] text-primary font-semibold mt-1" id="user-role-display">Guru yang Bertugas <i class="fas fa-camera text-[10px] ml-1"></i></p>
                         </div>
                         <img id="user-avatar" src="https://placehold.co/40x40/2563eb/ffffff?text=G" alt="Foto Profil Guru" class="w-10 h-10 rounded-full object-cover border-2 border-primary/30 shadow-xs">
                         <i class="fas fa-chevron-down text-xs text-slate-400 ml-0.5"></i>
@@ -224,7 +221,6 @@
                 
                 <!-- VIEW: DASHBOARD -->
                 <div id="view-dashboard" class="view-section">
-                    <!-- Welcome Banner -->
                     <div class="bg-primary rounded-2xl p-8 text-white mb-8 shadow-lg shadow-blue-500/20 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6">
                         <div class="relative z-10">
                             <h2 class="text-3xl font-bold mb-2">Selamat Datang, <span id="dash-welcome-name">Guru</span>! <span class="text-2xl">👋</span></h2>
@@ -238,7 +234,6 @@
                                 </button>
                             </div>
                         </div>
-                        <!-- Decorative background elements -->
                         <div class="absolute right-0 top-0 w-64 h-64 bg-white opacity-5 rounded-full -translate-y-1/4 translate-x-1/4 blur-3xl"></div>
                         <div class="absolute right-32 bottom-0 w-40 h-40 bg-blue-300 opacity-20 rounded-full translate-y-1/2 blur-2xl"></div>
                         
@@ -248,7 +243,6 @@
                         </div>
                     </div>
 
-                    <!-- Stats Cards -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                         <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between group hover:border-primary/30 transition cursor-pointer" onclick="navigate('siswa')">
                             <div>
@@ -270,7 +264,6 @@
                             </div>
                         </div>
 
-                        <!-- Database Access Card -->
                         <a href="https://docs.google.com/spreadsheets/d/1Qw6vma3QCkdxNDmHms88Aa6eS4GYjOxAedg-k5l9l4o/edit?hl=id&pli=1&gid=1721728408#gid=1721728408" target="_blank" class="bg-gradient-to-br from-slate-800 to-slate-900 p-6 rounded-2xl shadow-md flex items-center justify-between group hover:shadow-lg transition">
                             <div>
                                 <p class="text-slate-300 text-sm font-semibold mb-1">Google Sheets</p>
@@ -315,15 +308,13 @@
                                         <th class="py-3.5 px-4 font-bold w-28 text-center">Aksi</th>
                                     </tr>
                                 </thead>
-                                <tbody id="tbody-siswa" class="divide-y divide-slate-100">
-                                    <!-- Rendered via JS -->
-                                </tbody>
+                                <tbody id="tbody-siswa" class="divide-y divide-slate-100"></tbody>
                             </table>
                         </div>
                     </div>
                 </div>
 
-                <!-- VIEW: REKAP ABSENSI (TAMPILAN HARIAN H, I, S, A & REKAP BULANAN EDITABLE) -->
+                <!-- VIEW: ABSENSI HARIAN & REKAP BULANAN EDITABLE -->
                 <div id="view-absensi" class="view-section hidden-view">
                     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col h-[calc(100vh-140px)] overflow-hidden">
                         <div class="p-5 border-b border-slate-100 flex flex-wrap gap-3 justify-between items-center bg-white">
@@ -339,9 +330,7 @@
                                 </div>
                                 <div id="wrap-filter-tanggal" class="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5">
                                     <span class="text-xs font-bold text-slate-500">Tgl:</span>
-                                    <select id="filter-tanggal" onchange="renderTableAbsensi()" class="bg-transparent text-sm font-extrabold text-primary outline-none cursor-pointer">
-                                        <!-- 1-31 injected via JS -->
-                                    </select>
+                                    <select id="filter-tanggal" onchange="renderTableAbsensi()" class="bg-transparent text-sm font-extrabold text-primary outline-none cursor-pointer"></select>
                                 </div>
                                 <select id="filter-bulan" onchange="loadAbsensiData()" class="border border-slate-200 rounded-lg px-3 py-2 text-sm font-bold text-slate-700 bg-slate-50 outline-none focus:border-primary">
                                     <option value="Januari">Januari</option>
@@ -380,12 +369,8 @@
                         </div>
                         <div class="p-0 flex-1 overflow-auto">
                             <table class="w-full text-left border-collapse text-sm">
-                                <thead id="thead-absensi" class="sticky top-0 bg-slate-50 z-20 shadow-xs text-slate-600">
-                                    <!-- Header dinamis (Harian / Rekap Bulanan) injected via JS -->
-                                </thead>
-                                <tbody id="tbody-absensi" class="divide-y divide-slate-200">
-                                    <!-- Rendered via JS -->
-                                </tbody>
+                                <thead id="thead-absensi" class="sticky top-0 bg-slate-50 z-20 shadow-xs text-slate-600"></thead>
+                                <tbody id="tbody-absensi" class="divide-y divide-slate-200"></tbody>
                             </table>
                         </div>
                     </div>
@@ -445,9 +430,7 @@
                                         <th class="py-1.5 border-r border-slate-200 bg-emerald-50/30 w-14">LM 5</th>
                                     </tr>
                                 </thead>
-                                <tbody id="tbody-nilai" class="divide-y divide-slate-200">
-                                    <!-- Rendered via JS -->
-                                </tbody>
+                                <tbody id="tbody-nilai" class="divide-y divide-slate-200"></tbody>
                             </table>
                         </div>
                     </div>
@@ -486,21 +469,19 @@
                                         <th class="py-3 px-2 font-bold w-12 text-center">X</th>
                                     </tr>
                                 </thead>
-                                <tbody id="tbody-jurnal" class="divide-y divide-slate-100 align-top">
-                                    <!-- Rendered via JS -->
-                                </tbody>
+                                <tbody id="tbody-jurnal" class="divide-y divide-slate-100 align-top"></tbody>
                             </table>
                         </div>
                     </div>
                 </div>
 
-                <!-- VIEW: PERANGKAT PEMBELAJARAN (NEW) -->
+                <!-- VIEW: PERANGKAT PEMBELAJARAN -->
                 <div id="view-perangkat" class="view-section hidden-view">
                     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col h-[calc(100vh-140px)] overflow-hidden">
                         <div class="p-5 border-b border-slate-100 flex flex-wrap gap-4 justify-between items-center bg-white">
                             <div>
                                 <h3 class="font-bold text-slate-800 text-lg">Perangkat Pembelajaran (Kurikulum Merdeka)</h3>
-                                <p class="text-xs text-slate-500">Kelola ATP, Modul Ajar, Prota & Promes (Tersimpan Lokal)</p>
+                                <p class="text-xs text-slate-500">Kelola ATP, Modul Ajar, Prota & Promes dengan Barcode Unik 1 per 1</p>
                             </div>
                             <div class="flex gap-2">
                                 <button onclick="openPerangkatModal()" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition text-sm font-bold shadow-sm">
@@ -512,9 +493,7 @@
                             </div>
                         </div>
                         <div class="p-6 flex-1 overflow-auto bg-slate-50/50">
-                            <div id="grid-perangkat" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                                <!-- Cards injected via JS -->
-                            </div>
+                            <div id="grid-perangkat" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
                         </div>
                     </div>
                 </div>
@@ -523,7 +502,6 @@
                 <div id="view-pengaturan" class="view-section hidden-view">
                     <form id="form-pengaturan" onsubmit="savePengaturan(event)" class="max-w-5xl mx-auto space-y-6">
                         
-                        <!-- Panel Identitas & Penandatangan -->
                         <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
                             <h3 class="text-lg font-bold text-slate-800 border-b border-slate-100 pb-3 mb-6"><i class="fas fa-school text-primary mr-2"></i> Identitas Laporan & Penandatangan</h3>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -557,12 +535,10 @@
                             </div>
                         </div>
 
-                        <!-- Panel Kop Surat -->
                         <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
                             <h3 class="text-lg font-bold text-slate-800 border-b border-slate-100 pb-3 mb-6"><i class="fas fa-envelope-open-text text-primary mr-2"></i> Pengaturan Kop Surat (Untuk Cetak)</h3>
                             
                             <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                                <!-- Logo Kiri -->
                                 <div class="border border-slate-200 rounded-xl p-4 text-center bg-slate-50 col-span-1">
                                     <label class="block text-sm font-bold text-slate-700 mb-3">Logo Kiri</label>
                                     <div class="bg-white p-2 rounded-lg border border-dashed border-slate-300 mb-3">
@@ -573,7 +549,6 @@
                                     <input type="hidden" id="set-logo_kiri_base64">
                                 </div>
                                 
-                                <!-- Teks Tengah (4 Baris) -->
                                 <div class="col-span-1 md:col-span-2 space-y-3 bg-white p-4 rounded-xl border border-slate-200">
                                     <div>
                                         <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Baris 1 (Pemerintah/Yayasan)</label>
@@ -593,7 +568,6 @@
                                     </div>
                                 </div>
 
-                                <!-- Logo Kanan -->
                                 <div class="border border-slate-200 rounded-xl p-4 text-center bg-slate-50 col-span-1">
                                     <label class="block text-sm font-bold text-slate-700 mb-3">Logo Kanan</label>
                                     <div class="bg-white p-2 rounded-lg border border-dashed border-slate-300 mb-3">
@@ -606,7 +580,6 @@
                             </div>
                         </div>
 
-                        <!-- Panel Backup & Restore -->
                         <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 mb-6">
                             <h3 class="text-lg font-bold text-slate-800 border-b border-slate-100 pb-3 mb-6"><i class="fas fa-database text-emerald-500 mr-2"></i> Backup & Restore Data (Ekspor/Impor)</h3>
                             <div class="flex flex-col sm:flex-row gap-4">
@@ -823,15 +796,28 @@
     <script>
         /**
          * =========================================
-         * KONFIGURASI, UTILITAS INTI & STATE
+         * 1. KONFIGURASI, UTILITAS INTI & STATE
          * =========================================
          */
         const API_URL = "https://script.google.com/macros/s/AKfycbwnd-2Uvi2whHO1SmBsdej_eNSnuuiZgUd97xfM_v5a4_yTsd8sq5od0Ag09UIErRTT/exec";
         
-        // Fungsi Helper DOM & UI (Wajib ada agar Login & Semua Tombol Berfungsi)
         const el = (id) => document.getElementById(id);
         const show = (id) => { if (el(id)) el(id).classList.remove('hidden-view'); };
         const hide = (id) => { if (el(id)) el(id).classList.add('hidden-view'); };
+
+        function showModal(id) {
+            const m = el(id);
+            if (!m) return;
+            m.classList.remove('hidden-view');
+            setTimeout(() => m.classList.replace('opacity-0', 'opacity-100'), 10);
+        }
+
+        function hideModal(id) {
+            const m = el(id);
+            if (!m) return;
+            m.classList.replace('opacity-100', 'opacity-0');
+            setTimeout(() => m.classList.add('hidden-view'), 250);
+        }
 
         function showLoader(text = "Memuat Data...") {
             if (el('loader-text')) el('loader-text').innerText = text;
@@ -903,7 +889,74 @@
         };
 
         const days = Array.from({length: 31}, (_, i) => i + 1);
-        // ===== INI ADALAH FUNGSI LOGIN INSTAN (0 DETIK) =====
+        let absenViewMode = 'harian';
+
+        /**
+         * =========================================
+         * 2. KOMPRESI GAMBAR & HELPERS
+         * =========================================
+         */
+        function encodeImage(input, previewId, hiddenInputId) {
+            if (input.files && input.files[0]) {
+                if (input.files[0].size > 3 * 1024 * 1024) { 
+                    Dialog.show("Gagal", "Ukuran file maksimal 3MB");
+                    input.value = ""; return;
+                }
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.onload = function() {
+                        const canvas = document.createElement('canvas');
+                        const maxDim = 250;
+                        let w = img.width;
+                        let h = img.height;
+                        if (w > maxDim || h > maxDim) {
+                            if (w > h) { h = Math.round(h * maxDim / w); w = maxDim; }
+                            else { w = Math.round(w * maxDim / h); h = maxDim; }
+                        }
+                        canvas.width = w;
+                        canvas.height = h;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, w, h);
+                        const compressedDataUrl = canvas.toDataURL('image/png', 0.85);
+                        el(previewId).src = compressedDataUrl;
+                        el(hiddenInputId).value = compressedDataUrl;
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        
+        function clearImage(previewId, hiddenInputId, placeholderText) {
+            el(previewId).src = `https://placehold.co/100x100/e2e8f0/94a3b8?text=${encodeURIComponent(placeholderText)}`;
+            el(hiddenInputId).value = '';
+            const input = el(previewId).parentElement.nextElementSibling;
+            if(input && input.type === 'file') input.value = '';
+        }
+
+        function escapeHtml(str) {
+            if (str === null || str === undefined) return '';
+            return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+        }
+
+        function downloadFile(content, fileName, mimeType) {
+            const blob = new Blob([content], { type: mimeType });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        /**
+         * =========================================
+         * 3. LOGIN INSTAN (0 DETIK) & INISIALISASI
+         * =========================================
+         */
         async function handleLogin(e) {
             if (e) e.preventDefault();
             const u = (el('login-username')?.value || '').trim();
@@ -970,19 +1023,343 @@
                     fetchAPI('get_pengaturan'),
                     fetchAPI('get_siswa')
                 ]);
-                if (cfg) {
+                if (cfg && Object.keys(cfg).length > 0) {
                     state.pengaturan = cfg;
                     localStorage.setItem('app_pengaturan_cache', JSON.stringify(cfg));
                 }
-                if (ssw) {
+                if (Array.isArray(ssw) && (ssw.length > 0 || state.siswa.length === 0)) {
                     state.siswa = ssw;
                     localStorage.setItem('app_siswa_cache', JSON.stringify(ssw));
                 }
                 populatePengaturanForm();
+                updateHeaderProfile();
                 renderDashboard();
                 if (!el('view-siswa').classList.contains('hidden-view')) renderTableSiswa();
+                if (!el('view-absensi').classList.contains('hidden-view')) renderTableAbsensi();
             } catch (e) {
                 console.warn("Berjalan menggunakan data cache lokal.");
+            }
+        }
+
+        window.onload = () => {
+            const tglSelect = el('filter-tanggal');
+            if (tglSelect) {
+                let tglOpts = '';
+                const todayDate = new Date().getDate();
+                days.forEach(d => {
+                    tglOpts += `<option value="${d}" ${d === todayDate ? 'selected' : ''}>${d}</option>`;
+                });
+                tglSelect.innerHTML = tglOpts;
+            }
+
+            const mos = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+            if (el('filter-bulan')) el('filter-bulan').value = mos[new Date().getMonth()];
+            if (el('filter-tahun')) el('filter-tahun').value = new Date().getFullYear();
+
+            const savedJurnal = localStorage.getItem('app_jurnal');
+            if(savedJurnal) state.jurnal = JSON.parse(savedJurnal);
+
+            const savedPerangkat = localStorage.getItem('app_perangkat');
+            if(savedPerangkat) state.perangkat = JSON.parse(savedPerangkat);
+
+            const savedUser = localStorage.getItem('app_user');
+            if (savedUser) {
+                state.user = JSON.parse(savedUser);
+                startApp();
+            } else {
+                show('login-view');
+                hide('app-shell');
+            }
+        };
+
+        function updateHeaderProfile() {
+            const nama = (state.user?.nama_lengkap && state.user.nama_lengkap !== 'Admin Sekolah' && state.user.nama_lengkap !== 'Admin') 
+                ? state.user.nama_lengkap 
+                : (state.pengaturan?.guru_kelas || 'Guru yang Bertugas');
+            el('user-name-display').innerText = nama;
+            el('dash-welcome-name').innerText = nama;
+            el('user-role-display').innerHTML = `Guru yang Bertugas <i class="fas fa-camera text-[10px] ml-1"></i>`;
+            if (state.user?.foto_profil_base64) {
+                el('user-avatar').src = state.user.foto_profil_base64;
+            } else {
+                el('user-avatar').src = `https://placehold.co/40x40/2563eb/ffffff?text=${encodeURIComponent(nama.charAt(0).toUpperCase())}`;
+            }
+        }
+
+        function navigate(viewName) {
+            document.querySelectorAll('.view-section').forEach(e => e.classList.add('hidden-view'));
+            
+            document.querySelectorAll('.nav-item').forEach(e => {
+                e.classList.remove('bg-primary', 'text-white', 'shadow-md', 'shadow-blue-500/20');
+                e.classList.add('text-slate-600');
+            });
+            
+            show(`view-${viewName}`);
+            const nav = el(`nav-${viewName}`);
+            if(nav) {
+                nav.classList.remove('text-slate-600');
+                nav.classList.add('bg-primary', 'text-white', 'shadow-md', 'shadow-blue-500/20');
+            }
+
+            const titles = { 
+                dashboard: 'Dashboard', 
+                siswa: 'Data Master Siswa', 
+                absensi: 'Absensi Harian & Rekap Bulanan', 
+                nilai: 'Daftar Nilai Siswa', 
+                jurnal: 'Jurnal Harian Guru', 
+                perangkat: 'Perangkat Pembelajaran', 
+                pengaturan: 'Sistem & Pengaturan' 
+            };
+            el('header-title').innerText = titles[viewName] || 'Dashboard';
+
+            if(viewName === 'dashboard') renderDashboard();
+            if(viewName === 'siswa') renderTableSiswa();
+            if(viewName === 'absensi') {
+                if (state.absensi.length === 0) loadAbsensiData();
+                else renderTableAbsensi();
+            }
+            if(viewName === 'nilai') {
+                if (state.nilai.length === 0) loadNilaiData();
+                else renderTableNilai();
+            }
+            if(viewName === 'jurnal') renderJurnal();
+            if(viewName === 'perangkat') renderPerangkat();
+        }
+
+        function renderDashboard() {
+            el('dash-total-siswa').innerText = state.siswa.length;
+            el('dash-ta').innerText = state.pengaturan.tahun_ajaran || '-';
+        }
+
+        /**
+         * =========================================
+         * 4. DATA SISWA (CRUD + TEMPLATE & IMPOR EXCEL)
+         * =========================================
+         */
+        function renderTableSiswa() {
+            const tbody = el('tbody-siswa');
+            tbody.innerHTML = '';
+            
+            if(state.siswa.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-10 text-slate-500 font-medium">Belum ada data murid. Silakan tambahkan atau impor dari Excel.</td></tr>`;
+                return;
+            }
+
+            state.siswa.forEach((s, index) => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-blue-50/50 transition">
+                        <td class="py-3 px-4 text-center font-medium text-slate-600">${index + 1}</td>
+                        <td class="py-3 px-4 font-mono text-slate-500">${escapeHtml(s.nisn)}</td>
+                        <td class="py-3 px-4 font-bold text-slate-800">${escapeHtml(s.nama_siswa)}</td>
+                        <td class="py-3 px-4 text-center"><span class="px-2 py-1 rounded bg-slate-100 text-xs font-bold text-slate-600">${escapeHtml(s.jk)}</span></td>
+                        <td class="py-3 px-4 text-center">
+                            <button onclick='editSiswa(${JSON.stringify(s).replace(/'/g, "&#39;")})' class="text-blue-500 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 rounded p-2 mx-1 transition" title="Edit"><i class="fas fa-edit"></i></button>
+                            <button onclick="hapusSiswa('${s.id}')" class="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 rounded p-2 mx-1 transition" title="Hapus"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+            });
+            renderDashboard();
+        }
+
+        function openSiswaModal() {
+            el('siswa-id').value = '';
+            el('form-siswa').reset();
+            el('modal-siswa-title').innerText = "Tambah Siswa Baru";
+            showModal('modal-siswa');
+        }
+
+        function closeSiswaModal() { hideModal('modal-siswa'); }
+
+        function editSiswa(s) {
+            el('siswa-id').value = s.id;
+            el('siswa-nisn').value = s.nisn;
+            el('siswa-nama').value = s.nama_siswa;
+            el('siswa-jk').value = s.jk;
+            el('modal-siswa-title').innerText = "Edit Data Siswa";
+            showModal('modal-siswa');
+        }
+
+        async function submitSiswa(e) {
+            e.preventDefault();
+            const payload = {
+                id: el('siswa-id').value,
+                nisn: el('siswa-nisn').value.trim(),
+                nama_siswa: el('siswa-nama').value.trim(),
+                jk: el('siswa-jk').value
+            };
+
+            showLoader("Menyimpan...");
+            try {
+                await fetchAPI('save_siswa', payload);
+                const freshSiswa = await fetchAPI('get_siswa');
+                if (Array.isArray(freshSiswa)) state.siswa = freshSiswa;
+                showToast("Data murid berhasil disimpan ke database");
+            } catch (err) {
+                if (payload.id) {
+                    const idx = state.siswa.findIndex(s => s.id == payload.id);
+                    if (idx > -1) state.siswa[idx] = payload;
+                } else {
+                    payload.id = 's_' + Date.now();
+                    state.siswa.push(payload);
+                }
+                showToast("Data murid disimpan di perangkat!");
+            } finally {
+                localStorage.setItem('app_siswa_cache', JSON.stringify(state.siswa));
+                hideLoader();
+                closeSiswaModal();
+                renderTableSiswa();
+            }
+        }
+
+        function hapusSiswa(id) {
+            Dialog.confirm("Hapus Siswa", "Yakin ingin menghapus data siswa ini?", async () => {
+                showLoader("Menghapus...");
+                try {
+                    await fetchAPI('delete_siswa', { id });
+                    const freshSiswa = await fetchAPI('get_siswa');
+                    if (Array.isArray(freshSiswa)) state.siswa = freshSiswa;
+                } catch (err) {
+                    state.siswa = state.siswa.filter(s => s.id != id);
+                } finally {
+                    localStorage.setItem('app_siswa_cache', JSON.stringify(state.siswa));
+                    hideLoader();
+                    showToast("Data siswa dihapus");
+                    renderTableSiswa();
+                }
+            });
+        }
+
+        function downloadTemplateSiswa() {
+            if (typeof XLSX === 'undefined') {
+                Dialog.show("Error", "Library Excel belum termuat. Periksa koneksi internet Anda.");
+                return;
+            }
+            const wsData = [
+                ["NISN", "Nama Lengkap Siswa", "Jenis Kelamin (L/P)"],
+                ["0123456789", "Ahmad Fauzi", "L"],
+                ["0123456790", "Siti Nurhaliza", "P"]
+            ];
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.aoa_to_sheet(wsData);
+            ws['!cols'] = [{ wch: 18 }, { wch: 35 }, { wch: 22 }];
+            XLSX.utils.book_append_sheet(wb, ws, "Template_Siswa");
+            XLSX.writeFile(wb, "Template_Data_Siswa.xlsx");
+            showToast("Template Excel berhasil diunduh!");
+        }
+
+        function importSiswaExcel(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                    const rows = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+
+                    let importedCount = 0;
+                    const newStudents = [];
+                    for (let i = 1; i < rows.length; i++) {
+                        const row = rows[i];
+                        if (!row || row.length < 2) continue;
+                        const nisn = String(row[0] || '').trim();
+                        const nama = String(row[1] || '').trim();
+                        let jk = String(row[2] || 'L').trim().toUpperCase();
+                        if (jk.startsWith('P')) jk = 'P'; else jk = 'L';
+                        if (!nama) continue;
+
+                        const studentObj = {
+                            id: 's_' + Date.now() + '_' + i,
+                            nisn: nisn || '-',
+                            nama_siswa: nama,
+                            jk: jk
+                        };
+                        newStudents.push(studentObj);
+                        importedCount++;
+                    }
+
+                    if (importedCount === 0) {
+                        Dialog.show("Peringatan", "Tidak ada data siswa yang valid di file Excel tersebut.");
+                        return;
+                    }
+
+                    showLoader(`Mengimpor ${importedCount} siswa...`);
+                    for (const st of newStudents) {
+                        state.siswa.push(st);
+                        try {
+                            await fetchAPI('save_siswa', { id: '', nisn: st.nisn, nama_siswa: st.nama_siswa, jk: st.jk });
+                        } catch (err) {}
+                    }
+                    try {
+                        const freshSiswa = await fetchAPI('get_siswa');
+                        if (Array.isArray(freshSiswa) && freshSiswa.length > 0) state.siswa = freshSiswa;
+                    } catch (e) {}
+
+                    localStorage.setItem('app_siswa_cache', JSON.stringify(state.siswa));
+                    hideLoader();
+                    renderTableSiswa();
+                    showToast(`Berhasil mengimpor ${importedCount} data siswa!`);
+                } catch (err) {
+                    hideLoader();
+                    Dialog.show("Gagal Impor Excel", "Pastikan format file sesuai Template Excel (.xlsx/.xls).");
+                } finally {
+                    event.target.value = '';
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        /**
+         * =========================================
+         * 5. ABSENSI HARIAN (H -> .) & REKAP BULANAN EDITABLE
+         * =========================================
+         */
+        function switchAbsenMode(mode) {
+            absenViewMode = mode;
+            const btnHarian = el('btn-mode-harian');
+            const btnBulanan = el('btn-mode-bulanan');
+            const wrapTgl = el('wrap-filter-tanggal');
+            const btnHadirSemua = el('btn-hadir-semua');
+
+            if (mode === 'harian') {
+                if (btnHarian) btnHarian.className = "px-3 py-1.5 rounded-md text-xs font-bold bg-primary text-white shadow-xs transition";
+                if (btnBulanan) btnBulanan.className = "px-3 py-1.5 rounded-md text-xs font-bold text-slate-600 hover:text-slate-900 transition";
+                if (wrapTgl) wrapTgl.classList.remove('hidden');
+                if (btnHadirSemua) btnHadirSemua.classList.remove('hidden');
+            } else {
+                if (btnBulanan) btnBulanan.className = "px-3 py-1.5 rounded-md text-xs font-bold bg-primary text-white shadow-xs transition";
+                if (btnHarian) btnHarian.className = "px-3 py-1.5 rounded-md text-xs font-bold text-slate-600 hover:text-slate-900 transition";
+                if (wrapTgl) wrapTgl.classList.add('hidden');
+                if (btnHadirSemua) btnHadirSemua.classList.add('hidden');
+            }
+            renderTableAbsensi();
+        }
+
+        async function loadAbsensiData() {
+            const bulan = el('filter-bulan').value;
+            const tahun = el('filter-tahun').value;
+            const cacheKey = `app_absensi_${bulan}_${tahun}`;
+
+            const cached = localStorage.getItem(cacheKey);
+            if (cached) {
+                state.absensi = JSON.parse(cached);
+                renderTableAbsensi();
+            }
+
+            showLoader("Memuat data absensi...");
+            try {
+                const data = await fetchAPI('get_absensi', { bulan, tahun });
+                if (Array.isArray(data)) {
+                    state.absensi = data;
+                    localStorage.setItem(cacheKey, JSON.stringify(data));
+                }
+            } catch (e) {
+                if (!cached) state.absensi = [];
+            } finally {
+                hideLoader();
+                renderTableAbsensi();
             }
         }
 
@@ -1010,6 +1387,41 @@
             rec.i = iCount || '';
             rec.a = aCount || '';
             rec.jml = (sCount + iCount + aCount) || '';
+        }
+
+        function setStatusHarian(siswaId, status) {
+            const tgl = el('filter-tanggal').value;
+            const rec = getOrCreateAbsenRecord(siswaId);
+            // Jika memilih H, kolom tanggal diisi tanda titik (.)
+            rec[`tgl_${tgl}`] = (status === 'H') ? '.' : status;
+            hitungRekapBulananRecord(rec);
+            
+            const bulan = el('filter-bulan').value;
+            const tahun = el('filter-tahun').value;
+            localStorage.setItem(`app_absensi_${bulan}_${tahun}`, JSON.stringify(state.absensi));
+            renderTableAbsensi();
+        }
+
+        function setSemuaHadirHariIni() {
+            const tgl = el('filter-tanggal').value;
+            state.siswa.forEach(s => {
+                const rec = getOrCreateAbsenRecord(s.id);
+                rec[`tgl_${tgl}`] = '.';
+                hitungRekapBulananRecord(rec);
+            });
+            const bulan = el('filter-bulan').value;
+            const tahun = el('filter-tahun').value;
+            localStorage.setItem(`app_absensi_${bulan}_${tahun}`, JSON.stringify(state.absensi));
+            renderTableAbsensi();
+            showToast(`Semua siswa tanggal ${tgl} ditandai Hadir (.)`);
+        }
+
+        function updateKeteranganAbsen(siswaId, val) {
+            const rec = getOrCreateAbsenRecord(siswaId);
+            rec.keterangan = val;
+            const bulan = el('filter-bulan').value;
+            const tahun = el('filter-tahun').value;
+            localStorage.setItem(`app_absensi_${bulan}_${tahun}`, JSON.stringify(state.absensi));
         }
 
         function renderTableAbsensi() {
@@ -1064,7 +1476,7 @@
                     tr.className = 'hover:bg-slate-50/80 transition-colors';
                     tr.innerHTML = `
                         <td class="py-3 px-3 border-r border-slate-200 text-center font-medium text-slate-600">${index + 1}</td>
-                        <td class="py-3 px-4 border-r border-slate-200 font-bold text-slate-800">${s.nama_siswa}</td>
+                        <td class="py-3 px-4 border-r border-slate-200 font-bold text-slate-800">${escapeHtml(s.nama_siswa)}</td>
                         <td class="py-2.5 px-3 border-r border-slate-200">
                             <div class="flex items-center justify-center gap-1.5">
                                 <button type="button" onclick="setStatusHarian('${s.id}', 'H')" class="w-10 h-9 rounded-lg font-extrabold text-xs transition ${btnStyle('H', 'bg-emerald-600 ring-emerald-400')}" title="Hadir (Tercatat titik .)">H</button>
@@ -1081,7 +1493,7 @@
                             <span class="text-red-600">A:${rec.a || 0}</span>
                         </td>
                         <td class="py-2 px-3">
-                            <input type="text" value="${rec.keterangan || ''}" oninput="updateKeteranganAbsen('${s.id}', this.value)" placeholder="Catatan..." class="w-full border border-slate-200 rounded-md px-2.5 py-1.5 text-xs outline-none focus:border-primary bg-white">
+                            <input type="text" value="${escapeHtml(rec.keterangan || '')}" oninput="updateKeteranganAbsen('${s.id}', this.value)" placeholder="Catatan..." class="w-full border border-slate-200 rounded-md px-2.5 py-1.5 text-xs outline-none focus:border-primary bg-white">
                         </td>
                     `;
                     tbody.appendChild(tr);
@@ -1133,14 +1545,14 @@
                 tr.className = 'hover:bg-blue-50/30 transition-colors';
                 tr.innerHTML = `
                     <td class="py-1.5 px-2 border-r border-slate-200 text-center sticky-col bg-white font-medium text-xs text-slate-600">${index + 1}</td>
-                    <td class="py-1.5 px-3 border-r border-slate-200 sticky-col-2 bg-white font-bold text-xs text-slate-800 truncate max-w-[175px]" title="${s.nama_siswa}">${s.nama_siswa}</td>
+                    <td class="py-1.5 px-3 border-r border-slate-200 sticky-col-2 bg-white font-bold text-xs text-slate-800 truncate max-w-[175px]" title="${escapeHtml(s.nama_siswa)}">${escapeHtml(s.nama_siswa)}</td>
                     ${dayCells}
                     <td id="rekap-s-${s.id}" class="py-1.5 px-1 border-r border-slate-200 text-center text-xs font-bold text-amber-700 bg-amber-50/30">${rec.s || ''}</td>
                     <td id="rekap-i-${s.id}" class="py-1.5 px-1 border-r border-slate-200 text-center text-xs font-bold text-blue-700 bg-blue-50/30">${rec.i || ''}</td>
                     <td id="rekap-a-${s.id}" class="py-1.5 px-1 border-r border-slate-200 text-center text-xs font-bold text-red-700 bg-red-50/30">${rec.a || ''}</td>
                     <td id="rekap-jml-${s.id}" class="py-1.5 px-1 border-r border-slate-200 text-center text-xs font-extrabold text-slate-800 bg-slate-100/50">${rec.jml || ''}</td>
                     <td class="py-1 px-2">
-                        <input type="text" value="${rec.keterangan || ''}" oninput="updateKeteranganAbsen('${s.id}', this.value)" placeholder="..." class="w-full text-xs outline-none bg-transparent focus:bg-blue-50 px-1 py-0.5 rounded">
+                        <input type="text" value="${escapeHtml(rec.keterangan || '')}" oninput="updateKeteranganAbsen('${s.id}', this.value)" placeholder="..." class="w-full text-xs outline-none bg-transparent focus:bg-blue-50 px-1 py-0.5 rounded">
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -1149,10 +1561,8 @@
 
         function handleEditRekapBulanan(inputEl, siswaId, tgl) {
             let val = inputEl.value.trim().toUpperCase();
-            // Jika user mengetik H, otomatis ubah menjadi titik (.)
             if (val === 'H') val = '.';
             
-            // Hanya izinkan karakter valid: ., S, I, A, atau kosong
             if (!['.', 'S', 'I', 'A', ''].includes(val)) {
                 inputEl.value = '';
                 val = '';
@@ -1160,7 +1570,6 @@
                 inputEl.value = val;
             }
 
-            // Perbarui warna sel secara langsung
             inputEl.className = 'tbl-input text-xs uppercase ' + (
                 val === '.' ? 'text-emerald-600 font-black' :
                 val === 'S' ? 'text-amber-600 bg-amber-50/60 font-bold' :
@@ -1172,13 +1581,15 @@
             rec[`tgl_${tgl}`] = val;
             hitungRekapBulananRecord(rec);
 
-            // Update angka S, I, A, Jml di ujung kanan baris tanpa merender ulang seluruh tabel
+            const bulan = el('filter-bulan').value;
+            const tahun = el('filter-tahun').value;
+            localStorage.setItem(`app_absensi_${bulan}_${tahun}`, JSON.stringify(state.absensi));
+
             if (el(`rekap-s-${siswaId}`)) el(`rekap-s-${siswaId}`).innerText = rec.s || '';
             if (el(`rekap-i-${siswaId}`)) el(`rekap-i-${siswaId}`).innerText = rec.i || '';
             if (el(`rekap-a-${siswaId}`)) el(`rekap-a-${siswaId}`).innerText = rec.a || '';
             if (el(`rekap-jml-${siswaId}`)) el(`rekap-jml-${siswaId}`).innerText = rec.jml || '';
 
-            // Pindahkan fokus otomatis ke kolom tanggal berikutnya jika terisi
             if (val !== '') {
                 const nextTd = inputEl.parentElement.nextElementSibling;
                 if (nextTd) {
@@ -1188,450 +1599,9 @@
             }
         }
 
-        function encodeImage(input, previewId, hiddenInputId) {
-            if (input.files && input.files[0]) {
-                if (input.files[0].size > 3 * 1024 * 1024) { 
-                    Dialog.show("Gagal", "Ukuran file maksimal 3MB");
-                    input.value = ""; return;
-                }
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const img = new Image();
-                    img.onload = function() {
-                        // Kompres gambar secara otomatis agar ringan disimpan di Google Sheets & LocalStorage
-                        const canvas = document.createElement('canvas');
-                        const maxDim = 250;
-                        let w = img.width;
-                        let h = img.height;
-                        if (w > maxDim || h > maxDim) {
-                            if (w > h) { h = Math.round(h * maxDim / w); w = maxDim; }
-                            else { w = Math.round(w * maxDim / h); h = maxDim; }
-                        }
-                        canvas.width = w;
-                        canvas.height = h;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, w, h);
-                        const compressedDataUrl = canvas.toDataURL('image/png', 0.85);
-                        el(previewId).src = compressedDataUrl;
-                        el(hiddenInputId).value = compressedDataUrl;
-                    };
-                    img.src = e.target.result;
-                };
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-        
-        function clearImage(previewId, hiddenInputId, placeholderText) {
-            el(previewId).src = `https://placehold.co/100x100/e2e8f0/94a3b8?text=${encodeURIComponent(placeholderText)}`;
-            el(hiddenInputId).value = '';
-            const input = el(previewId).parentElement.nextElementSibling;
-            if(input && input.type === 'file') input.value = '';
-        }
-
-        /**
-         * =========================================
-         * AUTH & INIT (REVISI BYPASS LOGIN)
-         * =========================================
-         */
-        
-        window.onload = () => {
-            // Inisialisasi pilihan tanggal 1 - 31 & set ke tanggal hari ini
-            const tglSelect = el('filter-tanggal');
-            if (tglSelect) {
-                let tglOpts = '';
-                const todayDate = new Date().getDate();
-                days.forEach(d => {
-                    tglOpts += `<option value="${d}" ${d === todayDate ? 'selected' : ''}>${d}</option>`;
-                });
-                tglSelect.innerHTML = tglOpts;
-            }
-
-            const mos = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
-            if (el('filter-bulan')) el('filter-bulan').value = mos[new Date().getMonth()];
-            if (el('filter-tahun')) el('filter-tahun').value = new Date().getFullYear();
-
-            const savedUser = localStorage.getItem('app_user');
-            if (savedUser) {
-                state.user = JSON.parse(savedUser);
-                startApp();
-            } else {
-                show('login-view');
-                hide('app-shell');
-            }
-
-            const savedJurnal = localStorage.getItem('app_jurnal');
-            if(savedJurnal) {
-                state.jurnal = JSON.parse(savedJurnal);
-            }
-
-            const savedPerangkat = localStorage.getItem('app_perangkat');
-            if(savedPerangkat) {
-                state.perangkat = JSON.parse(savedPerangkat);
-            }
-        };
-
-        // ===== INI ADALAH FUNGSI LOGIN YANG TELAH DIREVISI =====
-        async function handleLogin(e) {
-            e.preventDefault();
-            const u = el('login-username').value;
-            const p = el('login-password').value;
-            
-            showLoader("Mencoba masuk...");
-            
-            try {
-                let user;
-                try {
-                    // Percobaan pertama: Cek ke Google Sheets
-                    user = await fetchAPI('login', { username: u, password: p });
-                } catch (apiErr) {
-                    // JIKA GAGAL / ERROR: Langsung paksa masuk jika username adalah 'admin'
-                    if (u === 'admin') {
-                        console.warn("Memicu Force Bypass Login (Google Sheets menolak / gagal merespons)");
-                        const cachedUser = JSON.parse(localStorage.getItem('app_user_profile') || 'null');
-                        user = cachedUser || { 
-                            id: 'u1', 
-                            username: 'admin', 
-                            nama_lengkap: 'Guru yang Bertugas', 
-                            role: 'Guru Kelas', 
-                            foto_profil_base64: '' 
-                        };
-                    } else {
-                        // Jika bukan admin yang mencoba masuk, lemparkan error asli
-                        throw apiErr;
-                    }
-                }
-                
-                // Jika berhasil masuk (baik dari API maupun paksaan/bypass)
-                state.user = user;
-                localStorage.setItem('app_user', JSON.stringify(user));
-                hideLoader();
-                showToast("Berhasil masuk ke sistem!");
-                startApp();
-                
-            } catch (err) {
-                hideLoader();
-                showToast(err.message || "Login gagal! Pastikan sandi benar.", "error");
-            }
-        }
-
-        function handleLogout() {
-            Dialog.confirm("Logout", "Yakin ingin keluar dari sistem?", () => {
-                localStorage.removeItem('app_user');
-                state.user = null;
-                hide('app-shell');
-                show('login-view');
-                el('login-password').value = 'admin'; 
-            });
-        }
-
-        async function startApp() {
-            hide('login-view');
-            show('app-shell');
-            updateHeaderProfile();
-            
-            try {
-                showLoader("Sinkronisasi Data...");
-                const [cfg, ssw] = await Promise.all([
-                    fetchAPI('get_pengaturan'),
-                    fetchAPI('get_siswa')
-                ]);
-                state.pengaturan = cfg;
-                state.siswa = ssw;
-                hideLoader();
-                
-                populatePengaturanForm();
-                navigate('dashboard');
-            } catch (e) {
-                hideLoader();
-                // Tetap biarkan masuk ke dashboard meskipun API gagal sinkron awal
-                navigate('dashboard');
-            }
-        }
-
-        function updateHeaderProfile() {
-            const nama = (state.user.nama_lengkap && state.user.nama_lengkap !== 'Admin Sekolah' && state.user.nama_lengkap !== 'Admin') 
-                ? state.user.nama_lengkap 
-                : (state.pengaturan?.guru_kelas || 'Guru yang Bertugas');
-            el('user-name-display').innerText = nama;
-            el('dash-welcome-name').innerText = nama;
-            el('user-role-display').innerHTML = `Guru yang Bertugas <i class="fas fa-camera text-[10px] ml-1"></i>`;
-            if (state.user.foto_profil_base64) {
-                el('user-avatar').src = state.user.foto_profil_base64;
-            } else {
-                el('user-avatar').src = `https://placehold.co/40x40/2563eb/ffffff?text=${encodeURIComponent(nama.charAt(0).toUpperCase())}`;
-            }
-        }
-
-        // Navigation
-        function navigate(viewName) {
-            document.querySelectorAll('.view-section').forEach(e => e.classList.add('hidden-view'));
-            
-            document.querySelectorAll('.nav-item').forEach(e => {
-                e.classList.remove('bg-primary', 'text-white', 'shadow-md', 'shadow-blue-500/20');
-                e.classList.add('text-slate-600');
-            });
-            
-            show(`view-${viewName}`);
-            const nav = el(`nav-${viewName}`);
-            if(nav) {
-                nav.classList.remove('text-slate-600');
-                nav.classList.add('bg-primary', 'text-white', 'shadow-md', 'shadow-blue-500/20');
-            }
-
-            const titles = { dashboard: 'Dashboard', siswa: 'Data Master Siswa', absensi: 'Absensi Harian Siswa', nilai: 'Daftar Nilai Siswa', jurnal: 'Jurnal Harian Guru', perangkat: 'Perangkat Pembelajaran', pengaturan: 'Sistem & Pengaturan' };
-            el('header-title').innerText = titles[viewName] || 'Dashboard';
-
-            if(viewName === 'dashboard') renderDashboard();
-            if(viewName === 'siswa') renderTableSiswa();
-            if(viewName === 'absensi') {
-                if (state.absensi.length === 0) loadAbsensiData();
-                else renderTableAbsensi();
-            }
-            if(viewName === 'nilai' && state.nilai.length === 0) loadNilaiData();
-            if(viewName === 'jurnal') renderJurnal();
-            if(viewName === 'perangkat') renderPerangkat();
-        }
-
-        /**
-         * =========================================
-         * DASHBOARD
-         * =========================================
-         */
-        function renderDashboard() {
-            el('dash-total-siswa').innerText = state.siswa.length;
-            el('dash-ta').innerText = state.pengaturan.tahun_ajaran || '-';
-        }
-
-        /**
-         * =========================================
-         * DATA SISWA (CRUD)
-         * =========================================
-         */
-        function renderTableSiswa() {
-            const tbody = el('tbody-siswa');
-            tbody.innerHTML = '';
-            
-            if(state.siswa.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-10 text-slate-500 font-medium">Belum ada data murid. Silakan tambahkan.</td></tr>`;
-                return;
-            }
-
-            state.siswa.forEach((s, index) => {
-                tbody.innerHTML += `
-                    <tr class="hover:bg-blue-50/50 transition">
-                        <td class="py-3 px-4 text-center font-medium text-slate-600">${index + 1}</td>
-                        <td class="py-3 px-4 font-mono text-slate-500">${s.nisn}</td>
-                        <td class="py-3 px-4 font-bold text-slate-800">${s.nama_siswa}</td>
-                        <td class="py-3 px-4 text-center"><span class="px-2 py-1 rounded bg-slate-100 text-xs font-bold text-slate-600">${s.jk}</span></td>
-                        <td class="py-3 px-4 text-center">
-                            <button onclick='editSiswa(${JSON.stringify(s)})' class="text-blue-500 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 rounded p-2 mx-1 transition" title="Edit"><i class="fas fa-edit"></i></button>
-                            <button onclick="hapusSiswa('${s.id}')" class="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 rounded p-2 mx-1 transition" title="Hapus"><i class="fas fa-trash"></i></button>
-                        </td>
-                    </tr>
-                `;
-            });
-            renderDashboard();
-        }
-
-        function openSiswaModal() {
-            el('siswa-id').value = '';
-            el('form-siswa').reset();
-            el('modal-siswa-title').innerText = "Tambah Siswa Baru";
-            showModal('modal-siswa');
-        }
-
-        function closeSiswaModal() { hideModal('modal-siswa'); }
-
-        function editSiswa(s) {
-            el('siswa-id').value = s.id;
-            el('siswa-nisn').value = s.nisn;
-            el('siswa-nama').value = s.nama_siswa;
-            el('siswa-jk').value = s.jk;
-            el('modal-siswa-title').innerText = "Edit Data Siswa";
-            showModal('modal-siswa');
-        }
-
-        async function submitSiswa(e) {
-            e.preventDefault();
-            const payload = {
-                id: el('siswa-id').value,
-                nisn: el('siswa-nisn').value,
-                nama_siswa: el('siswa-nama').value,
-                jk: el('siswa-jk').value
-            };
-
-            try {
-                showLoader("Menyimpan...");
-                await fetchAPI('save_siswa', payload);
-                showToast("Data murid berhasil disimpan");
-                closeSiswaModal();
-                state.siswa = await fetchAPI('get_siswa');
-                renderTableSiswa();
-            } catch (err) {}
-        }
-
-        function hapusSiswa(id) {
-            Dialog.confirm("Hapus Siswa", "Yakin ingin menghapus data siswa ini? Data absen dan nilai terkait bisa terpengaruh.", async () => {
-                try {
-                    showLoader("Menghapus...");
-                    await fetchAPI('delete_siswa', { id });
-                    showToast("Data dihapus");
-                    state.siswa = await fetchAPI('get_siswa');
-                    renderTableSiswa();
-                } catch (err) {}
-            });
-        }
-
-        function downloadTemplateSiswa() {
-            if (typeof XLSX === 'undefined') {
-                return Dialog.show("Error", "Library Excel belum termuat. Periksa koneksi internet Anda.");
-            }
-            const templateData = [
-                { "NISN": "0123456789", "Nama Lengkap Siswa": "Ahmad Fauzi", "Jenis Kelamin (L/P)": "L" },
-                { "NISN": "0123456790", "Nama Lengkap Siswa": "Siti Nurhaliza", "Jenis Kelamin (L/P)": "P" }
-            ];
-            const ws = XLSX.utils.json_to_sheet(templateData);
-            ws['!cols'] = [{ wch: 18 }, { wch: 35 }, { wch: 22 }];
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Template_Siswa");
-            XLSX.writeFile(wb, "Template_Data_Siswa.xlsx");
-            showToast("Template_Data_Siswa.xlsx berhasil diunduh!");
-        }
-
-        function importSiswaExcel(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            if (typeof XLSX === 'undefined') {
-                return Dialog.show("Error", "Library Excel belum termuat.");
-            }
-
-            const reader = new FileReader();
-            reader.onload = async function(e) {
-                try {
-                    const data = new Uint8Array(e.target.result);
-                    const workbook = XLSX.read(data, { type: 'array' });
-                    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-                    const rows = XLSX.utils.sheet_to_json(firstSheet, { defval: "" });
-
-                    if (rows.length === 0) {
-                        return Dialog.show("Kosong", "File Excel tidak memiliki baris data siswa.");
-                    }
-
-                    const validSiswa = [];
-                    rows.forEach(r => {
-                        const keys = Object.keys(r);
-                        const nisnKey = keys.find(k => k.toLowerCase().includes('nisn') || k.toLowerCase().includes('nis'));
-                        const namaKey = keys.find(k => k.toLowerCase().includes('nama'));
-                        const jkKey = keys.find(k => k.toLowerCase().includes('kelamin') || k.toLowerCase() === 'jk' || k.toLowerCase().includes('l/p'));
-
-                        const nisn = String(nisnKey ? r[nisnKey] : (r[keys[0]] || '')).trim();
-                        const nama_siswa = String(namaKey ? r[namaKey] : (r[keys[1]] || '')).trim();
-                        let jk = String(jkKey ? r[jkKey] : (r[keys[2]] || 'L')).trim().toUpperCase();
-                        jk = jk.startsWith('P') ? 'P' : 'L';
-
-                        if (nama_siswa) {
-                            validSiswa.push({ id: '', nisn: nisn || '-', nama_siswa, jk });
-                        }
-                    });
-
-                    if (validSiswa.length === 0) {
-                        return Dialog.show("Format Tidak Sesuai", "Pastikan terdapat kolom NISN, Nama Lengkap Siswa, dan Jenis Kelamin (L/P).");
-                    }
-
-                    showLoader(`Mengimpor ${validSiswa.length} data siswa...`);
-                    let successCount = 0;
-                    for (const item of validSiswa) {
-                        try {
-                            await fetchAPI('save_siswa', item);
-                            successCount++;
-                        } catch (err) {
-                            // Fallback simpan ke state lokal jika offline
-                            item.id = 's_local_' + Date.now() + Math.random().toString(36).slice(2, 6);
-                            state.siswa.push(item);
-                            successCount++;
-                        }
-                    }
-
-                    try {
-                        state.siswa = await fetchAPI('get_siswa');
-                    } catch (e) {}
-                    localStorage.setItem('app_siswa_cache', JSON.stringify(state.siswa));
-                    hideLoader();
-                    renderTableSiswa();
-                    showToast(`${successCount} siswa berhasil diimpor dari Excel!`);
-                } catch (err) {
-                    hideLoader();
-                    Dialog.show("Gagal Impor", "File Excel rusak atau format tidak didukung.");
-                }
-            };
-            reader.readAsArrayBuffer(file);
-            event.target.value = '';
-        }
-
-        /**
-         * =========================================
-         * MODUL ABSENSI HARIAN & REKAP BULANAN
-         * =========================================
-         */
-        async function loadAbsensiData() {
-            if(state.siswa.length === 0) {
-                Dialog.show("Perhatian", "Data siswa masih kosong. Tambahkan siswa terlebih dahulu di menu Data Siswa.");
-                return;
-            }
-
-            const bulan = el('filter-bulan').value;
-            const tahun = el('filter-tahun').value;
-            const cacheKey = `app_absensi_${bulan}_${tahun}`;
-            
-            const cached = localStorage.getItem(cacheKey);
-            if (cached) {
-                state.absensi = JSON.parse(cached);
-                renderTableAbsensi();
-            }
-
-            try {
-                const serverData = await fetchAPI('get_absensi', { bulan, tahun });
-                if (serverData && serverData.length > 0) {
-                    state.absensi = serverData;
-                    localStorage.setItem(cacheKey, JSON.stringify(serverData));
-                }
-                renderTableAbsensi();
-            } catch (err) {
-                renderTableAbsensi();
-            }
-        }
-
-        function setStatusHarian(siswaId, pilihan) {
-            const tgl = el('filter-tanggal').value;
-            const rec = getOrCreateAbsenRecord(siswaId);
-            const nilaiKolom = pilihan === 'H' ? '.' : pilihan;
-            rec[`tgl_${tgl}`] = nilaiKolom;
-            hitungRekapBulananRecord(rec);
-            renderTableAbsensi();
-        }
-
-        function setSemuaHadirHariIni() {
-            if (state.siswa.length === 0) return;
-            const tgl = el('filter-tanggal').value;
-            state.siswa.forEach(s => {
-                const rec = getOrCreateAbsenRecord(s.id);
-                rec[`tgl_${tgl}`] = '.';
-                hitungRekapBulananRecord(rec);
-            });
-            renderTableAbsensi();
-            showToast(`Semua siswa ditandai Hadir (.) untuk tanggal ${tgl}`);
-        }
-
-        function updateKeteranganAbsen(siswaId, text) {
-            const rec = getOrCreateAbsenRecord(siswaId);
-            rec.keterangan = text;
-        }
-
         async function saveAbsensi() {
             const bulan = el('filter-bulan').value;
             const tahun = el('filter-tahun').value;
-            const cacheKey = `app_absensi_${bulan}_${tahun}`;
-            
             const payload = state.siswa.map(s => {
                 const rec = getOrCreateAbsenRecord(s.id);
                 rec.bulan = bulan;
@@ -1640,391 +1610,375 @@
                 return rec;
             });
 
-            localStorage.setItem(cacheKey, JSON.stringify(payload));
-            showLoader("Menyimpan Absensi...");
-
+            localStorage.setItem(`app_absensi_${bulan}_${tahun}`, JSON.stringify(payload));
+            showLoader("Menyimpan absensi...");
             try {
                 await fetchAPI('save_absensi', payload);
-                showToast("Absensi Harian Berhasil Disimpan!");
-                const fresh = await fetchAPI('get_absensi', { bulan, tahun });
-                if (fresh && fresh.length > 0) {
-                    state.absensi = fresh;
-                    localStorage.setItem(cacheKey, JSON.stringify(fresh));
-                }
+                showToast("Data absensi berhasil disimpan!");
             } catch (err) {
-                showToast("Absensi tersimpan di perangkat lokal!");
+                showToast("Absensi disimpan di perangkat (Offline/Lokal)!");
             } finally {
                 hideLoader();
             }
         }
 
         function exportAbsenCSV() {
-            if(state.siswa.length === 0) return Dialog.show("Info", "Tidak ada data siswa untuk diekspor.");
             const bulan = el('filter-bulan').value;
             const tahun = el('filter-tahun').value;
-            
-            let headers = ['NISN', 'Nama Siswa', ...days.map(d => `Tgl_${d}`), 'S', 'I', 'A', 'Jml', 'Keterangan'];
-            let rows = [headers.join(',')];
+            const headers = ['NISN', 'Nama Siswa', ...days.map(d => `Tgl_${d}`), 'S', 'I', 'A', 'Jml', 'Keterangan'];
+            const rows = [headers.join(',')];
 
             state.siswa.forEach(s => {
                 const rec = getOrCreateAbsenRecord(s.id);
                 hitungRekapBulananRecord(rec);
-                let tglVals = days.map(d => `"${rec[`tgl_${d}`] || ''}"`);
-                let ketVal = `"${(rec.keterangan || '').replace(/"/g, '""')}"`;
-                rows.push([`"${s.nisn}"`, `"${s.nama_siswa}"`, ...tglVals, rec.s || 0, rec.i || 0, rec.a || 0, rec.jml || 0, ketVal].join(','));
+                const line = [
+                    `"${s.nisn}"`,
+                    `"${s.nama_siswa}"`,
+                    ...days.map(d => `"${rec[`tgl_${d}`] || ''}"`),
+                    rec.s || 0,
+                    rec.i || 0,
+                    rec.a || 0,
+                    rec.jml || 0,
+                    `"${(rec.keterangan || '').replace(/"/g, '""')}"`
+                ];
+                rows.push(line.join(','));
             });
 
-            const blob = new Blob([rows.join('\n')], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `Absensi_${bulan}_${tahun}.csv`;
-            a.click();
-            showToast(`File Absensi_${bulan}_${tahun}.csv diunduh!`);
+            downloadFile(rows.join('\n'), `Absensi_${bulan}_${tahun}.csv`, 'text/csv;charset=utf-8;');
+            showToast("File CSV Absensi berhasil diunduh!");
         }
 
         function importAbsenCSV(event) {
             const file = event.target.files[0];
-            if(!file) return;
-
+            if (!file) return;
             const reader = new FileReader();
             reader.onload = function(e) {
-                const lines = e.target.result.split('\n').map(l => l.trim()).filter(l => l);
-                if(lines.length <= 1) return Dialog.show("Error", "File CSV kosong atau tidak sesuai.");
-
-                let updatedCount = 0;
-                for(let i = 1; i < lines.length; i++) {
-                    const cols = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c => c.replace(/^"|"$/g, '').trim());
+                const lines = e.target.result.split(/\r?\n/);
+                let updated = 0;
+                for (let i = 1; i < lines.length; i++) {
+                    if (!lines[i].trim()) continue;
+                    const cols = lines[i].split(',').map(c => c.replace(/^"|"$/g, '').trim());
                     const nisn = cols[0];
                     const nama = cols[1];
-
-                    const siswa = state.siswa.find(s => s.nisn == nisn || s.nama_siswa.toLowerCase() === nama.toLowerCase());
-                    if(siswa) {
+                    const siswa = state.siswa.find(s => s.nisn == nisn || s.nama_siswa.toLowerCase() === (nama || '').toLowerCase());
+                    if (siswa) {
                         const rec = getOrCreateAbsenRecord(siswa.id);
-                        days.forEach((d, dIdx) => {
-                            let val = (cols[2 + dIdx] || '').toUpperCase();
+                        days.forEach((d, idx) => {
+                            let val = (cols[2 + idx] || '').toUpperCase();
                             if (val === 'H') val = '.';
-                            if(['.', 'S', 'I', 'A', ''].includes(val)) {
-                                rec[`tgl_${d}`] = val;
-                            }
+                            if (['.', 'S', 'I', 'A', ''].includes(val)) rec[`tgl_${d}`] = val;
                         });
-                        if(cols[37] !== undefined) rec.keterangan = cols[37];
+                        if (cols[37] !== undefined) rec.keterangan = cols[37];
                         hitungRekapBulananRecord(rec);
-                        updatedCount++;
+                        updated++;
                     }
                 }
+                const bulan = el('filter-bulan').value;
+                const tahun = el('filter-tahun').value;
+                localStorage.setItem(`app_absensi_${bulan}_${tahun}`, JSON.stringify(state.absensi));
                 renderTableAbsensi();
-                showToast(`${updatedCount} data absen siswa dimuat dari CSV. Klik 'Simpan Absensi' untuk menyimpan.`);
+                showToast(`Berhasil mengimpor absensi untuk ${updated} siswa!`);
+                event.target.value = '';
             };
             reader.readAsText(file);
-            event.target.value = '';
         }
-
 
         /**
          * =========================================
-         * MODUL NILAI
+         * 6. DAFTAR NILAI (CRUD + EKSPOR/IMPOR CSV)
          * =========================================
          */
         async function loadNilaiData() {
-            if(state.siswa.length === 0) return Dialog.show("Perhatian", "Data siswa kosong.");
-            const mapel = el('filter-mapel').value;
-            if(!mapel) { el('filter-mapel').focus(); return Dialog.show("Peringatan", "Ketik nama Mata Pelajaran terlebih dahulu."); }
+            const mata_pelajaran = el('filter-mapel').value.trim() || 'Matematika';
+            const semester = el('filter-semester').value;
+            const cacheKey = `app_nilai_${mata_pelajaran}_${semester}`;
 
-            try {
-                state.nilai = await fetchAPI('get_nilai', {mata_pelajaran: mapel, semester: el('filter-semester').value});
+            const cached = localStorage.getItem(cacheKey);
+            if (cached) {
+                state.nilai = JSON.parse(cached);
                 renderTableNilai();
-            } catch (err) {}
+            }
+
+            showLoader("Memuat daftar nilai...");
+            try {
+                const data = await fetchAPI('get_nilai', { mata_pelajaran, semester });
+                if (Array.isArray(data)) {
+                    state.nilai = data;
+                    localStorage.setItem(cacheKey, JSON.stringify(data));
+                }
+            } catch (e) {
+                if (!cached) state.nilai = [];
+            } finally {
+                hideLoader();
+                renderTableNilai();
+            }
+        }
+
+        function getOrCreateNilaiRecord(siswaId) {
+            const mata_pelajaran = el('filter-mapel').value.trim() || 'Matematika';
+            const semester = el('filter-semester').value;
+            let rec = state.nilai.find(n => n.id_siswa == siswaId);
+            if (!rec) {
+                rec = { 
+                    id: '', id_siswa: siswaId, mata_pelajaran, semester,
+                    tp1: '', tp2: '', tp3: '', tp4: '', tp5: '', tp6: '',
+                    lm1: '', lm2: '', lm3: '', lm4: '', lm5: '', sumatif_akhir: ''
+                };
+                state.nilai.push(rec);
+            }
+            return rec;
         }
 
         function renderTableNilai() {
             const tbody = el('tbody-nilai');
+            if (!tbody) return;
             tbody.innerHTML = '';
-            
+
+            if (state.siswa.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="14" class="text-center py-10 text-slate-500 font-medium">Belum ada data siswa.</td></tr>`;
+                return;
+            }
+
+            const fields = ['tp1', 'tp2', 'tp3', 'tp4', 'tp5', 'tp6', 'lm1', 'lm2', 'lm3', 'lm4', 'lm5', 'sumatif_akhir'];
+
             state.siswa.forEach((s, index) => {
-                let nData = state.nilai.find(n => n.id_siswa == s.id) || {};
-                let tr = document.createElement('tr');
-                tr.className = 'hover:bg-slate-50';
-                
-                let html = `
-                    <td class="border-r py-1 text-center sticky-col font-medium bg-white">${index + 1}</td>
-                    <td class="border-r py-1 px-3 sticky-col-2 truncate max-w-[180px] font-bold bg-white" title="${s.nama_siswa}">${s.nama_siswa}
-                        <input type="hidden" class="nilai-input-id" value="${nData.id || ''}">
-                        <input type="hidden" class="nilai-input-siswa" value="${s.id}">
-                    </td>
+                const rec = getOrCreateNilaiRecord(s.id);
+                let cells = '';
+                fields.forEach(f => {
+                    cells += `
+                        <td class="border-r border-slate-200 p-0 text-center">
+                            <input type="number" min="0" max="100" value="${rec[f] !== undefined ? rec[f] : ''}" 
+                                oninput="updateNilaiCell('${s.id}', '${f}', this.value)"
+                                class="tbl-input py-2 text-xs font-semibold text-slate-700">
+                        </td>
+                    `;
+                });
+
+                tbody.innerHTML += `
+                    <tr class="hover:bg-blue-50/30 transition">
+                        <td class="py-2 px-2 border-r border-slate-200 text-center sticky-col bg-white font-medium text-slate-600">${index + 1}</td>
+                        <td class="py-2 px-3 border-r border-slate-200 sticky-col-2 bg-white font-bold text-slate-800 truncate max-w-[180px]">${escapeHtml(s.nama_siswa)}</td>
+                        ${cells}
+                    </tr>
                 `;
-                
-                for(let i=1; i<=6; i++) {
-                    let v = nData[`tp${i}`] !== undefined ? nData[`tp${i}`] : '';
-                    html += `<td class="border-r py-0 px-0"><input type="number" class="tbl-input n-tp font-medium" data-field="tp${i}" value="${v}"></td>`;
-                }
-                for(let i=1; i<=5; i++) {
-                    let v = nData[`lm${i}`] !== undefined ? nData[`lm${i}`] : '';
-                    html += `<td class="border-r py-0 px-0 bg-emerald-50/20"><input type="number" class="tbl-input n-lm font-medium" data-field="lm${i}" value="${v}"></td>`;
-                }
-                
-                let vAkhir = nData.sumatif_akhir !== undefined ? nData.sumatif_akhir : '';
-                html += `<td class="py-0 px-0 bg-purple-50/50"><input type="number" class="tbl-input font-bold n-akhir text-purple-700" data-field="sumatif_akhir" value="${vAkhir}"></td>`;
-                
-                tr.innerHTML = html;
-                tbody.appendChild(tr);
             });
+        }
+
+        function updateNilaiCell(siswaId, field, value) {
+            const rec = getOrCreateNilaiRecord(siswaId);
+            rec[field] = value;
+            const mata_pelajaran = el('filter-mapel').value.trim() || 'Matematika';
+            const semester = el('filter-semester').value;
+            localStorage.setItem(`app_nilai_${mata_pelajaran}_${semester}`, JSON.stringify(state.nilai));
         }
 
         async function saveNilai() {
-            const mapel = el('filter-mapel').value;
-            if(!mapel) return Dialog.show("Error", "Mata Pelajaran kosong.");
-
-            let payload = [];
-            let semester = el('filter-semester').value;
-            
-            document.querySelectorAll('#tbody-nilai tr').forEach(tr => {
-                let id = tr.querySelector('.nilai-input-id').value;
-                let id_siswa = tr.querySelector('.nilai-input-siswa').value;
-                let item = { id, id_siswa, mata_pelajaran: mapel, semester };
-                
-                tr.querySelectorAll('.n-tp').forEach(inp => item[inp.dataset.field] = inp.value);
-                tr.querySelectorAll('.n-lm').forEach(inp => item[inp.dataset.field] = inp.value);
-                item.sumatif_akhir = tr.querySelector('.n-akhir').value;
-                payload.push(item);
+            const mata_pelajaran = el('filter-mapel').value.trim() || 'Matematika';
+            const semester = el('filter-semester').value;
+            const payload = state.siswa.map(s => {
+                const rec = getOrCreateNilaiRecord(s.id);
+                rec.mata_pelajaran = mata_pelajaran;
+                rec.semester = semester;
+                return rec;
             });
 
+            localStorage.setItem(`app_nilai_${mata_pelajaran}_${semester}`, JSON.stringify(payload));
+            showLoader("Menyimpan daftar nilai...");
             try {
-                showLoader("Menyimpan Nilai...");
                 await fetchAPI('save_nilai', payload);
-                showToast("Data Nilai Tersimpan");
-                state.nilai = await fetchAPI('get_nilai', {mata_pelajaran: mapel, semester});
-            } catch (err) {}
+                showToast("Daftar nilai berhasil disimpan!");
+            } catch (err) {
+                showToast("Daftar nilai disimpan di perangkat!");
+            } finally {
+                hideLoader();
+            }
         }
 
         function exportNilaiCSV() {
-            if(state.siswa.length === 0) return Dialog.show("Info", "Tidak ada data siswa untuk diekspor.");
-            const mapel = el('filter-mapel').value || 'Mapel';
+            const mapel = el('filter-mapel').value.trim() || 'Matematika';
             const sem = el('filter-semester').value;
+            const fields = ['tp1', 'tp2', 'tp3', 'tp4', 'tp5', 'tp6', 'lm1', 'lm2', 'lm3', 'lm4', 'lm5', 'sumatif_akhir'];
+            const headers = ['NISN', 'Nama Siswa', 'TP1', 'TP2', 'TP3', 'TP4', 'TP5', 'TP6', 'LM1', 'LM2', 'LM3', 'LM4', 'LM5', 'SAS'];
+            const rows = [headers.join(',')];
 
-            let headers = ['NISN', 'Nama Siswa', 'TP1', 'TP2', 'TP3', 'TP4', 'TP5', 'TP6', 'LM1', 'LM2', 'LM3', 'LM4', 'LM5', 'Sumatif_Akhir'];
-            let rows = [headers.join(',')];
-
-            document.querySelectorAll('#tbody-nilai tr').forEach((tr, idx) => {
-                let s = state.siswa[idx];
-                if(!s) return;
-                let vals = [];
-                tr.querySelectorAll('.n-tp, .n-lm, .n-akhir').forEach(inp => vals.push(inp.value || ''));
-                rows.push([`"${s.nisn}"`, `"${s.nama_siswa}"`, ...vals].join(','));
+            state.siswa.forEach(s => {
+                const rec = getOrCreateNilaiRecord(s.id);
+                const line = [`"${s.nisn}"`, `"${s.nama_siswa}"`, ...fields.map(f => rec[f] || '')];
+                rows.push(line.join(','));
             });
 
-            const blob = new Blob([rows.join('\n')], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `Nilai_${mapel.replace(/\s+/g, '_')}_Sem_${sem.charAt(0)}.csv`;
-            a.click();
+            downloadFile(rows.join('\n'), `Nilai_${mapel}_${sem}.csv`, 'text/csv;charset=utf-8;');
             showToast("File CSV Nilai berhasil diunduh!");
         }
 
         function importNilaiCSV(event) {
             const file = event.target.files[0];
-            if(!file) return;
-
+            if (!file) return;
             const reader = new FileReader();
             reader.onload = function(e) {
-                const lines = e.target.result.split('\n').map(l => l.trim()).filter(l => l);
-                if(lines.length <= 1) return Dialog.show("Error", "File CSV kosong atau tidak valid.");
-
-                let updatedCount = 0;
-                const trs = document.querySelectorAll('#tbody-nilai tr');
-
-                for(let i = 1; i < lines.length; i++) {
-                    const cols = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c => c.replace(/^"|"$/g, '').trim());
+                const lines = e.target.result.split(/\r?\n/);
+                const fields = ['tp1', 'tp2', 'tp3', 'tp4', 'tp5', 'tp6', 'lm1', 'lm2', 'lm3', 'lm4', 'lm5', 'sumatif_akhir'];
+                let updated = 0;
+                for (let i = 1; i < lines.length; i++) {
+                    if (!lines[i].trim()) continue;
+                    const cols = lines[i].split(',').map(c => c.replace(/^"|"$/g, '').trim());
                     const nisn = cols[0];
                     const nama = cols[1];
-
-                    const siswaIdx = state.siswa.findIndex(s => s.nisn == nisn || s.nama_siswa.toLowerCase() === nama.toLowerCase());
-                    if(siswaIdx > -1 && trs[siswaIdx]) {
-                        const inputs = trs[siswaIdx].querySelectorAll('.n-tp, .n-lm, .n-akhir');
-                        inputs.forEach((inp, colIdx) => {
-                            if(cols[2 + colIdx] !== undefined && cols[2 + colIdx] !== '') {
-                                inp.value = cols[2 + colIdx];
-                            }
+                    const siswa = state.siswa.find(s => s.nisn == nisn || s.nama_siswa.toLowerCase() === (nama || '').toLowerCase());
+                    if (siswa) {
+                        const rec = getOrCreateNilaiRecord(siswa.id);
+                        fields.forEach((f, idx) => {
+                            if (cols[2 + idx] !== undefined) rec[f] = cols[2 + idx];
                         });
-                        updatedCount++;
+                        updated++;
                     }
                 }
-                showToast(`${updatedCount} nilai siswa dimuat dari CSV. Klik 'Simpan Data' untuk menyimpannya.`);
+                renderTableNilai();
+                showToast(`Berhasil mengimpor nilai untuk ${updated} siswa!`);
+                event.target.value = '';
             };
             reader.readAsText(file);
-            event.target.value = '';
         }
-
 
         /**
          * =========================================
-         * MODUL JURNAL HARIAN LOKAL (NEW)
+         * 7. JURNAL HARIAN LOKAL
          * =========================================
          */
         function renderJurnal() {
             const tbody = el('tbody-jurnal');
+            if (!tbody) return;
             tbody.innerHTML = '';
-            
-            if(state.jurnal.length === 0) {
-                state.jurnal.push({ id: Date.now(), tanggal: '', tema: '', kd: '', materi: '', kegiatan: '', penilaian: '' });
+
+            if (state.jurnal.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="text-center py-10 text-slate-500 font-medium">Belum ada catatan jurnal. Klik <strong>+ Tambah Baris</strong> untuk mulai mencatat.</td></tr>`;
+                return;
             }
 
-            state.jurnal.forEach((j, index) => {
-                let tr = document.createElement('tr');
-                tr.dataset.id = j.id;
-                tr.innerHTML = `
-                    <td class="border-r border-slate-200 py-1 px-1"><textarea class="w-full text-xs outline-none resize-none p-1 bg-transparent j-tanggal" rows="3" placeholder="Senin, 1 Jan">${j.tanggal||''}</textarea></td>
-                    <td class="border-r border-slate-200 py-1 px-1"><textarea class="w-full text-xs outline-none resize-none p-1 bg-transparent j-tema" rows="3" placeholder="Tema...">${j.tema||''}</textarea></td>
-                    <td class="border-r border-slate-200 py-1 px-1"><textarea class="w-full text-xs outline-none resize-none p-1 bg-transparent j-kd" rows="3" placeholder="3.1 ...">${j.kd||''}</textarea></td>
-                    <td class="border-r border-slate-200 py-1 px-1"><textarea class="w-full text-xs outline-none resize-none p-1 bg-transparent j-materi" rows="3">${j.materi||''}</textarea></td>
-                    <td class="border-r border-slate-200 py-1 px-1"><textarea class="w-full text-xs outline-none resize-none p-1 bg-transparent j-kegiatan" rows="3">${j.kegiatan||''}</textarea></td>
-                    <td class="border-r border-slate-200 py-1 px-1"><textarea class="w-full text-xs outline-none resize-none p-1 bg-transparent j-penilaian" rows="3">${j.penilaian||''}</textarea></td>
-                    <td class="py-1 px-1 text-center">
-                        <button onclick="deleteJurnalRow(${j.id})" class="text-red-400 hover:text-red-600 bg-red-50 hover:bg-red-100 rounded w-6 h-6"><i class="fas fa-times"></i></button>
-                    </td>
+            state.jurnal.forEach((item, idx) => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50">
+                        <td class="p-2 border-r border-slate-200"><input type="text" value="${escapeHtml(item.tanggal || '')}" oninput="updateJurnalField(${idx}, 'tanggal', this.value)" placeholder="Senin, 23 Nov" class="w-full text-xs p-1.5 border border-slate-200 rounded outline-none focus:border-primary"></td>
+                        <td class="p-2 border-r border-slate-200"><input type="text" value="${escapeHtml(item.tema || '')}" oninput="updateJurnalField(${idx}, 'tema', this.value)" placeholder="Matematika / Bab 1" class="w-full text-xs p-1.5 border border-slate-200 rounded outline-none focus:border-primary"></td>
+                        <td class="p-2 border-r border-slate-200"><input type="text" value="${escapeHtml(item.kd || '')}" oninput="updateJurnalField(${idx}, 'kd', this.value)" placeholder="TP 1.1" class="w-full text-xs p-1.5 border border-slate-200 rounded outline-none focus:border-primary"></td>
+                        <td class="p-2 border-r border-slate-200"><textarea rows="2" oninput="updateJurnalField(${idx}, 'materi', this.value)" placeholder="Materi pokok..." class="w-full text-xs p-1.5 border border-slate-200 rounded outline-none focus:border-primary">${escapeHtml(item.materi || '')}</textarea></td>
+                        <td class="p-2 border-r border-slate-200"><textarea rows="2" oninput="updateJurnalField(${idx}, 'kegiatan', this.value)" placeholder="Langkah kegiatan..." class="w-full text-xs p-1.5 border border-slate-200 rounded outline-none focus:border-primary">${escapeHtml(item.kegiatan || '')}</textarea></td>
+                        <td class="p-2 border-r border-slate-200"><input type="text" value="${escapeHtml(item.penilaian || '')}" oninput="updateJurnalField(${idx}, 'penilaian', this.value)" placeholder="Tertulis / Lisan" class="w-full text-xs p-1.5 border border-slate-200 rounded outline-none focus:border-primary"></td>
+                        <td class="p-2 text-center"><button onclick="deleteJurnalRow(${idx})" class="text-red-500 hover:bg-red-50 p-2 rounded transition"><i class="fas fa-trash text-xs"></i></button></td>
+                    </tr>
                 `;
-                tbody.appendChild(tr);
             });
         }
 
         function addJurnalRow() {
-            syncJurnalUItoState();
-            state.jurnal.push({ id: Date.now(), tanggal: '', tema: '', kd: '', materi: '', kegiatan: '', penilaian: '' });
+            state.jurnal.push({ tanggal: '', tema: '', kd: '', materi: '', kegiatan: '', penilaian: '' });
+            saveJurnal(true);
             renderJurnal();
         }
 
-        function deleteJurnalRow(id) {
-            syncJurnalUItoState();
-            state.jurnal = state.jurnal.filter(j => j.id !== id);
+        function updateJurnalField(idx, field, val) {
+            if (state.jurnal[idx]) {
+                state.jurnal[idx][field] = val;
+                localStorage.setItem('app_jurnal', JSON.stringify(state.jurnal));
+            }
+        }
+
+        function deleteJurnalRow(idx) {
+            state.jurnal.splice(idx, 1);
+            saveJurnal(true);
             renderJurnal();
         }
 
-        function syncJurnalUItoState() {
-            const rows = document.querySelectorAll('#tbody-jurnal tr');
-            state.jurnal = Array.from(rows).map(tr => {
-                return {
-                    id: parseInt(tr.dataset.id),
-                    tanggal: tr.querySelector('.j-tanggal').value,
-                    tema: tr.querySelector('.j-tema').value,
-                    kd: tr.querySelector('.j-kd').value,
-                    materi: tr.querySelector('.j-materi').value,
-                    kegiatan: tr.querySelector('.j-kegiatan').value,
-                    penilaian: tr.querySelector('.j-penilaian').value
-                };
-            });
-        }
-
-        function saveJurnal() {
-            syncJurnalUItoState();
+        function saveJurnal(silent = false) {
             localStorage.setItem('app_jurnal', JSON.stringify(state.jurnal));
-            showToast("Jurnal Harian Disimpan Lokal");
+            if (!silent) showToast("Jurnal harian berhasil disimpan!");
         }
-
 
         /**
          * =========================================
-         * MODUL PERANGKAT PEMBELAJARAN (NEW)
+         * 8. PERANGKAT PEMBELAJARAN + BARCODE BESAR 1 PER 1
          * =========================================
          */
+        function getQrContentForDoc(doc) {
+            if (doc.link && doc.link.trim() !== '') return doc.link.trim();
+            return `DOKUMEN: ${doc.jenis} | MAPEL: ${doc.mapel} | JUDUL: ${doc.judul} | ID: ${doc.id}`;
+        }
+
         function renderPerangkat() {
             const grid = el('grid-perangkat');
+            if (!grid) return;
             grid.innerHTML = '';
 
-            if(state.perangkat.length === 0) {
-                grid.innerHTML = `
-                    <div class="col-span-full text-center py-12 bg-white rounded-2xl border border-dashed border-slate-300">
-                        <i class="fas fa-folder-open text-4xl text-slate-300 mb-3"></i>
-                        <h4 class="font-bold text-slate-700">Belum Ada Perangkat Pembelajaran</h4>
-                        <p class="text-xs text-slate-500 mt-1 mb-4">Simpan tautan Modul Ajar, ATP, CP, atau Prota/Promes Anda di sini.</p>
-                        <button onclick="openPerangkatModal()" class="bg-primary text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-blue-700">Tambah Dokumen Pertama</button>
-                    </div>
-                `;
+            if (state.perangkat.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center py-16 bg-white rounded-2xl border border-dashed border-slate-300 text-slate-500">
+                    <i class="fas fa-folder-open text-4xl text-slate-300 mb-3"></i>
+                    <p class="font-semibold">Belum ada dokumen perangkat ajar.</p>
+                    <p class="text-xs mt-1">Klik <strong>+ Tambah Dokumen</strong> untuk membuat perangkat beserta barcode otomatis.</p>
+                </div>`;
                 return;
             }
 
-            const badgeColors = {
-                'Modul Ajar': 'bg-blue-100 text-blue-700',
-                'ATP': 'bg-emerald-100 text-emerald-700',
-                'CP': 'bg-purple-100 text-purple-700',
-                'Prota': 'bg-amber-100 text-amber-700',
-                'Promes': 'bg-orange-100 text-orange-700',
-                'KKTP': 'bg-rose-100 text-rose-700'
-            };
-
-            state.perangkat.forEach(item => {
-                const badge = badgeColors[item.jenis] || 'bg-slate-100 text-slate-700';
-                grid.innerHTML += `
-                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition flex flex-col justify-between">
-                        <div>
-                            <div class="flex flex-wrap items-center gap-2 mb-2">
-                                <span class="px-2.5 py-1 rounded-md text-[11px] font-bold ${badge}">${item.jenis}</span>
-                                <span class="text-xs font-semibold text-slate-400">${item.mapel}</span>
+            state.perangkat.forEach((doc, idx) => {
+                const shortId = '#' + String(doc.id).slice(-5);
+                const card = document.createElement('div');
+                card.className = "bg-white rounded-2xl border border-slate-200 p-5 shadow-xs hover:shadow-md transition flex flex-col justify-between";
+                card.innerHTML = `
+                    <div>
+                        <div class="flex justify-between items-start gap-3 mb-3">
+                            <div>
+                                <span class="inline-block px-2.5 py-1 rounded-md bg-blue-50 text-primary text-[11px] font-extrabold uppercase tracking-wider mb-1.5">${escapeHtml(doc.jenis)}</span>
+                                <p class="text-xs font-bold text-slate-400 uppercase">${escapeHtml(doc.mapel)}</p>
+                                <h4 class="font-bold text-slate-800 text-base leading-snug mt-1">${escapeHtml(doc.judul)}</h4>
                             </div>
-                            <h4 class="font-bold text-slate-800 text-base leading-snug mb-2">${item.judul}</h4>
-                            <p class="text-xs text-slate-500 line-clamp-2 mb-4">${item.catatan || 'Tidak ada catatan tambahan.'}</p>
-                            
-                            <!-- Kotak Barcode Besar & Jelas -->
-                            <div onclick='zoomBarcode(${JSON.stringify(item).replace(/'/g, "&#39;")})' class="bg-slate-50 hover:bg-blue-50/40 p-3 border border-slate-200 hover:border-primary/40 rounded-xl text-center mb-4 cursor-pointer transition group" title="Klik untuk memperbesar Barcode">
-                                <div id="qr-card-${item.id}" class="flex justify-center bg-white p-2 rounded-lg inline-block mx-auto shadow-xs"></div>
-                                <div class="flex items-center justify-center gap-1.5 mt-2">
-                                    <span class="text-[11px] font-mono font-bold text-slate-600">#${String(item.id).slice(-5)}</span>
-                                    <span class="text-[10px] text-primary font-semibold group-hover:underline"><i class="fas fa-search-plus ml-1"></i> Perbesar</span>
-                                </div>
+                            <!-- Kotak Barcode Besar 115x115px (Klik untuk Zoom) -->
+                            <div onclick='zoomBarcode(${JSON.stringify(doc).replace(/'/g, "&#39;")})' class="bg-white p-2 border-2 border-slate-200 rounded-xl text-center cursor-pointer hover:border-primary transition flex-shrink-0 shadow-xs" title="Klik untuk memperbesar Barcode">
+                                <div id="qr-card-${idx}" class="flex justify-center items-center"></div>
+                                <span class="block text-[10px] font-mono font-bold text-slate-500 mt-1">${shortId}</span>
                             </div>
                         </div>
-                        <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
-                            ${item.link ? `<a href="${item.link}" target="_blank" class="text-xs font-bold text-primary hover:underline flex items-center gap-1"><i class="fas fa-external-link-alt"></i> Buka File</a>` : `<span class="text-[11px] text-slate-400 italic">Barcode Info Aktif</span>`}
-                            <div class="flex gap-1">
-                                <button onclick='editPerangkat(${JSON.stringify(item).replace(/'/g, "&#39;")})' class="p-1.5 text-slate-400 hover:text-blue-600 rounded hover:bg-blue-50 transition" title="Edit"><i class="fas fa-edit"></i></button>
-                                <button onclick="deletePerangkat(${item.id})" class="p-1.5 text-slate-400 hover:text-red-600 rounded hover:bg-red-50 transition" title="Hapus"><i class="fas fa-trash"></i></button>
-                            </div>
+                        <p class="text-xs text-slate-600 line-clamp-3 mb-4">${escapeHtml(doc.catatan || 'Tidak ada catatan tambahan.')}</p>
+                    </div>
+                    <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
+                        ${doc.link ? `<a href="${escapeHtml(doc.link)}" target="_blank" class="text-xs font-bold text-emerald-600 hover:underline"><i class="fas fa-external-link-alt mr-1"></i> Buka File Drive</a>` : `<span class="text-[11px] text-slate-400 italic">Tanpa tautan Drive</span>`}
+                        <div class="flex gap-1">
+                            <button onclick='zoomBarcode(${JSON.stringify(doc).replace(/'/g, "&#39;")})' class="text-slate-600 hover:text-primary bg-slate-100 hover:bg-blue-50 p-2 rounded-lg text-xs transition" title="Perbesar Barcode"><i class="fas fa-qrcode"></i></button>
+                            <button onclick='editPerangkat(${JSON.stringify(doc).replace(/'/g, "&#39;")})' class="text-blue-600 hover:bg-blue-50 p-2 rounded-lg text-xs transition" title="Edit"><i class="fas fa-edit"></i></button>
+                            <button onclick="deletePerangkat(${idx})" class="text-red-500 hover:bg-red-50 p-2 rounded-lg text-xs transition" title="Hapus"><i class="fas fa-trash"></i></button>
                         </div>
                     </div>
                 `;
-            });
+                grid.appendChild(card);
 
-            // Generate Barcode Besar (115x115 px) 1 per 1 untuk setiap kartu dokumen
-            state.perangkat.forEach(item => {
-                const qrContainer = el(`qr-card-${item.id}`);
-                if(qrContainer && typeof QRCode !== 'undefined') {
-                    qrContainer.innerHTML = ''; // Bersihkan sebelum render ulang
-                    const qrText = item.link && item.link.trim() !== '' 
-                        ? item.link.trim() 
-                        : `[${item.jenis}] ${item.mapel} - ${item.judul} (ID:#${String(item.id).slice(-5)})`;
-                    
-                    new QRCode(qrContainer, {
-                        text: qrText,
+                // Generate QR Code 115x115px otomatis
+                const qrTarget = el(`qr-card-${idx}`);
+                if (qrTarget && typeof QRCode !== 'undefined') {
+                    new QRCode(qrTarget, {
+                        text: getQrContentForDoc(doc),
                         width: 115,
                         height: 115,
-                        colorDark : "#000000",
-                        colorLight : "#ffffff",
-                        correctLevel : QRCode.CorrectLevel.L // Kepadatan rendah agar titik barcode besar & cepat di-scan
+                        colorDark: "#000000",
+                        colorLight: "#ffffff",
+                        correctLevel: QRCode.CorrectLevel.L
                     });
                 }
             });
         }
 
-        function zoomBarcode(item) {
-            el('zoom-qr-jenis').innerText = item.jenis;
-            el('zoom-qr-judul').innerText = item.judul;
-            el('zoom-qr-mapel').innerText = item.mapel;
-            el('zoom-qr-id').innerText = `ID Dokumen: #${String(item.id).slice(-5)}`;
-            
+        function zoomBarcode(doc) {
+            el('zoom-qr-jenis').innerText = doc.jenis;
+            el('zoom-qr-judul').innerText = doc.judul;
+            el('zoom-qr-mapel').innerText = doc.mapel;
+            el('zoom-qr-id').innerText = '#' + String(doc.id).slice(-5);
             const container = el('zoom-qr-container');
             container.innerHTML = '';
-            if(typeof QRCode !== 'undefined') {
-                const qrText = item.link && item.link.trim() !== '' 
-                    ? item.link.trim() 
-                    : `[${item.jenis}] ${item.mapel} - ${item.judul} (ID:#${String(item.id).slice(-5)})`;
-                
+            if (typeof QRCode !== 'undefined') {
                 new QRCode(container, {
-                    text: qrText,
+                    text: getQrContentForDoc(doc),
                     width: 240,
                     height: 240,
-                    colorDark : "#000000",
-                    colorLight : "#ffffff",
-                    correctLevel : QRCode.CorrectLevel.L
+                    colorDark: "#000000",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.L
                 });
             }
             showModal('modal-barcode-zoom');
@@ -2033,445 +1987,445 @@
         function openPerangkatModal() {
             el('perangkat-id').value = '';
             el('form-perangkat').reset();
-            el('modal-perangkat-title').innerText = 'Tambah Perangkat Ajar';
+            el('modal-perangkat-title').innerText = "Tambah Perangkat Ajar";
             showModal('modal-perangkat');
         }
 
         function closePerangkatModal() { hideModal('modal-perangkat'); }
 
-        function editPerangkat(item) {
-            el('perangkat-id').value = item.id;
-            el('perangkat-jenis').value = item.jenis;
-            el('perangkat-mapel').value = item.mapel;
-            el('perangkat-judul').value = item.judul;
-            el('perangkat-link').value = item.link || '';
-            el('perangkat-catatan').value = item.catatan || '';
-            el('modal-perangkat-title').innerText = 'Edit Perangkat Ajar';
+        function editPerangkat(doc) {
+            el('perangkat-id').value = doc.id;
+            el('perangkat-jenis').value = doc.jenis;
+            el('perangkat-mapel').value = doc.mapel;
+            el('perangkat-judul').value = doc.judul;
+            el('perangkat-link').value = doc.link || '';
+            el('perangkat-catatan').value = doc.catatan || '';
+            el('modal-perangkat-title').innerText = "Edit Perangkat Ajar";
             showModal('modal-perangkat');
         }
 
         function submitPerangkat(e) {
             e.preventDefault();
             const id = el('perangkat-id').value;
-            const newItem = {
-                id: id ? parseInt(id) : Date.now(),
+            const item = {
+                id: id || ('dok_' + Date.now()),
                 jenis: el('perangkat-jenis').value,
-                mapel: el('perangkat-mapel').value,
-                judul: el('perangkat-judul').value,
-                link: el('perangkat-link').value,
-                catatan: el('perangkat-catatan').value
+                mapel: el('perangkat-mapel').value.trim(),
+                judul: el('perangkat-judul').value.trim(),
+                link: el('perangkat-link').value.trim(),
+                catatan: el('perangkat-catatan').value.trim()
             };
 
-            if(id) {
+            if (id) {
                 const idx = state.perangkat.findIndex(p => p.id == id);
-                if(idx > -1) state.perangkat[idx] = newItem;
+                if (idx > -1) state.perangkat[idx] = item;
             } else {
-                state.perangkat.push(newItem);
+                state.perangkat.push(item);
             }
 
             localStorage.setItem('app_perangkat', JSON.stringify(state.perangkat));
-            showToast('Perangkat Pembelajaran disimpan!');
             closePerangkatModal();
             renderPerangkat();
+            showToast("Perangkat ajar & barcode berhasil disimpan!");
         }
 
-        function deletePerangkat(id) {
-            Dialog.confirm("Hapus Perangkat", "Yakin ingin menghapus dokumen perangkat pembelajaran ini?", () => {
-                state.perangkat = state.perangkat.filter(p => p.id !== id);
+        function deletePerangkat(idx) {
+            Dialog.confirm("Hapus Dokumen", "Yakin ingin menghapus dokumen perangkat ajar ini?", () => {
+                state.perangkat.splice(idx, 1);
                 localStorage.setItem('app_perangkat', JSON.stringify(state.perangkat));
-                showToast("Dokumen dihapus");
                 renderPerangkat();
+                showToast("Dokumen dihapus");
             });
         }
-
 
         /**
          * =========================================
-         * PENGATURAN (100% WAJIB BISA DISIMPAN)
+         * 9. PENGATURAN, PROFIL GURU & BACKUP JSON
          * =========================================
          */
         function populatePengaturanForm() {
-            const p = state.pengaturan || {};
-            const fields = ['tahun_ajaran', 'kelas', 'kepala_sekolah', 'nip_kepsek', 'guru_kelas', 'nip_guru', 'kop_baris_1', 'kop_baris_2', 'kop_baris_3', 'kop_baris_4'];
-            fields.forEach(f => {
-                if(el(`set-${f}`) && p[f] !== undefined) el(`set-${f}`).value = p[f];
-            });
+            const c = state.pengaturan || {};
+            if (el('set-tahun_ajaran')) el('set-tahun_ajaran').value = c.tahun_ajaran || '2026/2027';
+            if (el('set-kelas')) el('set-kelas').value = c.kelas || 'VI (Enam)';
+            if (el('set-kepala_sekolah')) el('set-kepala_sekolah').value = c.kepala_sekolah || '';
+            if (el('set-nip_kepsek')) el('set-nip_kepsek').value = c.nip_kepsek || '';
+            if (el('set-guru_kelas')) el('set-guru_kelas').value = c.guru_kelas || '';
+            if (el('set-nip_guru')) el('set-nip_guru').value = c.nip_guru || '';
+            if (el('set-kop_baris_1')) el('set-kop_baris_1').value = c.kop_baris_1 || 'PEMERINTAH KABUPATEN JEMBER';
+            if (el('set-kop_baris_2')) el('set-kop_baris_2').value = c.kop_baris_2 || 'DINAS PENDIDIKAN';
+            if (el('set-kop_baris_3')) el('set-kop_baris_3').value = c.kop_baris_3 || c.nama_sekolah || 'SD NEGERI 01 CONTOH';
+            if (el('set-kop_baris_4')) el('set-kop_baris_4').value = c.kop_baris_4 || '';
 
-            if(p.logo_kiri_base64) {
-                el('set-logo_kiri_base64').value = p.logo_kiri_base64;
-                el('preview-logo-kiri').src = p.logo_kiri_base64;
+            if (c.logo_kiri_base64) {
+                el('set-logo_kiri_base64').value = c.logo_kiri_base64;
+                el('preview-logo-kiri').src = c.logo_kiri_base64;
             }
-            if(p.logo_kanan_base64) {
-                el('set-logo_kanan_base64').value = p.logo_kanan_base64;
-                el('preview-logo-kanan').src = p.logo_kanan_base64;
+            if (c.logo_kanan_base64) {
+                el('set-logo_kanan_base64').value = c.logo_kanan_base64;
+                el('preview-logo-kanan').src = c.logo_kanan_base64;
             }
         }
 
         async function savePengaturan(e) {
             if (e) e.preventDefault();
-            const p = { ...(state.pengaturan || {}) };
-            const fields = ['tahun_ajaran', 'kelas', 'kepala_sekolah', 'nip_kepsek', 'guru_kelas', 'nip_guru', 'kop_baris_1', 'kop_baris_2', 'kop_baris_3', 'kop_baris_4', 'logo_kiri_base64', 'logo_kanan_base64'];
-            
-            fields.forEach(f => {
-                const inputEl = el(`set-${f}`);
-                if (inputEl) p[f] = inputEl.value;
-            });
-            p.nama_sekolah = p.kop_baris_3 || p.nama_sekolah || '';
+            const payload = {
+                nama_sekolah: el('set-kop_baris_3').value.trim(),
+                tahun_ajaran: el('set-tahun_ajaran').value.trim(),
+                kelas: el('set-kelas').value.trim(),
+                kepala_sekolah: el('set-kepala_sekolah').value.trim(),
+                nip_kepsek: el('set-nip_kepsek').value.trim(),
+                guru_kelas: el('set-guru_kelas').value.trim(),
+                nip_guru: el('set-nip_guru').value.trim(),
+                kop_baris_1: el('set-kop_baris_1').value.trim(),
+                kop_baris_2: el('set-kop_baris_2').value.trim(),
+                kop_baris_3: el('set-kop_baris_3').value.trim(),
+                kop_baris_4: el('set-kop_baris_4').value.trim(),
+                logo_kiri_base64: el('set-logo_kiri_base64').value,
+                logo_kanan_base64: el('set-logo_kanan_base64').value
+            };
 
-            showLoader("Menyimpan Pengaturan...");
-            
-            // Simpan ke state & cache lokal terlebih dahulu agar pasti tersimpan seketika
-            state.pengaturan = p;
-            try {
-                localStorage.setItem('app_pengaturan_cache', JSON.stringify(p));
-            } catch (storageErr) {
-                const pLight = { ...p, logo_kiri_base64: '', logo_kanan_base64: '' };
-                localStorage.setItem('app_pengaturan_cache', JSON.stringify(pLight));
-            }
+            state.pengaturan = payload;
+            localStorage.setItem('app_pengaturan_cache', JSON.stringify(payload));
             updateHeaderProfile();
             renderDashboard();
 
+            showLoader("Menyimpan pengaturan...");
             try {
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 8000);
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({ action: 'save_pengaturan', payload: p }),
-                    signal: controller.signal
-                });
-                clearTimeout(timeoutId);
-                const res = await response.json();
-                if (res.status === 'error') throw new Error(res.message);
-                showToast("Seluruh Pengaturan Berhasil Disimpan ke Database!");
+                await fetchAPI('save_pengaturan', payload);
+                showToast("Seluruh pengaturan berhasil disimpan!");
             } catch (err) {
-                showToast("Pengaturan Berhasil Disimpan!");
+                showToast("Pengaturan berhasil disimpan di perangkat!");
             } finally {
                 hideLoader();
             }
         }
 
-        async function exportAllData() {
-            showLoader("Menyiapkan Ekspor Data...");
+        function openProfilModal() {
+            const nama = (state.user?.nama_lengkap && state.user.nama_lengkap !== 'Admin Sekolah' && state.user.nama_lengkap !== 'Admin') 
+                ? state.user.nama_lengkap 
+                : (state.pengaturan?.guru_kelas || 'Guru yang Bertugas');
+            el('profil-nama').value = nama;
+            el('profil-password').value = '';
+            el('profil-base64').value = state.user?.foto_profil_base64 || '';
+            el('preview-profil').src = state.user?.foto_profil_base64 || `https://placehold.co/100x100/2563eb/ffffff?text=${encodeURIComponent(nama.charAt(0).toUpperCase())}`;
+            showModal('modal-profil');
+        }
+
+        function closeProfilModal() { hideModal('modal-profil'); }
+
+        async function saveProfil(e) {
+            e.preventDefault();
+            const namaBaru = el('profil-nama').value.trim();
+            const passBaru = el('profil-password').value.trim();
+            const fotoBaru = el('profil-base64').value;
+
+            state.user = {
+                ...state.user,
+                nama_lengkap: namaBaru,
+                foto_profil_base64: fotoBaru
+            };
+            localStorage.setItem('app_user', JSON.stringify(state.user));
+            localStorage.setItem('app_user_profile', JSON.stringify(state.user));
+            updateHeaderProfile();
+
+            showLoader("Menyimpan profil guru...");
             try {
-                const data = await fetchAPI('export_all');
-                // Tambahkan data jurnal (lokal) ke dalam ekspor
-                data.jurnal = state.jurnal || [];
-                
-                const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement("a");
-                a.href = url;
-                a.download = `Backup_App_Guru_${new Date().toISOString().slice(0,10)}.json`;
-                a.click();
-                
-                showToast("Seluruh Data Berhasil Diekspor!");
-            } catch(e) {
-                Dialog.show("Gagal", "Terjadi kesalahan saat mengekspor data.");
+                await fetchAPI('update_profil', {
+                    id: state.user.id || 'u1',
+                    nama_lengkap: namaBaru,
+                    password: passBaru,
+                    foto_profil_base64: fotoBaru
+                });
+                showToast("Profil guru berhasil diperbarui!");
+            } catch (err) {
+                showToast("Profil guru disimpan di perangkat!");
+            } finally {
+                hideLoader();
+                closeProfilModal();
             }
-            hideLoader();
+        }
+
+        async function exportAllData() {
+            showLoader("Menyiapkan file backup...");
+            try {
+                let serverData = {};
+                try {
+                    serverData = await fetchAPI('export_all');
+                } catch (e) {
+                    serverData = {
+                        siswa: state.siswa,
+                        absensi: state.absensi,
+                        nilai: state.nilai,
+                        pengaturan: Object.keys(state.pengaturan).map(k => ({ key: k, value: state.pengaturan[k] }))
+                    };
+                }
+                const fullBackup = {
+                    ...serverData,
+                    jurnal: state.jurnal,
+                    perangkat: state.perangkat,
+                    exported_at: new Date().toISOString()
+                };
+                downloadFile(JSON.stringify(fullBackup, null, 2), `Backup_EduAdmin_${new Date().toISOString().slice(0,10)}.json`, 'application/json');
+                showToast("Backup JSON berhasil diunduh!");
+            } finally {
+                hideLoader();
+            }
         }
 
         function handleImportData(event) {
             const file = event.target.files[0];
-            if(!file) return;
-            
+            if (!file) return;
             const reader = new FileReader();
-            reader.onload = async (e) => {
+            reader.onload = async function(e) {
                 try {
-                    const dataToImport = JSON.parse(e.target.result);
-                    
-                    Dialog.confirm("Peringatan Impor", "Data yang ada saat ini di Server (Siswa, Absen, Nilai) akan DITIMPA SEPENUHNYA oleh file backup ini. Lanjutkan?", async () => {
-                        showLoader("Mengimpor Seluruh Data...");
-                        try {
-                            await fetchAPI('import_all', dataToImport);
-                            
-                            // Pulihkan jurnal lokal jika ada
-                            if(dataToImport.jurnal) {
-                                state.jurnal = dataToImport.jurnal;
-                                localStorage.setItem('app_jurnal', JSON.stringify(state.jurnal));
-                            }
-                            
-                            showToast("Impor Berhasil! Memuat ulang sistem...");
-                            setTimeout(() => location.reload(), 1500);
-                        } catch(err) {
-                            Dialog.show("Gagal", "Gagal mengimpor ke server database.");
-                        }
-                        hideLoader();
-                    });
+                    const parsed = JSON.parse(e.target.result);
+                    showLoader("Memulihkan data...");
+                    if (Array.isArray(parsed.siswa)) {
+                        state.siswa = parsed.siswa;
+                        localStorage.setItem('app_siswa_cache', JSON.stringify(state.siswa));
+                    }
+                    if (Array.isArray(parsed.jurnal)) {
+                        state.jurnal = parsed.jurnal;
+                        localStorage.setItem('app_jurnal', JSON.stringify(state.jurnal));
+                    }
+                    if (Array.isArray(parsed.perangkat)) {
+                        state.perangkat = parsed.perangkat;
+                        localStorage.setItem('app_perangkat', JSON.stringify(state.perangkat));
+                    }
+                    if (Array.isArray(parsed.pengaturan)) {
+                        const cfgObj = {};
+                        parsed.pengaturan.forEach(r => cfgObj[r.key] = r.value);
+                        state.pengaturan = cfgObj;
+                        localStorage.setItem('app_pengaturan_cache', JSON.stringify(cfgObj));
+                        populatePengaturanForm();
+                    }
+                    try { await fetchAPI('import_all', parsed); } catch (err) {}
+                    renderDashboard();
+                    showToast("Seluruh data berhasil dipulihkan!");
                 } catch (err) {
-                    Dialog.show("Gagal", "Format file JSON tidak valid.");
+                    Dialog.show("Gagal Restore", "File JSON tidak valid atau rusak.");
+                } finally {
+                    hideLoader();
+                    event.target.value = '';
                 }
             };
             reader.readAsText(file);
-            event.target.value = ''; // Reset input
         }
-
 
         /**
          * =========================================
-         * PROFIL USER (GURU YANG BERTUGAS)
-         * =========================================
-         */
-        function openProfilModal() {
-            const currentName = (state.user.nama_lengkap && state.user.nama_lengkap !== 'Admin Sekolah' && state.user.nama_lengkap !== 'Admin')
-                ? state.user.nama_lengkap
-                : (state.pengaturan?.guru_kelas || 'Guru yang Bertugas');
-            el('profil-nama').value = currentName;
-            el('profil-password').value = '';
-            el('profil-base64').value = state.user.foto_profil_base64 || '';
-            
-            if(state.user.foto_profil_base64) {
-                el('preview-profil').src = state.user.foto_profil_base64;
-            } else {
-                el('preview-profil').src = `https://placehold.co/100x100/2563eb/ffffff?text=${encodeURIComponent(currentName.charAt(0).toUpperCase())}`;
-            }
-            showModal('modal-profil');
-        }
-        function closeProfilModal() { hideModal('modal-profil'); }
-        
-        async function saveProfil(e) {
-            e.preventDefault();
-            const payload = {
-                id: state.user.id,
-                nama_lengkap: el('profil-nama').value.trim(),
-                password: el('profil-password').value,
-                foto_profil_base64: el('profil-base64').value
-            };
-            if(!payload.password) delete payload.password; 
-
-            state.user.nama_lengkap = payload.nama_lengkap;
-            state.user.role = 'Guru yang Bertugas';
-            state.user.foto_profil_base64 = payload.foto_profil_base64;
-            localStorage.setItem('app_user', JSON.stringify(state.user));
-            localStorage.setItem('app_user_profile', JSON.stringify(state.user));
-            updateHeaderProfile();
-            closeProfilModal();
-            showToast("Foto & Profil Guru Bertugas diperbarui!");
-
-            try {
-                await fetchAPI('update_profil', payload);
-            } catch(err) {}
-        }
-
-        function showModal(id) {
-            show(id);
-            setTimeout(() => el(id).children[0].classList.replace('scale-95', 'scale-100'), 10);
-            setTimeout(() => el(id).classList.replace('opacity-0', 'opacity-100'), 10);
-        }
-        function hideModal(id) {
-            el(id).children[0].classList.replace('scale-100', 'scale-95');
-            el(id).classList.replace('opacity-100', 'opacity-0');
-            setTimeout(() => hide(id), 300);
-        }
-
-
-        /**
-         * =========================================
-         * CETAK LAPORAN F4 (PRINT ENGINE)
+         * 10. SISTEM CETAK F4 (SEMUA TOMBOL CETAK BERFUNGSI 100%)
          * =========================================
          */
         function printView(type) {
-            const p = state.pengaturan || {};
+            const cfg = state.pengaturan || {};
             
-            // 1. Setup Kop Surat (4 Baris)
-            el('print-kop-1').innerText = p.kop_baris_1 || 'PEMERINTAH KABUPATEN / KOTA';
-            el('print-kop-2').innerText = p.kop_baris_2 || 'DINAS PENDIDIKAN';
-            el('print-kop-3').innerText = p.kop_baris_3 || p.nama_sekolah || 'NAMA SEKOLAH';
-            el('print-kop-4').innerText = p.kop_baris_4 || '';
-            
-            if(p.logo_kiri_base64) {
-                el('print-logo-kiri').src = p.logo_kiri_base64;
+            // Isi Kop Surat
+            el('print-kop-1').innerText = cfg.kop_baris_1 || 'PEMERINTAH KABUPATEN';
+            el('print-kop-2').innerText = cfg.kop_baris_2 || 'DINAS PENDIDIKAN';
+            el('print-kop-3').innerText = cfg.kop_baris_3 || cfg.nama_sekolah || 'SD NEGERI';
+            el('print-kop-4').innerText = cfg.kop_baris_4 || '';
+
+            if (cfg.logo_kiri_base64) {
+                el('print-logo-kiri').src = cfg.logo_kiri_base64;
                 el('print-logo-kiri').style.display = 'block';
-            } else { el('print-logo-kiri').style.display = 'none'; }
-            
-            if(p.logo_kanan_base64) {
-                el('print-logo-kanan').src = p.logo_kanan_base64;
+            } else {
+                el('print-logo-kiri').style.display = 'none';
+            }
+
+            if (cfg.logo_kanan_base64) {
+                el('print-logo-kanan').src = cfg.logo_kanan_base64;
                 el('print-logo-kanan').style.display = 'block';
-            } else { el('print-logo-kanan').style.display = 'none'; }
+            } else {
+                el('print-logo-kanan').style.display = 'none';
+            }
 
-            // 2. Setup Header & Footer
-            el('print-lbl-ta').innerText = p.tahun_ajaran || '........';
-            el('print-lbl-kelas').innerText = p.kelas || '........';
-            
-            const namaGuruBertugas = (state.user?.nama_lengkap && state.user.nama_lengkap !== 'Admin Sekolah' && state.user.nama_lengkap !== 'Admin')
-                ? state.user.nama_lengkap
-                : (p.guru_kelas || '.......................');
+            el('print-lbl-ta').innerText = cfg.tahun_ajaran || '2026/2027';
+            el('print-lbl-kelas').innerText = cfg.kelas || '-';
 
-            el('print-ttd-kepsek-nama').innerText = p.kepala_sekolah || '.......................';
-            el('print-ttd-kepsek-nip').innerText = p.nip_kepsek || '.......................';
-            el('print-ttd-guru-nama').innerText = namaGuruBertugas;
-            el('print-ttd-guru-nip').innerText = p.nip_guru || '.......................';
-            
+            // Isi Tanda Tangan
+            const namaGuruTtd = cfg.guru_kelas || (state.user?.nama_lengkap !== 'Guru yang Bertugas' ? state.user?.nama_lengkap : '') || '....................................';
+            el('print-ttd-kepsek-nama').innerText = cfg.kepala_sekolah || '....................................';
+            el('print-ttd-kepsek-nip').innerText = cfg.nip_kepsek || '........................';
+            el('print-ttd-guru-nama').innerText = namaGuruTtd;
+            el('print-ttd-guru-nip').innerText = cfg.nip_guru || '........................';
+
+            const months = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
             const now = new Date();
-            const mos = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
-            el('print-tgl-ttd').innerText = `Jember, ${now.getDate()} ${mos[now.getMonth()]} ${now.getFullYear()}`;
+            el('print-tgl-ttd').innerText = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
 
-            // 3. Generate Table
-            const printContainer = el('print-table-container');
-            printContainer.innerHTML = ''; 
-            el('print-keterangan-kiri').style.display = 'block';
+            const container = el('print-table-container');
+            container.innerHTML = '';
 
-            if(type === 'absensi') {
-                el('print-judul-laporan').innerText = "DAFTAR HADIR SISWA";
-                el('print-keterangan-kiri').innerText = `Bulan : ${el('filter-bulan').value} ${el('filter-tahun').value}`;
-                
-                let tableHTML = `<table class="w-full border-collapse print-table mt-4">
+            if (type === 'absensi') {
+                const bulan = el('filter-bulan').value;
+                const tahun = el('filter-tahun').value;
+                el('print-judul-laporan').innerText = 'DAFTAR HADIR SISWA';
+                el('print-keterangan-kiri').innerText = `Bulan : ${bulan} ${tahun}`;
+
+                let thDays = days.map(d => `<th style="width:20px;">${d}</th>`).join('');
+                let rowsHtml = state.siswa.map((s, idx) => {
+                    const rec = getOrCreateAbsenRecord(s.id);
+                    hitungRekapBulananRecord(rec);
+                    const tdDays = days.map(d => `<td>${rec[`tgl_${d}`] || ''}</td>`).join('');
+                    return `<tr>
+                        <td>${idx + 1}</td>
+                        <td class="print-text-left" style="white-space:nowrap;">${escapeHtml(s.nama_siswa)}</td>
+                        ${tdDays}
+                        <td>${rec.s || ''}</td>
+                        <td>${rec.i || ''}</td>
+                        <td>${rec.a || ''}</td>
+                        <td>${rec.jml || ''}</td>
+                        <td class="print-text-left">${escapeHtml(rec.keterangan || '')}</td>
+                    </tr>`;
+                }).join('');
+
+                container.innerHTML = `<table class="print-table">
                     <thead>
                         <tr>
-                            <th rowspan="2" class="w-[30px]">NO</th>
-                            <th rowspan="2" class="print-text-left w-[150px]">NAMA SISWA</th>
-                            <th colspan="31">TANGGAL</th>
-                            <th rowspan="2" class="w-[20px]">S</th><th rowspan="2" class="w-[20px]">I</th><th rowspan="2" class="w-[20px]">A</th><th rowspan="2" class="w-[25px]">Jml</th><th rowspan="2">KET</th>
+                            <th rowspan="2" style="width:28px;">No</th>
+                            <th rowspan="2" style="min-width:150px;">Nama Siswa</th>
+                            <th colspan="31">Tanggal</th>
+                            <th rowspan="2" style="width:24px;">S</th>
+                            <th rowspan="2" style="width:24px;">I</th>
+                            <th rowspan="2" style="width:24px;">A</th>
+                            <th rowspan="2" style="width:28px;">Jml</th>
+                            <th rowspan="2" style="min-width:90px;">Keterangan</th>
                         </tr>
-                        <tr>`;
-                days.forEach(d => tableHTML += `<th class="w-[12px] font-normal">${d}</th>`);
-                tableHTML += `</tr></thead><tbody>`;
-                
-                state.siswa.forEach((s, idx) => {
-                    let a = state.absensi.find(x => x.id_siswa == s.id) || {};
-                    tableHTML += `<tr><td>${idx+1}</td><td class="print-text-left whitespace-nowrap font-bold">${s.nama_siswa}</td>`;
-                    days.forEach(d => tableHTML += `<td>${a['tgl_'+d] || ''}</td>`);
-                    tableHTML += `<td>${a.s||''}</td><td>${a.i||''}</td><td>${a.a||''}</td><td>${a.jml||''}</td><td>${a.keterangan||''}</td></tr>`;
-                });
-                tableHTML += `</tbody></table>`;
-                printContainer.innerHTML = tableHTML;
-
-            } else if (type === 'nilai') {
-                el('print-judul-laporan').innerText = "DAFTAR NILAI SISWA";
-                el('print-keterangan-kiri').innerText = `Mata Pelajaran : ${el('filter-mapel').value || '...'} | Semester : ${el('filter-semester').value}`;
-                
-                let tableHTML = `<table class="w-full border-collapse print-table mt-4">
-                    <thead>
-                        <tr>
-                            <th rowspan="2" class="w-[30px]">NO</th>
-                            <th rowspan="2" class="print-text-left w-[200px]">NAMA SISWA</th>
-                            <th colspan="6">FORMATIF LINGKUP MATERI (TP)</th>
-                            <th colspan="5">SUMATIF LINGKUP MATERI</th>
-                            <th rowspan="2" class="w-[50px]">SUMATIF<br>AKHIR</th>
-                        </tr>
-                        <tr>`;
-                for(let i=1;i<=6;i++) tableHTML += `<th class="w-[25px] font-normal">TP${i}</th>`;
-                for(let i=1;i<=5;i++) tableHTML += `<th class="w-[25px] font-normal">LM${i}</th>`;
-                tableHTML += `</tr></thead><tbody>`;
-                
-                state.siswa.forEach((s, idx) => {
-                    let n = state.nilai.find(x => x.id_siswa == s.id) || {};
-                    tableHTML += `<tr><td>${idx+1}</td><td class="print-text-left whitespace-nowrap font-bold">${s.nama_siswa}</td>`;
-                    for(let i=1;i<=6;i++) tableHTML += `<td>${n['tp'+i] || ''}</td>`;
-                    for(let i=1;i<=5;i++) tableHTML += `<td>${n['lm'+i] || ''}</td>`;
-                    tableHTML += `<td class="font-bold">${n.sumatif_akhir || ''}</td></tr>`;
-                });
-                tableHTML += `</tbody></table>`;
-                printContainer.innerHTML = tableHTML;
+                        <tr>${thDays}</tr>
+                    </thead>
+                    <tbody>${rowsHtml}</tbody>
+                </table>`;
             } 
-            else if (type === 'jurnal') {
-                el('print-judul-laporan').innerText = "JURNAL KEGIATAN PEMBELAJARAN";
-                el('print-keterangan-kiri').style.display = 'none';
-                
-                syncJurnalUItoState();
-                
-                let tableHTML = `<table class="w-full border-collapse print-table mt-4">
+            else if (type === 'nilai') {
+                const mapel = el('filter-mapel').value.trim() || 'Matematika';
+                const sem = el('filter-semester').value;
+                el('print-judul-laporan').innerText = `DAFTAR NILAI MATA PELAJARAN ${mapel.toUpperCase()}`;
+                el('print-keterangan-kiri').innerText = `Semester : ${sem}`;
+
+                const fields = ['tp1', 'tp2', 'tp3', 'tp4', 'tp5', 'tp6', 'lm1', 'lm2', 'lm3', 'lm4', 'lm5', 'sumatif_akhir'];
+                let rowsHtml = state.siswa.map((s, idx) => {
+                    const rec = getOrCreateNilaiRecord(s.id);
+                    const tds = fields.map(f => `<td>${rec[f] !== undefined ? rec[f] : ''}</td>`).join('');
+                    return `<tr>
+                        <td>${idx + 1}</td>
+                        <td class="print-text-left">${escapeHtml(s.nama_siswa)}</td>
+                        ${tds}
+                    </tr>`;
+                }).join('');
+
+                container.innerHTML = `<table class="print-table">
                     <thead>
                         <tr>
-                            <th class="w-[80px]">Hari/Tanggal</th>
-                            <th class="w-[120px]">Tema/Mupel</th>
-                            <th class="w-[80px]">KD</th>
+                            <th rowspan="2" style="width:30px;">No</th>
+                            <th rowspan="2" style="min-width:180px;">Nama Siswa</th>
+                            <th colspan="6">Formatif Lingkup Materi (TP)</th>
+                            <th colspan="5">Sumatif Lingkup Materi (LM)</th>
+                            <th rowspan="2" style="width:55px;">Sumatif Akhir (SAS)</th>
+                        </tr>
+                        <tr>
+                            <th>TP 1</th><th>TP 2</th><th>TP 3</th><th>TP 4</th><th>TP 5</th><th>TP 6</th>
+                            <th>LM 1</th><th>LM 2</th><th>LM 3</th><th>LM 4</th><th>LM 5</th>
+                        </tr>
+                    </thead>
+                    <tbody>${rowsHtml}</tbody>
+                </table>`;
+            }
+            else if (type === 'jurnal') {
+                el('print-judul-laporan').innerText = 'JURNAL KEGIATAN PEMBELAJARAN HARIAN';
+                el('print-keterangan-kiri').innerText = `Guru Kelas : ${namaGuruTtd}`;
+
+                let rowsHtml = state.jurnal.map((j, idx) => `<tr>
+                    <td>${idx + 1}</td>
+                    <td>${escapeHtml(j.tanggal || '')}</td>
+                    <td class="print-text-left">${escapeHtml(j.tema || '')}</td>
+                    <td>${escapeHtml(j.kd || '')}</td>
+                    <td class="print-text-left">${escapeHtml(j.materi || '')}</td>
+                    <td class="print-text-left">${escapeHtml(j.kegiatan || '')}</td>
+                    <td>${escapeHtml(j.penilaian || '')}</td>
+                </tr>`).join('');
+
+                container.innerHTML = `<table class="print-table">
+                    <thead>
+                        <tr>
+                            <th style="width:28px;">No</th>
+                            <th style="width:100px;">Hari/Tanggal</th>
+                            <th style="width:130px;">Tema / Mupel</th>
+                            <th style="width:80px;">KD / TP</th>
                             <th>Materi Pokok</th>
                             <th>Kegiatan Pembelajaran</th>
-                            <th class="w-[120px]">Penilaian</th>
+                            <th style="width:90px;">Penilaian</th>
                         </tr>
-                    </thead><tbody class="align-top">`;
-                
-                state.jurnal.forEach(j => {
-                    const pnl = (str) => (str||'').replace(/\n/g, '<br>');
-                    tableHTML += `<tr>
-                        <td class="print-text-left">${pnl(j.tanggal)}</td>
-                        <td class="print-text-left">${pnl(j.tema)}</td>
-                        <td>${pnl(j.kd)}</td>
-                        <td class="print-text-left">${pnl(j.materi)}</td>
-                        <td class="print-text-left">${pnl(j.kegiatan)}</td>
-                        <td class="print-text-left">${pnl(j.penilaian)}</td>
-                    </tr>`;
-                });
-                tableHTML += `</tbody></table>`;
-                printContainer.innerHTML = tableHTML;
+                    </thead>
+                    <tbody>${rowsHtml || '<tr><td colspan="7">Belum ada data jurnal</td></tr>'}</tbody>
+                </table>`;
             }
             else if (type === 'perangkat') {
-                el('print-judul-laporan').innerText = "DAFTAR PERANGKAT PEMBELAJARAN";
-                el('print-keterangan-kiri').style.display = 'none';
-                
-                let tableHTML = `<table class="w-full border-collapse print-table mt-4">
+                el('print-judul-laporan').innerText = 'DAFTAR PERANGKAT PEMBELAJARAN';
+                el('print-keterangan-kiri').innerText = `Guru Kelas : ${namaGuruTtd}`;
+
+                let rowsHtml = state.perangkat.map((doc, idx) => `<tr>
+                    <td>${idx + 1}</td>
+                    <td><strong>${escapeHtml(doc.jenis)}</strong></td>
+                    <td>${escapeHtml(doc.mapel)}</td>
+                    <td class="print-text-left">${escapeHtml(doc.judul)}</td>
+                    <td class="print-text-left">${escapeHtml(doc.catatan || '-')}</td>
+                    <td style="width:115px; padding:6px;">
+                        <div id="print-qr-${idx}" style="display:flex; justify-content:center;"></div>
+                        <div style="font-size:9px; font-family:monospace; margin-top:2px;">#${String(doc.id).slice(-5)}</div>
+                    </td>
+                </tr>`).join('');
+
+                container.innerHTML = `<table class="print-table">
                     <thead>
                         <tr>
-                            <th class="w-[30px]">NO</th>
-                            <th class="w-[100px]">JENIS</th>
-                            <th class="w-[110px]">MATA PELAJARAN</th>
-                            <th class="w-[170px]">JUDUL / MATERI POKOK</th>
-                            <th>RINGKASAN / TUJUAN PEMBELAJARAN</th>
-                            <th class="w-[115px]">BARCODE</th>
+                            <th style="width:30px;">No</th>
+                            <th style="width:100px;">Jenis</th>
+                            <th style="width:120px;">Mata Pelajaran</th>
+                            <th>Judul / Materi Pokok</th>
+                            <th>Ringkasan / Catatan</th>
+                            <th style="width:115px;">BARCODE</th>
                         </tr>
-                    </thead><tbody class="align-middle">`;
-                
-                if (state.perangkat.length === 0) {
-                    tableHTML += `<tr><td colspan="6" class="py-6 text-center italic">Belum ada data perangkat pembelajaran yang ditambahkan.</td></tr>`;
-                } else {
-                    state.perangkat.forEach((item, idx) => {
-                        tableHTML += `<tr>
-                            <td>${idx + 1}</td>
-                            <td class="font-bold">${item.jenis}</td>
-                            <td>${item.mapel}</td>
-                            <td class="print-text-left font-bold">${item.judul}</td>
-                            <td class="print-text-left">${(item.catatan || '-').replace(/\n/g, '<br>')}</td>
-                            <td class="p-2 text-center">
-                                <div id="qr-print-${item.id}" class="inline-block mx-auto"></div>
-                                <div class="text-[9px] font-mono font-bold mt-1">#${String(item.id).slice(-5)}</div>
-                            </td>
-                        </tr>`;
+                    </thead>
+                    <tbody>${rowsHtml || '<tr><td colspan="6">Belum ada dokumen perangkat ajar</td></tr>'}</tbody>
+                </table>`;
+
+                // Render & konversi canvas QR menjadi IMG agar 100% muncul di print preview semua browser
+                if (typeof QRCode !== 'undefined') {
+                    state.perangkat.forEach((doc, idx) => {
+                        const target = el(`print-qr-${idx}`);
+                        if (target) {
+                            new QRCode(target, {
+                                text: getQrContentForDoc(doc),
+                                width: 100,
+                                height: 100,
+                                colorDark: "#000000",
+                                colorLight: "#ffffff",
+                                correctLevel: QRCode.CorrectLevel.L
+                            });
+                            const canvas = target.querySelector('canvas');
+                            if (canvas) {
+                                const img = document.createElement('img');
+                                img.src = canvas.toDataURL('image/png');
+                                img.style.width = '100px';
+                                img.style.height = '100px';
+                                target.innerHTML = '';
+                                target.appendChild(img);
+                            }
+                        }
                     });
                 }
-                tableHTML += `</tbody></table>`;
-                printContainer.innerHTML = tableHTML;
-
-                // Render Barcode Besar (100x100 px) 1 per 1 & konversi canvas ke <img> agar 100% muncul saat cetak
-                state.perangkat.forEach(item => {
-                    const printQrEl = el(`qr-print-${item.id}`);
-                    if(printQrEl && typeof QRCode !== 'undefined') {
-                        printQrEl.innerHTML = '';
-                        const qrText = item.link && item.link.trim() !== '' 
-                            ? item.link.trim() 
-                            : `[${item.jenis}] ${item.mapel} - ${item.judul} (ID:#${String(item.id).slice(-5)})`;
-                        
-                        new QRCode(printQrEl, {
-                            text: qrText,
-                            width: 100,
-                            height: 100,
-                            colorDark : "#000000",
-                            colorLight : "#ffffff",
-                            correctLevel : QRCode.CorrectLevel.L
-                        });
-
-                        // Konversi canvas ke <img> supaya browser tidak menyembunyikan canvas saat window.print()
-                        setTimeout(() => {
-                            const canvas = printQrEl.querySelector('canvas');
-                            if (canvas) {
-                                const imgData = canvas.toDataURL('image/png');
-                                printQrEl.innerHTML = `<img src="${imgData}" style="width:100px;height:100px;display:block;margin:auto;" />`;
-                            }
-                        }, 100);
-                    }
-                });
             }
 
-            // 4. Aktifkan mode cetak pada body dan panggil dialog print
+            // Aktifkan mode cetak & buka dialog print
             document.body.classList.add('is-printing');
             setTimeout(() => {
                 window.print();
                 setTimeout(() => {
                     document.body.classList.remove('is-printing');
                 }, 500);
-            }, 500);
+            }, 300);
         }
-
     </script>
 </body>
 </html>
