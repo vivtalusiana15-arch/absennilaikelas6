@@ -145,6 +145,10 @@
                     <i class="fas fa-book w-5 text-center"></i> Jurnal Harian
                     <span class="absolute right-2 top-1/2 -translate-y-1/2 bg-amber-100 text-amber-700 text-[10px] px-1.5 py-0.5 rounded font-bold">Lokal</span>
                 </a>
+                <a href="#" onclick="navigate('perangkat')" id="nav-perangkat" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-50 text-slate-600 transition nav-item relative">
+                    <i class="fas fa-folder-open w-5 text-center"></i> Perangkat Ajar
+                    <span class="absolute right-2 top-1/2 -translate-y-1/2 bg-blue-100 text-blue-700 text-[10px] px-1.5 py-0.5 rounded font-bold">Baru</span>
+                </a>
                 
                 <p class="px-2 text-xs font-bold text-slate-400 uppercase mb-2 mt-6 tracking-wider">Sistem</p>
                 
@@ -303,11 +307,18 @@
                                     Tampilkan
                                 </button>
                             </div>
-                            <div class="flex items-center gap-3">
-                                <button onclick="saveAbsensi()" class="bg-emerald-500 text-white px-5 py-2 rounded-lg hover:bg-emerald-600 transition text-sm font-bold shadow-sm shadow-emerald-500/20">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <input type="file" id="import-absen-file" accept=".csv" class="hidden" onchange="importAbsenCSV(event)">
+                                <button onclick="document.getElementById('import-absen-file').click()" class="bg-amber-50 text-amber-700 border border-amber-200 px-3 py-2 rounded-lg hover:bg-amber-100 transition text-xs font-bold">
+                                    <i class="fas fa-file-import mr-1"></i> Impor CSV
+                                </button>
+                                <button onclick="exportAbsenCSV()" class="bg-blue-50 text-blue-700 border border-blue-200 px-3 py-2 rounded-lg hover:bg-blue-100 transition text-xs font-bold">
+                                    <i class="fas fa-file-export mr-1"></i> Ekspor CSV
+                                </button>
+                                <button onclick="saveAbsensi()" class="bg-emerald-500 text-white px-4 py-2 rounded-lg hover:bg-emerald-600 transition text-sm font-bold shadow-sm shadow-emerald-500/20">
                                     <i class="fas fa-save mr-1"></i> Simpan Data
                                 </button>
-                                <button onclick="printView('absensi')" class="bg-white text-slate-700 border border-slate-200 px-5 py-2 rounded-lg hover:bg-slate-50 transition text-sm font-bold shadow-sm">
+                                <button onclick="printView('absensi')" class="bg-white text-slate-700 border border-slate-200 px-4 py-2 rounded-lg hover:bg-slate-50 transition text-sm font-bold shadow-sm">
                                     <i class="fas fa-print mr-1"></i> Cetak F4
                                 </button>
                             </div>
@@ -355,11 +366,18 @@
                                     Tampilkan
                                 </button>
                             </div>
-                            <div class="flex items-center gap-3">
-                                <button onclick="saveNilai()" class="bg-emerald-500 text-white px-5 py-2 rounded-lg hover:bg-emerald-600 transition text-sm font-bold shadow-sm shadow-emerald-500/20">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <input type="file" id="import-nilai-file" accept=".csv" class="hidden" onchange="importNilaiCSV(event)">
+                                <button onclick="document.getElementById('import-nilai-file').click()" class="bg-amber-50 text-amber-700 border border-amber-200 px-3 py-2 rounded-lg hover:bg-amber-100 transition text-xs font-bold">
+                                    <i class="fas fa-file-import mr-1"></i> Impor CSV
+                                </button>
+                                <button onclick="exportNilaiCSV()" class="bg-blue-50 text-blue-700 border border-blue-200 px-3 py-2 rounded-lg hover:bg-blue-100 transition text-xs font-bold">
+                                    <i class="fas fa-file-export mr-1"></i> Ekspor CSV
+                                </button>
+                                <button onclick="saveNilai()" class="bg-emerald-500 text-white px-4 py-2 rounded-lg hover:bg-emerald-600 transition text-sm font-bold shadow-sm shadow-emerald-500/20">
                                     <i class="fas fa-save mr-1"></i> Simpan Data
                                 </button>
-                                <button onclick="printView('nilai')" class="bg-white text-slate-700 border border-slate-200 px-5 py-2 rounded-lg hover:bg-slate-50 transition text-sm font-bold shadow-sm">
+                                <button onclick="printView('nilai')" class="bg-white text-slate-700 border border-slate-200 px-4 py-2 rounded-lg hover:bg-slate-50 transition text-sm font-bold shadow-sm">
                                     <i class="fas fa-print mr-1"></i> Cetak F4
                                 </button>
                             </div>
@@ -433,6 +451,31 @@
                                     <!-- Rendered via JS -->
                                 </tbody>
                             </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VIEW: PERANGKAT PEMBELAJARAN (NEW) -->
+                <div id="view-perangkat" class="view-section hidden-view">
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col h-[calc(100vh-140px)] overflow-hidden">
+                        <div class="p-5 border-b border-slate-100 flex flex-wrap gap-4 justify-between items-center bg-white">
+                            <div>
+                                <h3 class="font-bold text-slate-800 text-lg">Perangkat Pembelajaran (Kurikulum Merdeka)</h3>
+                                <p class="text-xs text-slate-500">Kelola ATP, Modul Ajar, Prota & Promes (Tersimpan Lokal)</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="openPerangkatModal()" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition text-sm font-bold shadow-sm">
+                                    <i class="fas fa-plus mr-1"></i> Tambah Dokumen
+                                </button>
+                                <button onclick="printView('perangkat')" class="bg-white text-slate-700 border border-slate-200 px-4 py-2 rounded-lg hover:bg-slate-50 transition text-sm font-bold shadow-sm">
+                                    <i class="fas fa-print mr-1"></i> Cetak Daftar
+                                </button>
+                            </div>
+                        </div>
+                        <div class="p-6 flex-1 overflow-auto bg-slate-50/50">
+                            <div id="grid-perangkat" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                                <!-- Cards injected via JS -->
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -621,6 +664,52 @@
         </div>
     </div>
 
+    <!-- MODAL PERANGKAT PEMBELAJARAN -->
+    <div id="modal-perangkat" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[9950] flex items-center justify-center hidden-view transition-opacity duration-300 opacity-0">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg mx-4 overflow-hidden border border-slate-100">
+            <div class="flex justify-between items-center p-5 border-b border-slate-100 bg-slate-50">
+                <h3 class="text-lg font-bold text-slate-800" id="modal-perangkat-title">Tambah Perangkat Ajar</h3>
+                <button type="button" onclick="closePerangkatModal()" class="text-slate-400 hover:text-red-500 transition bg-white w-8 h-8 rounded-full flex items-center justify-center shadow-sm"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="form-perangkat" onsubmit="submitPerangkat(event)" class="p-6 space-y-4">
+                <input type="hidden" id="perangkat-id">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Jenis Perangkat</label>
+                        <select id="perangkat-jenis" required class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary bg-white">
+                            <option value="Modul Ajar">Modul Ajar / RPP</option>
+                            <option value="ATP">Alur Tujuan Pembelajaran (ATP)</option>
+                            <option value="CP">Capaian Pembelajaran (CP)</option>
+                            <option value="Prota">Program Tahunan (Prota)</option>
+                            <option value="Promes">Program Semester (Promes)</option>
+                            <option value="KKTP">Kriteria Ketercapaian (KKTP)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Mata Pelajaran</label>
+                        <input type="text" id="perangkat-mapel" required placeholder="Cth: Matematika" class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Judul / Materi Pokok</label>
+                    <input type="text" id="perangkat-judul" required placeholder="Cth: Modul Ajar Pecahan Bab 1" class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Tautan Google Drive / File URL (Opsional)</label>
+                    <input type="url" id="perangkat-link" placeholder="https://drive.google.com/..." class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Ringkasan / Catatan / Tujuan Pembelajaran</label>
+                    <textarea id="perangkat-catatan" rows="3" placeholder="Tuliskan ringkasan tujuan pembelajaran atau catatan..." class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary"></textarea>
+                </div>
+                <div class="flex justify-end gap-3 pt-4 border-t border-slate-100">
+                    <button type="button" onclick="closePerangkatModal()" class="px-5 py-2 font-medium rounded-lg text-slate-600 hover:bg-slate-100 transition text-sm">Batal</button>
+                    <button type="submit" class="bg-primary text-white px-5 py-2 rounded-lg font-bold hover:bg-blue-700 transition text-sm shadow-md">Simpan Perangkat</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- AREA CETAK F4 (Tampil saat window.print()) -->
     <div id="print-area" class="hidden-view bg-white">
         <!-- Kop Surat -->
@@ -685,7 +774,8 @@
             pengaturan: {},
             absensi: [],
             nilai: [],
-            jurnal: [] 
+            jurnal: [],
+            perangkat: []
         };
 
         const days = Array.from({length: 31}, (_, i) => i + 1);
@@ -830,6 +920,11 @@
             if(savedJurnal) {
                 state.jurnal = JSON.parse(savedJurnal);
             }
+
+            const savedPerangkat = localStorage.getItem('app_perangkat');
+            if(savedPerangkat) {
+                state.perangkat = JSON.parse(savedPerangkat);
+            }
         };
 
         // ===== INI ADALAH FUNGSI LOGIN YANG TELAH DIREVISI =====
@@ -934,8 +1029,7 @@
                 nav.classList.add('bg-primary', 'text-white', 'shadow-md', 'shadow-blue-500/20');
                 nav.classList.remove('text-slate-600', 'hover:bg-slate-50');
             }
-            
-            const titles = { dashboard: 'Dashboard', siswa: 'Data Master Siswa', absensi: 'Rekap Absensi Harian', nilai: 'Daftar Nilai Siswa', jurnal: 'Jurnal Harian Guru', pengaturan: 'Sistem & Pengaturan' };
+            const titles = { dashboard: 'Dashboard', siswa: 'Data Master Siswa', absensi: 'Rekap Absensi Harian', nilai: 'Daftar Nilai Siswa', jurnal: 'Jurnal Harian Guru', perangkat: 'Perangkat Pembelajaran', pengaturan: 'Sistem & Pengaturan' };
             el('header-title').innerText = titles[viewName];
 
             if(viewName === 'dashboard') renderDashboard();
@@ -943,6 +1037,7 @@
             if(viewName === 'absensi' && state.absensi.length === 0) loadAbsensiData(); 
             if(viewName === 'nilai' && state.nilai.length === 0) loadNilaiData();
             if(viewName === 'jurnal') renderJurnal();
+            if(viewName === 'perangkat') renderPerangkat();
         }
 
         /**
@@ -1159,6 +1254,74 @@
             } catch (err) {}
         }
 
+        function exportAbsenCSV() {
+            if(state.siswa.length === 0) return Dialog.show("Info", "Tidak ada data siswa untuk diekspor.");
+            const bulan = el('filter-bulan').value;
+            const tahun = el('filter-tahun').value;
+            
+            let headers = ['NISN', 'Nama Siswa', ...days.map(d => `Tgl_${d}`), 'S', 'I', 'A', 'Jml', 'Keterangan'];
+            let rows = [headers.join(',')];
+
+            document.querySelectorAll('#tbody-absensi tr').forEach((tr, idx) => {
+                let s = state.siswa[idx];
+                if(!s) return;
+                let tglVals = [];
+                tr.querySelectorAll('.tgl-input').forEach(inp => tglVals.push(`"${inp.value}"`));
+                
+                let sVal = el(`absen-s-${s.id}`).value || 0;
+                let iVal = el(`absen-i-${s.id}`).value || 0;
+                let aVal = el(`absen-a-${s.id}`).value || 0;
+                let jmlVal = el(`absen-jml-${s.id}`).value || 0;
+                let ketVal = `"${(el(`absen-ket-${s.id}`).value || '').replace(/"/g, '""')}"`;
+
+                rows.push([`"${s.nisn}"`, `"${s.nama_siswa}"`, ...tglVals, sVal, iVal, aVal, jmlVal, ketVal].join(','));
+            });
+
+            const blob = new Blob([rows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Absensi_${bulan}_${tahun}.csv`;
+            a.click();
+            showToast(`File Absensi_${bulan}_${tahun}.csv diunduh!`);
+        }
+
+        function importAbsenCSV(event) {
+            const file = event.target.files[0];
+            if(!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const lines = e.target.result.split('\n').map(l => l.trim()).filter(l => l);
+                if(lines.length <= 1) return Dialog.show("Error", "File CSV kosong atau tidak sesuai.");
+
+                let updatedCount = 0;
+                for(let i = 1; i < lines.length; i++) {
+                    // Split CSV handling quotes
+                    const cols = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c => c.replace(/^"|"$/g, '').trim());
+                    const nisn = cols[0];
+                    const nama = cols[1];
+
+                    const siswa = state.siswa.find(s => s.nisn == nisn || s.nama_siswa.toLowerCase() === nama.toLowerCase());
+                    if(siswa) {
+                        days.forEach((d, dIdx) => {
+                            let val = (cols[2 + dIdx] || '').toUpperCase();
+                            if(['.', 'S', 'I', 'A'].includes(val)) {
+                                let inp = document.querySelector(`.tgl-input[data-sid="${siswa.id}"][data-day="${d}"]`);
+                                if(inp) inp.value = val;
+                            }
+                        });
+                        if(cols[37] !== undefined) el(`absen-ket-${siswa.id}`).value = cols[37];
+                        calcAbsen(siswa.id);
+                        updatedCount++;
+                    }
+                }
+                showToast(`${updatedCount} data absen siswa dimuat dari CSV. Klik 'Simpan Data' untuk permanen.`);
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
 
         /**
          * =========================================
@@ -1236,6 +1399,65 @@
             } catch (err) {}
         }
 
+        function exportNilaiCSV() {
+            if(state.siswa.length === 0) return Dialog.show("Info", "Tidak ada data siswa untuk diekspor.");
+            const mapel = el('filter-mapel').value || 'Mapel';
+            const sem = el('filter-semester').value;
+
+            let headers = ['NISN', 'Nama Siswa', 'TP1', 'TP2', 'TP3', 'TP4', 'TP5', 'TP6', 'LM1', 'LM2', 'LM3', 'LM4', 'LM5', 'Sumatif_Akhir'];
+            let rows = [headers.join(',')];
+
+            document.querySelectorAll('#tbody-nilai tr').forEach((tr, idx) => {
+                let s = state.siswa[idx];
+                if(!s) return;
+                let vals = [];
+                tr.querySelectorAll('.n-tp, .n-lm, .n-akhir').forEach(inp => vals.push(inp.value || ''));
+                rows.push([`"${s.nisn}"`, `"${s.nama_siswa}"`, ...vals].join(','));
+            });
+
+            const blob = new Blob([rows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Nilai_${mapel.replace(/\s+/g, '_')}_Sem_${sem.charAt(0)}.csv`;
+            a.click();
+            showToast("File CSV Nilai berhasil diunduh!");
+        }
+
+        function importNilaiCSV(event) {
+            const file = event.target.files[0];
+            if(!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const lines = e.target.result.split('\n').map(l => l.trim()).filter(l => l);
+                if(lines.length <= 1) return Dialog.show("Error", "File CSV kosong atau tidak valid.");
+
+                let updatedCount = 0;
+                const trs = document.querySelectorAll('#tbody-nilai tr');
+
+                for(let i = 1; i < lines.length; i++) {
+                    const cols = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c => c.replace(/^"|"$/g, '').trim());
+                    const nisn = cols[0];
+                    const nama = cols[1];
+
+                    const siswaIdx = state.siswa.findIndex(s => s.nisn == nisn || s.nama_siswa.toLowerCase() === nama.toLowerCase());
+                    if(siswaIdx > -1 && trs[siswaIdx]) {
+                        const inputs = trs[siswaIdx].querySelectorAll('.n-tp, .n-lm, .n-akhir');
+                        inputs.forEach((inp, colIdx) => {
+                            if(cols[2 + colIdx] !== undefined && cols[2 + colIdx] !== '') {
+                                inp.value = cols[2 + colIdx];
+                            }
+                        });
+                        updatedCount++;
+                    }
+                }
+                showToast(`${updatedCount} nilai siswa dimuat dari CSV. Klik 'Simpan Data' untuk menyimpannya.`);
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
 
         /**
          * =========================================
@@ -1299,6 +1521,115 @@
             syncJurnalUItoState();
             localStorage.setItem('app_jurnal', JSON.stringify(state.jurnal));
             showToast("Jurnal Harian Disimpan Lokal");
+        }
+
+
+        /**
+         * =========================================
+         * MODUL PERANGKAT PEMBELAJARAN (NEW)
+         * =========================================
+         */
+        function renderPerangkat() {
+            const grid = el('grid-perangkat');
+            grid.innerHTML = '';
+
+            if(state.perangkat.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full text-center py-12 bg-white rounded-2xl border border-dashed border-slate-300">
+                        <i class="fas fa-folder-open text-4xl text-slate-300 mb-3"></i>
+                        <h4 class="font-bold text-slate-700">Belum Ada Perangkat Pembelajaran</h4>
+                        <p class="text-xs text-slate-500 mt-1 mb-4">Simpan tautan Modul Ajar, ATP, CP, atau Prota/Promes Anda di sini.</p>
+                        <button onclick="openPerangkatModal()" class="bg-primary text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-blue-700">Tambah Dokumen Pertama</button>
+                    </div>
+                `;
+                return;
+            }
+
+            const badgeColors = {
+                'Modul Ajar': 'bg-blue-100 text-blue-700',
+                'ATP': 'bg-emerald-100 text-emerald-700',
+                'CP': 'bg-purple-100 text-purple-700',
+                'Prota': 'bg-amber-100 text-amber-700',
+                'Promes': 'bg-orange-100 text-orange-700',
+                'KKTP': 'bg-rose-100 text-rose-700'
+            };
+
+            state.perangkat.forEach(item => {
+                const badge = badgeColors[item.jenis] || 'bg-slate-100 text-slate-700';
+                grid.innerHTML += `
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-start mb-3">
+                                <span class="px-2.5 py-1 rounded-md text-[11px] font-bold ${badge}">${item.jenis}</span>
+                                <span class="text-xs font-semibold text-slate-400">${item.mapel}</span>
+                            </div>
+                            <h4 class="font-bold text-slate-800 text-base mb-2 leading-snug">${item.judul}</h4>
+                            <p class="text-xs text-slate-500 line-clamp-3 mb-4">${item.catatan || 'Tidak ada catatan tambahan.'}</p>
+                        </div>
+                        <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
+                            ${item.link ? `<a href="${item.link}" target="_blank" class="text-xs font-bold text-primary hover:underline flex items-center gap-1"><i class="fas fa-external-link-alt"></i> Buka File</a>` : `<span class="text-[11px] text-slate-400 italic">Tanpa tautan</span>`}
+                            <div class="flex gap-1">
+                                <button onclick='editPerangkat(${JSON.stringify(item).replace(/'/g, "&#39;")})' class="p-1.5 text-slate-400 hover:text-blue-600 rounded hover:bg-blue-50 transition" title="Edit"><i class="fas fa-edit"></i></button>
+                                <button onclick="deletePerangkat(${item.id})" class="p-1.5 text-slate-400 hover:text-red-600 rounded hover:bg-red-50 transition" title="Hapus"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function openPerangkatModal() {
+            el('perangkat-id').value = '';
+            el('form-perangkat').reset();
+            el('modal-perangkat-title').innerText = 'Tambah Perangkat Ajar';
+            showModal('modal-perangkat');
+        }
+
+        function closePerangkatModal() { hideModal('modal-perangkat'); }
+
+        function editPerangkat(item) {
+            el('perangkat-id').value = item.id;
+            el('perangkat-jenis').value = item.jenis;
+            el('perangkat-mapel').value = item.mapel;
+            el('perangkat-judul').value = item.judul;
+            el('perangkat-link').value = item.link || '';
+            el('perangkat-catatan').value = item.catatan || '';
+            el('modal-perangkat-title').innerText = 'Edit Perangkat Ajar';
+            showModal('modal-perangkat');
+        }
+
+        function submitPerangkat(e) {
+            e.preventDefault();
+            const id = el('perangkat-id').value;
+            const newItem = {
+                id: id ? parseInt(id) : Date.now(),
+                jenis: el('perangkat-jenis').value,
+                mapel: el('perangkat-mapel').value,
+                judul: el('perangkat-judul').value,
+                link: el('perangkat-link').value,
+                catatan: el('perangkat-catatan').value
+            };
+
+            if(id) {
+                const idx = state.perangkat.findIndex(p => p.id == id);
+                if(idx > -1) state.perangkat[idx] = newItem;
+            } else {
+                state.perangkat.push(newItem);
+            }
+
+            localStorage.setItem('app_perangkat', JSON.stringify(state.perangkat));
+            showToast('Perangkat Pembelajaran disimpan!');
+            closePerangkatModal();
+            renderPerangkat();
+        }
+
+        function deletePerangkat(id) {
+            Dialog.confirm("Hapus Perangkat", "Yakin ingin menghapus dokumen perangkat pembelajaran ini?", () => {
+                state.perangkat = state.perangkat.filter(p => p.id !== id);
+                localStorage.setItem('app_perangkat', JSON.stringify(state.perangkat));
+                showToast("Dokumen dihapus");
+                renderPerangkat();
+            });
         }
 
 
@@ -1576,6 +1907,33 @@
                         <td class="print-text-left">${pnl(j.materi)}</td>
                         <td class="print-text-left">${pnl(j.kegiatan)}</td>
                         <td class="print-text-left">${pnl(j.penilaian)}</td>
+                    </tr>`;
+                });
+                tableHTML += `</tbody></table>`;
+                printContainer.innerHTML = tableHTML;
+            }
+            else if (type === 'perangkat') {
+                el('print-judul-laporan').innerText = "DAFTAR PERANGKAT PEMBELAJARAN";
+                el('print-keterangan-kiri').style.display = 'none';
+                
+                let tableHTML = `<table class="w-full border-collapse print-table mt-4">
+                    <thead>
+                        <tr>
+                            <th class="w-[30px]">NO</th>
+                            <th class="w-[110px]">JENIS</th>
+                            <th class="w-[120px]">MATA PELAJARAN</th>
+                            <th class="w-[200px]">JUDUL / MATERI POKOK</th>
+                            <th>RINGKASAN / TUJUAN PEMBELAJARAN</th>
+                        </tr>
+                    </thead><tbody class="align-top">`;
+                
+                state.perangkat.forEach((item, idx) => {
+                    tableHTML += `<tr>
+                        <td>${idx + 1}</td>
+                        <td class="font-bold">${item.jenis}</td>
+                        <td>${item.mapel}</td>
+                        <td class="print-text-left font-bold">${item.judul}</td>
+                        <td class="print-text-left">${(item.catatan || '-').replace(/\n/g, '<br>')}</td>
                     </tr>`;
                 });
                 tableHTML += `</tbody></table>`;
