@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Library QRCode.js agar barcode 100% otomatis terbuat dan dapat dipindai -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <!-- Library SheetJS untuk Download Template Excel (.xlsx) & Impor Excel Data Siswa -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -27,25 +29,31 @@
             const u = el('login-username').value.trim();
             const p = el('login-password').value.trim();
             
-            // 1. Jika menggunakan akun default 'admin', langsung masuk SECARA INSTAN tanpa menunggu loading
+            // 1. Jika menggunakan akun default 'admin', langsung masuk SECARA INSTAN sebagai Guru yang Bertugas
             if (u === 'admin' && (p === 'admin' || p === '123456')) {
                 const cachedUser = JSON.parse(localStorage.getItem('app_user_profile') || 'null');
                 const fastUser = cachedUser || { 
                     id: 'u1', 
                     username: 'admin', 
-                    nama_lengkap: 'Admin Sekolah', 
-                    role: 'admin', 
+                    nama_lengkap: 'Guru yang Bertugas', 
+                    role: 'Guru Kelas', 
                     foto_profil_base64: '' 
                 };
                 
                 state.user = fastUser;
                 localStorage.setItem('app_user', JSON.stringify(fastUser));
-                showToast("Login berhasil!");
+                showToast("Login berhasil! Selamat bertugas.");
                 startApp();
                 
                 // Sinkronkan profil terbaru dari server di latar belakang (non-blocking)
                 fetchAPI('login', { username: u, password: p }).then(serverUser => {
                     if (serverUser) {
+                        if (serverUser.nama_lengkap === 'Admin Sekolah' || serverUser.nama_lengkap === 'Admin') {
+                            serverUser.nama_lengkap = cachedUser?.nama_lengkap || 'Guru yang Bertugas';
+                        }
+                        if (!serverUser.foto_profil_base64 && cachedUser?.foto_profil_base64) {
+                            serverUser.foto_profil_base64 = cachedUser.foto_profil_base64;
+                        }
                         state.user = serverUser;
                         localStorage.setItem('app_user', JSON.stringify(serverUser));
                         localStorage.setItem('app_user_profile', JSON.stringify(serverUser));
@@ -146,16 +154,40 @@
         /* Hide elements by default */
         .hidden-view { display: none !important; }
 
-        /* Print Styles - F4 Landscape (330mm x 215mm) */
+        /* Print Styles - F4 Landscape (330mm x 215mm) - DIPASTIKAN BERFUNGSI DI SEMUA BROWSER */
         @media print {
             @page { size: 330mm 215mm; margin: 10mm; }
-            body * { visibility: hidden; }
-            #print-area, #print-area * { visibility: visible; }
-            #print-area { position: absolute; left: 0; top: 0; width: 100%; color: #000; background: #fff;}
+            html, body {
+                height: auto !important;
+                overflow: visible !important;
+                background: #fff !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            body.is-printing #app-shell,
+            body.is-printing #login-view,
+            body.is-printing #loader,
+            body.is-printing #toast-container,
+            body.is-printing #dialog-overlay,
+            body.is-printing #modal-siswa,
+            body.is-printing #modal-profil,
+            body.is-printing #modal-perangkat,
+            body.is-printing #modal-barcode-zoom {
+                display: none !important;
+            }
+            body.is-printing #print-area {
+                display: block !important;
+                visibility: visible !important;
+                position: static !important;
+                width: 100% !important;
+                color: #000 !important;
+                background: #fff !important;
+            }
             
             /* Reset colors for print */
+            .print-table { width: 100%; border-collapse: collapse; }
             .print-table th, .print-table td { border: 1px solid #000 !important; padding: 4px; font-size: 11px; text-align: center; background-color: transparent !important; color: #000 !important; }
-            .print-table th { font-weight: bold; }
+            .print-table th { font-weight: bold; background-color: #f8fafc !important; }
             .print-text-left { text-align: left !important; padding-left: 5px !important; }
             
             /* Kop Surat border */
@@ -288,14 +320,14 @@
                         <span class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>
                     </button>
                     <div class="w-px h-6 bg-slate-200"></div>
-                    <!-- Profile Widget -->
-                    <div class="flex items-center gap-3 cursor-pointer p-1 rounded-xl hover:bg-slate-50 transition" onclick="openProfilModal()">
+                    <!-- Profile Widget (Guru yang Bertugas) -->
+                    <div class="flex items-center gap-3 cursor-pointer p-1.5 rounded-xl hover:bg-slate-50 border border-transparent hover:border-slate-200 transition" onclick="openProfilModal()" title="Klik untuk ubah Foto & Nama Guru yang Bertugas">
                         <div class="text-right hidden sm:block">
-                            <p class="font-bold text-slate-700 text-sm leading-none" id="user-name-display">Admin</p>
-                            <p class="text-[11px] text-slate-500 font-medium mt-1" id="user-role-display">Guru Kelas</p>
+                            <p class="font-bold text-slate-700 text-sm leading-none" id="user-name-display">Guru yang Bertugas</p>
+                            <p class="text-[11px] text-primary font-semibold mt-1" id="user-role-display">Guru Kelas <i class="fas fa-camera text-[10px] ml-1"></i></p>
                         </div>
-                        <img id="user-avatar" src="https://placehold.co/40x40/2563eb/ffffff?text=U" alt="Profile" class="w-9 h-9 rounded-full object-cover border-2 border-primary/20">
-                        <i class="fas fa-chevron-down text-xs text-slate-400 ml-1"></i>
+                        <img id="user-avatar" src="https://placehold.co/40x40/2563eb/ffffff?text=G" alt="Foto Profil Guru" class="w-10 h-10 rounded-full object-cover border-2 border-primary/30 shadow-xs">
+                        <i class="fas fa-chevron-down text-xs text-slate-400 ml-0.5"></i>
                     </div>
                 </div>
             </header>
@@ -367,176 +399,21 @@
                 <!-- VIEW: DATA SISWA -->
                 <div id="view-siswa" class="view-section hidden-view">
                     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col h-[calc(100vh-140px)] overflow-hidden">
-                        <div class="p-5 border-b border-slate-100 flex justify-between items-center bg-white">
+                        <div class="p-5 border-b border-slate-100 flex flex-wrap gap-3 justify-between items-center bg-white">
                             <div>
                                 <h3 class="font-bold text-slate-800 text-lg">Daftar Siswa</h3>
-                                <p class="text-xs text-slate-500">Kelola data murid di kelas Anda</p>
-                            </div>
-                            <button onclick="openSiswaModal()" class="bg-primary text-white px-4 py-2.5 rounded-lg hover:bg-blue-700 transition text-sm font-bold shadow-sm shadow-blue-500/30">
-                                <i class="fas fa-plus mr-1"></i> Tambah Siswa
-                            </button>
-                        </div>
-                        <div class="p-0 flex-1 overflow-auto">
-                            <table class="w-full text-left border-collapse text-sm">
-                                <thead>
-                                    <tr class="bg-slate-50 text-slate-600 border-b border-slate-200 text-xs uppercase tracking-wider">
-                                        <th class="py-3 px-4 font-bold w-16 text-center">No</th>
-                                        <th class="py-3 px-4 font-bold">NISN</th>
-                                        <th class="py-3 px-4 font-bold">Nama Lengkap Siswa</th>
-                                        <th class="py-3 px-4 font-bold text-center w-24">L/P</th>
-                                        <th class="py-3 px-4 font-bold text-center w-32">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="tbody-siswa" class="divide-y divide-slate-100">
-                                    <!-- Rendered via JS -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- VIEW: ABSENSI -->
-                <div id="view-absensi" class="view-section hidden-view">
-                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col h-[calc(100vh-140px)] overflow-hidden">
-                        <div class="p-5 border-b border-slate-100 flex flex-wrap gap-4 justify-between items-center bg-white">
-                            <div class="flex items-center gap-3">
-                                <select id="filter-bulan" class="border border-slate-200 rounded-lg px-4 py-2 text-sm font-medium focus:ring-2 focus:ring-primary/20 outline-none bg-slate-50 text-slate-700">
-                                    <option value="Juli">Juli</option><option value="Agustus">Agustus</option>
-                                    <option value="September">September</option><option value="Oktober">Oktober</option>
-                                    <option value="November">November</option><option value="Desember">Desember</option>
-                                    <option value="Januari">Januari</option><option value="Februari">Februari</option>
-                                    <option value="Maret">Maret</option><option value="April">April</option>
-                                    <option value="Mei">Mei</option><option value="Juni">Juni</option>
-                                </select>
-                                <input type="number" id="filter-tahun" class="border border-slate-200 rounded-lg px-4 py-2 text-sm font-medium w-24 focus:ring-2 focus:ring-primary/20 outline-none bg-slate-50" value="2023">
-                                <button onclick="loadAbsensiData()" class="bg-slate-800 text-white px-4 py-2 rounded-lg hover:bg-slate-700 font-medium text-sm transition">
-                                    Tampilkan
-                                </button>
+                                <p class="text-xs text-slate-500">Kelola data murid atau impor massal menggunakan Template Excel (.xlsx)</p>
                             </div>
                             <div class="flex flex-wrap items-center gap-2">
-                                <input type="file" id="import-absen-file" accept=".csv" class="hidden" onchange="importAbsenCSV(event)">
-                                <button onclick="document.getElementById('import-absen-file').click()" class="bg-amber-50 text-amber-700 border border-amber-200 px-3 py-2 rounded-lg hover:bg-amber-100 transition text-xs font-bold">
-                                    <i class="fas fa-file-import mr-1"></i> Impor CSV
+                                <input type="file" id="import-siswa-excel" accept=".xlsx,.xls,.csv" class="hidden" onchange="importSiswaExcel(event)">
+                                <button onclick="downloadTemplateSiswa()" class="bg-blue-50 text-blue-700 border border-blue-200 px-3.5 py-2.5 rounded-lg hover:bg-blue-100 transition text-xs font-bold">
+                                    <i class="fas fa-file-excel mr-1.5 text-emerald-600"></i> Template Excel
                                 </button>
-                                <button onclick="exportAbsenCSV()" class="bg-blue-50 text-blue-700 border border-blue-200 px-3 py-2 rounded-lg hover:bg-blue-100 transition text-xs font-bold">
-                                    <i class="fas fa-file-export mr-1"></i> Ekspor CSV
+                                <button onclick="document.getElementById('import-siswa-excel').click()" class="bg-amber-50 text-amber-700 border border-amber-200 px-3.5 py-2.5 rounded-lg hover:bg-amber-100 transition text-xs font-bold">
+                                    <i class="fas fa-file-import mr-1.5"></i> Impor Excel
                                 </button>
-                                <button onclick="saveAbsensi()" class="bg-emerald-500 text-white px-4 py-2 rounded-lg hover:bg-emerald-600 transition text-sm font-bold shadow-sm shadow-emerald-500/20">
-                                    <i class="fas fa-save mr-1"></i> Simpan Data
-                                </button>
-                                <button onclick="printView('absensi')" class="bg-white text-slate-700 border border-slate-200 px-4 py-2 rounded-lg hover:bg-slate-50 transition text-sm font-bold shadow-sm">
-                                    <i class="fas fa-print mr-1"></i> Cetak F4
-                                </button>
-                            </div>
-                        </div>
-                        <!-- Table Wrapper -->
-                        <div class="p-0 flex-1 overflow-auto bg-white">
-                            <div class="bg-blue-50 text-blue-800 text-xs px-4 py-2 border-b border-blue-100 font-medium">
-                                <i class="fas fa-info-circle mr-1"></i> Ketik <strong>.</strong> (Hadir), <strong>S</strong> (Sakit), <strong>I</strong> (Izin), <strong>A</strong> (Alpa). Kursor akan berpindah otomatis!
-                            </div>
-                            <table class="w-full text-left border-collapse text-xs whitespace-nowrap">
-                                <thead>
-                                    <tr class="bg-slate-50 text-slate-600 border-b border-slate-200 uppercase">
-                                        <th rowspan="2" class="border-r border-slate-200 py-3 px-2 text-center sticky-col min-w-[40px] font-bold">No</th>
-                                        <th rowspan="2" class="border-r border-slate-200 py-3 px-4 sticky-col-2 min-w-[180px] font-bold">Nama Siswa</th>
-                                        <th colspan="31" class="border-r border-slate-200 py-1.5 text-center bg-blue-50/50 font-bold tracking-wider">TANGGAL</th>
-                                        <th rowspan="2" class="border-r border-slate-200 py-3 px-1 text-center font-bold bg-slate-100">S</th>
-                                        <th rowspan="2" class="border-r border-slate-200 py-3 px-1 text-center font-bold bg-slate-100">I</th>
-                                        <th rowspan="2" class="border-r border-slate-200 py-3 px-1 text-center font-bold bg-slate-100">A</th>
-                                        <th rowspan="2" class="border-r border-slate-200 py-3 px-1 text-center font-bold bg-slate-200">Jml</th>
-                                        <th rowspan="2" class="py-3 px-3 text-center font-bold">Keterangan</th>
-                                    </tr>
-                                    <tr class="bg-slate-50 text-slate-500 border-b border-slate-200 font-medium" id="thead-tgl">
-                                        <!-- Days 1-31 injected via JS -->
-                                    </tr>
-                                </thead>
-                                <tbody id="tbody-absensi" class="divide-y divide-slate-100">
-                                    <!-- Rendered via JS -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- VIEW: NILAI -->
-                <div id="view-nilai" class="view-section hidden-view">
-                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col h-[calc(100vh-140px)] overflow-hidden">
-                        <div class="p-5 border-b border-slate-100 flex flex-wrap gap-4 justify-between items-center bg-white">
-                            <div class="flex items-center gap-3">
-                                <input type="text" id="filter-mapel" class="border border-slate-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-primary/20 outline-none bg-slate-50 placeholder-slate-400 w-56 font-medium" placeholder="Mata Pelajaran (Cth: IPAS)">
-                                <select id="filter-semester" class="border border-slate-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-primary/20 outline-none bg-slate-50 font-medium">
-                                    <option value="1 (Satu)">Semester 1</option>
-                                    <option value="2 (Dua)">Semester 2</option>
-                                </select>
-                                <button onclick="loadNilaiData()" class="bg-slate-800 text-white px-4 py-2 rounded-lg hover:bg-slate-700 font-medium text-sm transition">
-                                    Tampilkan
-                                </button>
-                            </div>
-                            <div class="flex flex-wrap items-center gap-2">
-                                <input type="file" id="import-nilai-file" accept=".csv" class="hidden" onchange="importNilaiCSV(event)">
-                                <button onclick="document.getElementById('import-nilai-file').click()" class="bg-amber-50 text-amber-700 border border-amber-200 px-3 py-2 rounded-lg hover:bg-amber-100 transition text-xs font-bold">
-                                    <i class="fas fa-file-import mr-1"></i> Impor CSV
-                                </button>
-                                <button onclick="exportNilaiCSV()" class="bg-blue-50 text-blue-700 border border-blue-200 px-3 py-2 rounded-lg hover:bg-blue-100 transition text-xs font-bold">
-                                    <i class="fas fa-file-export mr-1"></i> Ekspor CSV
-                                </button>
-                                <button onclick="saveNilai()" class="bg-emerald-500 text-white px-4 py-2 rounded-lg hover:bg-emerald-600 transition text-sm font-bold shadow-sm shadow-emerald-500/20">
-                                    <i class="fas fa-save mr-1"></i> Simpan Data
-                                </button>
-                                <button onclick="printView('nilai')" class="bg-white text-slate-700 border border-slate-200 px-4 py-2 rounded-lg hover:bg-slate-50 transition text-sm font-bold shadow-sm">
-                                    <i class="fas fa-print mr-1"></i> Cetak F4
-                                </button>
-                            </div>
-                        </div>
-                        <div class="p-0 flex-1 overflow-auto bg-white">
-                            <table class="w-full text-left border-collapse text-xs whitespace-nowrap">
-                                <thead>
-                                    <tr class="bg-slate-50 text-slate-600 border-b border-slate-200">
-                                        <th rowspan="2" class="border-r border-slate-200 py-3 px-2 text-center sticky-col min-w-[40px] font-bold">No</th>
-                                        <th rowspan="2" class="border-r border-slate-200 py-3 px-4 sticky-col-2 min-w-[180px] font-bold">Nama Siswa</th>
-                                        <th colspan="6" class="border-r border-slate-200 py-1.5 text-center bg-blue-50/50 font-bold tracking-wider">FORMATIF (TP)</th>
-                                        <th colspan="5" class="border-r border-slate-200 py-1.5 text-center bg-emerald-50/50 font-bold tracking-wider">SUMATIF LINGKUP MATERI</th>
-                                        <th rowspan="2" class="py-3 px-2 text-center bg-purple-100 font-bold whitespace-normal min-w-[80px]">Sumatif<br>Akhir (SAS)</th>
-                                    </tr>
-                                    <tr class="bg-slate-50 text-slate-500 border-b border-slate-200 text-center font-medium">
-                                        <th class="border-r border-slate-200 py-1.5 px-1">TP1</th>
-                                        <th class="border-r border-slate-200 py-1.5 px-1">TP2</th>
-                                        <th class="border-r border-slate-200 py-1.5 px-1">TP3</th>
-                                        <th class="border-r border-slate-200 py-1.5 px-1">TP4</th>
-                                        <th class="border-r border-slate-200 py-1.5 px-1">TP5</th>
-                                        <th class="border-r border-slate-200 py-1.5 px-1">TP6</th>
-                                        <th class="border-r border-slate-200 py-1.5 px-1">LM1</th>
-                                        <th class="border-r border-slate-200 py-1.5 px-1">LM2</th>
-                                        <th class="border-r border-slate-200 py-1.5 px-1">LM3</th>
-                                        <th class="border-r border-slate-200 py-1.5 px-1">LM4</th>
-                                        <th class="border-r border-slate-200 py-1.5 px-1">LM5</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="tbody-nilai" class="divide-y divide-slate-100">
-                                    <!-- Rendered via JS -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- VIEW: JURNAL HARIAN (NEW) -->
-                <div id="view-jurnal" class="view-section hidden-view">
-                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col h-[calc(100vh-140px)] overflow-hidden">
-                        <div class="p-5 border-b border-slate-100 flex justify-between items-center bg-white">
-                            <div>
-                                <h3 class="font-bold text-slate-800 text-lg">Jurnal Harian Guru</h3>
-                                <p class="text-xs text-slate-500">Tersimpan secara lokal di browser <i class="fas fa-hdd ml-1"></i></p>
-                            </div>
-                            <div class="flex gap-2">
-                                <button onclick="addJurnalRow()" class="bg-blue-100 text-blue-700 px-4 py-2 rounded-lg hover:bg-blue-200 transition text-sm font-bold">
-                                    <i class="fas fa-plus mr-1"></i> Tambah Baris
-                                </button>
-                                <button onclick="saveJurnal()" class="bg-emerald-500 text-white px-4 py-2 rounded-lg hover:bg-emerald-600 transition text-sm font-bold shadow-sm">
-                                    <i class="fas fa-save mr-1"></i> Simpan
-                                </button>
-                                <button onclick="printView('jurnal')" class="bg-white text-slate-700 border border-slate-200 px-4 py-2 rounded-lg hover:bg-slate-50 transition text-sm font-bold shadow-sm">
-                                    <i class="fas fa-print mr-1"></i> Cetak
+                                <button onclick="openSiswaModal()" class="bg-primary text-white px-4 py-2.5 rounded-lg hover:bg-blue-700 transition text-sm font-bold shadow-sm shadow-blue-500/30">
+                                    <i class="fas fa-plus mr-1"></i> Tambah Siswa
                                 </button>
                             </div>
                         </div>
@@ -740,31 +617,35 @@
     <div id="modal-profil" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[9950] flex items-center justify-center hidden-view transition-opacity duration-300 opacity-0">
         <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm mx-4 overflow-hidden border border-slate-100">
             <div class="flex justify-between items-center p-5 border-b border-slate-100 bg-slate-50">
-                <h3 class="text-lg font-bold text-slate-800">Profil Akun</h3>
+                <div>
+                    <h3 class="text-lg font-bold text-slate-800">Profil Guru Bertugas</h3>
+                    <p class="text-[11px] text-slate-500">Atur foto profil & identitas guru yang bertugas</p>
+                </div>
                 <button type="button" onclick="closeProfilModal()" class="text-slate-400 hover:text-red-500 transition bg-white w-8 h-8 rounded-full flex items-center justify-center shadow-sm"><i class="fas fa-times"></i></button>
             </div>
             <form id="form-profil" onsubmit="saveProfil(event)" class="p-6">
                 <div class="text-center mb-6 relative group">
                     <div class="relative inline-block">
-                        <img id="preview-profil" src="https://placehold.co/100x100/2563eb/ffffff?text=U" class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-md mx-auto">
-                        <label for="file-profil" class="absolute bottom-0 right-0 bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center shadow-lg cursor-pointer hover:scale-110 transition border-2 border-white">
+                        <img id="preview-profil" src="https://placehold.co/100x100/2563eb/ffffff?text=G" class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-md mx-auto">
+                        <label for="file-profil" class="absolute bottom-0 right-0 bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center shadow-lg cursor-pointer hover:scale-110 transition border-2 border-white" title="Unggah Foto Profil Guru">
                             <i class="fas fa-camera text-xs"></i>
                         </label>
                     </div>
+                    <p class="text-[11px] text-slate-400 mt-2">Klik ikon kamera untuk unggah foto guru</p>
                     <input type="file" id="file-profil" accept="image/*" class="hidden" onchange="encodeImage(this, 'preview-profil', 'profil-base64')">
                     <input type="hidden" id="profil-base64">
                 </div>
                 <div class="mb-4">
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">Nama Lengkap</label>
-                    <input type="text" id="profil-nama" required class="w-full border border-slate-200 rounded-lg px-4 py-2.5 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Nama Guru yang Bertugas</label>
+                    <input type="text" id="profil-nama" required placeholder="Cth: Siti Aminah, S.Pd." class="w-full border border-slate-200 rounded-lg px-4 py-2.5 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
                 </div>
                 <div class="mb-8">
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">Ganti Password <span class="text-xs font-normal text-slate-400">(Opsional)</span></label>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Ganti Password Login <span class="text-xs font-normal text-slate-400">(Opsional)</span></label>
                     <input type="password" id="profil-password" placeholder="Kosongkan jika tidak diubah" class="w-full border border-slate-200 rounded-lg px-4 py-2.5 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
                 </div>
                 <div class="flex justify-end gap-3 pt-4 border-t border-slate-100">
                     <button type="button" onclick="closeProfilModal()" class="px-5 py-2.5 font-medium rounded-lg text-slate-600 hover:bg-slate-100 transition">Batal</button>
-                    <button type="submit" class="bg-primary text-white px-5 py-2.5 rounded-lg font-bold hover:bg-blue-700 transition shadow-md shadow-blue-500/20">Simpan</button>
+                    <button type="submit" class="bg-primary text-white px-5 py-2.5 rounded-lg font-bold hover:bg-blue-700 transition shadow-md shadow-blue-500/20">Simpan Profil</button>
                 </div>
             </form>
         </div>
@@ -1067,11 +948,12 @@
                     // JIKA GAGAL / ERROR: Langsung paksa masuk jika username adalah 'admin'
                     if (u === 'admin') {
                         console.warn("Memicu Force Bypass Login (Google Sheets menolak / gagal merespons)");
-                        user = { 
+                        const cachedUser = JSON.parse(localStorage.getItem('app_user_profile') || 'null');
+                        user = cachedUser || { 
                             id: 'u1', 
                             username: 'admin', 
-                            nama_lengkap: 'Admin Sekolah', 
-                            role: 'admin', 
+                            nama_lengkap: 'Guru yang Bertugas', 
+                            role: 'Guru Kelas', 
                             foto_profil_base64: '' 
                         };
                     } else {
@@ -1128,12 +1010,16 @@
         }
 
         function updateHeaderProfile() {
-            const nama = state.user.nama_lengkap || 'Admin';
+            const nama = (state.user.nama_lengkap && state.user.nama_lengkap !== 'Admin Sekolah' && state.user.nama_lengkap !== 'Admin') 
+                ? state.user.nama_lengkap 
+                : (state.pengaturan?.guru_kelas || 'Guru yang Bertugas');
             el('user-name-display').innerText = nama;
             el('dash-welcome-name').innerText = nama;
-            el('user-role-display').innerText = state.user.role === 'admin' ? 'Guru Kelas / Admin' : state.user.role;
+            el('user-role-display').innerHTML = `Guru yang Bertugas <i class="fas fa-camera text-[10px] ml-1"></i>`;
             if (state.user.foto_profil_base64) {
                 el('user-avatar').src = state.user.foto_profil_base64;
+            } else {
+                el('user-avatar').src = `https://placehold.co/40x40/2563eb/ffffff?text=${encodeURIComponent(nama.charAt(0).toUpperCase())}`;
             }
         }
 
@@ -1251,6 +1137,92 @@
                     renderTableSiswa();
                 } catch (err) {}
             });
+        }
+
+        function downloadTemplateSiswa() {
+            if (typeof XLSX === 'undefined') {
+                return Dialog.show("Error", "Library Excel belum termuat. Periksa koneksi internet Anda.");
+            }
+            const templateData = [
+                { "NISN": "0123456789", "Nama Lengkap Siswa": "Ahmad Fauzi", "Jenis Kelamin (L/P)": "L" },
+                { "NISN": "0123456790", "Nama Lengkap Siswa": "Siti Nurhaliza", "Jenis Kelamin (L/P)": "P" }
+            ];
+            const ws = XLSX.utils.json_to_sheet(templateData);
+            ws['!cols'] = [{ wch: 18 }, { wch: 35 }, { wch: 22 }];
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Template_Siswa");
+            XLSX.writeFile(wb, "Template_Data_Siswa.xlsx");
+            showToast("Template_Data_Siswa.xlsx berhasil diunduh!");
+        }
+
+        function importSiswaExcel(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            if (typeof XLSX === 'undefined') {
+                return Dialog.show("Error", "Library Excel belum termuat.");
+            }
+
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                    const rows = XLSX.utils.sheet_to_json(firstSheet, { defval: "" });
+
+                    if (rows.length === 0) {
+                        return Dialog.show("Kosong", "File Excel tidak memiliki baris data siswa.");
+                    }
+
+                    const validSiswa = [];
+                    rows.forEach(r => {
+                        const keys = Object.keys(r);
+                        const nisnKey = keys.find(k => k.toLowerCase().includes('nisn') || k.toLowerCase().includes('nis'));
+                        const namaKey = keys.find(k => k.toLowerCase().includes('nama'));
+                        const jkKey = keys.find(k => k.toLowerCase().includes('kelamin') || k.toLowerCase() === 'jk' || k.toLowerCase().includes('l/p'));
+
+                        const nisn = String(nisnKey ? r[nisnKey] : (r[keys[0]] || '')).trim();
+                        const nama_siswa = String(namaKey ? r[namaKey] : (r[keys[1]] || '')).trim();
+                        let jk = String(jkKey ? r[jkKey] : (r[keys[2]] || 'L')).trim().toUpperCase();
+                        jk = jk.startsWith('P') ? 'P' : 'L';
+
+                        if (nama_siswa) {
+                            validSiswa.push({ id: '', nisn: nisn || '-', nama_siswa, jk });
+                        }
+                    });
+
+                    if (validSiswa.length === 0) {
+                        return Dialog.show("Format Tidak Sesuai", "Pastikan terdapat kolom NISN, Nama Lengkap Siswa, dan Jenis Kelamin (L/P).");
+                    }
+
+                    showLoader(`Mengimpor ${validSiswa.length} data siswa...`);
+                    let successCount = 0;
+                    for (const item of validSiswa) {
+                        try {
+                            await fetchAPI('save_siswa', item);
+                            successCount++;
+                        } catch (err) {
+                            // Fallback simpan ke state lokal jika offline
+                            item.id = 's_local_' + Date.now() + Math.random().toString(36).slice(2, 6);
+                            state.siswa.push(item);
+                            successCount++;
+                        }
+                    }
+
+                    try {
+                        state.siswa = await fetchAPI('get_siswa');
+                    } catch (e) {}
+                    localStorage.setItem('app_siswa_cache', JSON.stringify(state.siswa));
+                    hideLoader();
+                    renderTableSiswa();
+                    showToast(`${successCount} siswa berhasil diimpor dari Excel!`);
+                } catch (err) {
+                    hideLoader();
+                    Dialog.show("Gagal Impor", "File Excel rusak atau format tidak didukung.");
+                }
+            };
+            reader.readAsArrayBuffer(file);
+            event.target.value = '';
         }
 
         /**
@@ -1910,16 +1882,21 @@
 
         /**
          * =========================================
-         * PROFIL USER
+         * PROFIL USER (GURU YANG BERTUGAS)
          * =========================================
          */
         function openProfilModal() {
-            el('profil-nama').value = state.user.nama_lengkap;
+            const currentName = (state.user.nama_lengkap && state.user.nama_lengkap !== 'Admin Sekolah' && state.user.nama_lengkap !== 'Admin')
+                ? state.user.nama_lengkap
+                : (state.pengaturan?.guru_kelas || 'Guru yang Bertugas');
+            el('profil-nama').value = currentName;
             el('profil-password').value = '';
             el('profil-base64').value = state.user.foto_profil_base64 || '';
             
             if(state.user.foto_profil_base64) {
                 el('preview-profil').src = state.user.foto_profil_base64;
+            } else {
+                el('preview-profil').src = `https://placehold.co/100x100/2563eb/ffffff?text=${encodeURIComponent(currentName.charAt(0).toUpperCase())}`;
             }
             showModal('modal-profil');
         }
@@ -1929,23 +1906,23 @@
             e.preventDefault();
             const payload = {
                 id: state.user.id,
-                nama_lengkap: el('profil-nama').value,
+                nama_lengkap: el('profil-nama').value.trim(),
                 password: el('profil-password').value,
                 foto_profil_base64: el('profil-base64').value
             };
             if(!payload.password) delete payload.password; 
 
+            state.user.nama_lengkap = payload.nama_lengkap;
+            state.user.role = 'Guru yang Bertugas';
+            state.user.foto_profil_base64 = payload.foto_profil_base64;
+            localStorage.setItem('app_user', JSON.stringify(state.user));
+            localStorage.setItem('app_user_profile', JSON.stringify(state.user));
+            updateHeaderProfile();
+            closeProfilModal();
+            showToast("Foto & Profil Guru Bertugas diperbarui!");
+
             try {
-                showLoader("Memperbarui Profil...");
                 await fetchAPI('update_profil', payload);
-                showToast("Profil diperbarui");
-                
-                state.user.nama_lengkap = payload.nama_lengkap;
-                state.user.foto_profil_base64 = payload.foto_profil_base64;
-                localStorage.setItem('app_user', JSON.stringify(state.user));
-                updateHeaderProfile();
-                
-                closeProfilModal();
             } catch(err) {}
         }
 
@@ -1967,12 +1944,12 @@
          * =========================================
          */
         function printView(type) {
-            const p = state.pengaturan;
+            const p = state.pengaturan || {};
             
             // 1. Setup Kop Surat (4 Baris)
-            el('print-kop-1').innerText = p.kop_baris_1 || '';
-            el('print-kop-2').innerText = p.kop_baris_2 || '';
-            el('print-kop-3').innerText = p.kop_baris_3 || '';
+            el('print-kop-1').innerText = p.kop_baris_1 || 'PEMERINTAH KABUPATEN / KOTA';
+            el('print-kop-2').innerText = p.kop_baris_2 || 'DINAS PENDIDIKAN';
+            el('print-kop-3').innerText = p.kop_baris_3 || p.nama_sekolah || 'NAMA SEKOLAH';
             el('print-kop-4').innerText = p.kop_baris_4 || '';
             
             if(p.logo_kiri_base64) {
@@ -1989,9 +1966,13 @@
             el('print-lbl-ta').innerText = p.tahun_ajaran || '........';
             el('print-lbl-kelas').innerText = p.kelas || '........';
             
+            const namaGuruBertugas = (state.user?.nama_lengkap && state.user.nama_lengkap !== 'Admin Sekolah' && state.user.nama_lengkap !== 'Admin')
+                ? state.user.nama_lengkap
+                : (p.guru_kelas || '.......................');
+
             el('print-ttd-kepsek-nama').innerText = p.kepala_sekolah || '.......................';
             el('print-ttd-kepsek-nip').innerText = p.nip_kepsek || '.......................';
-            el('print-ttd-guru-nama').innerText = p.guru_kelas || '.......................';
+            el('print-ttd-guru-nama').innerText = namaGuruBertugas;
             el('print-ttd-guru-nip').innerText = p.nip_guru || '.......................';
             
             const now = new Date();
@@ -2058,9 +2039,9 @@
             } 
             else if (type === 'jurnal') {
                 el('print-judul-laporan').innerText = "JURNAL KEGIATAN PEMBELAJARAN";
-                el('print-keterangan-kiri').style.display = 'none'; // Sembunyikan untuk jurnal
+                el('print-keterangan-kiri').style.display = 'none';
                 
-                syncJurnalUItoState(); // ensure latest inputs are caught
+                syncJurnalUItoState();
                 
                 let tableHTML = `<table class="w-full border-collapse print-table mt-4">
                     <thead>
@@ -2075,7 +2056,6 @@
                     </thead><tbody class="align-top">`;
                 
                 state.jurnal.forEach(j => {
-                    // convert newlines to <br> for printing
                     const pnl = (str) => (str||'').replace(/\n/g, '<br>');
                     tableHTML += `<tr>
                         <td class="print-text-left">${pnl(j.tanggal)}</td>
@@ -2105,23 +2085,27 @@
                         </tr>
                     </thead><tbody class="align-middle">`;
                 
-                state.perangkat.forEach((item, idx) => {
-                    tableHTML += `<tr>
-                        <td>${idx + 1}</td>
-                        <td class="font-bold">${item.jenis}</td>
-                        <td>${item.mapel}</td>
-                        <td class="print-text-left font-bold">${item.judul}</td>
-                        <td class="print-text-left">${(item.catatan || '-').replace(/\n/g, '<br>')}</td>
-                        <td class="p-2 text-center">
-                            <div id="qr-print-${item.id}" class="inline-block mx-auto"></div>
-                            <div class="text-[9px] font-mono font-bold mt-1">#${String(item.id).slice(-5)}</div>
-                        </td>
-                    </tr>`;
-                });
+                if (state.perangkat.length === 0) {
+                    tableHTML += `<tr><td colspan="6" class="py-6 text-center italic">Belum ada data perangkat pembelajaran yang ditambahkan.</td></tr>`;
+                } else {
+                    state.perangkat.forEach((item, idx) => {
+                        tableHTML += `<tr>
+                            <td>${idx + 1}</td>
+                            <td class="font-bold">${item.jenis}</td>
+                            <td>${item.mapel}</td>
+                            <td class="print-text-left font-bold">${item.judul}</td>
+                            <td class="print-text-left">${(item.catatan || '-').replace(/\n/g, '<br>')}</td>
+                            <td class="p-2 text-center">
+                                <div id="qr-print-${item.id}" class="inline-block mx-auto"></div>
+                                <div class="text-[9px] font-mono font-bold mt-1">#${String(item.id).slice(-5)}</div>
+                            </td>
+                        </tr>`;
+                    });
+                }
                 tableHTML += `</tbody></table>`;
                 printContainer.innerHTML = tableHTML;
 
-                // Render Barcode Besar (100x100 px) 1 per 1 untuk tampilan cetak F4
+                // Render Barcode Besar (100x100 px) 1 per 1 & konversi canvas ke <img> agar 100% muncul saat cetak
                 state.perangkat.forEach(item => {
                     const printQrEl = el(`qr-print-${item.id}`);
                     if(printQrEl && typeof QRCode !== 'undefined') {
@@ -2138,12 +2122,27 @@
                             colorLight : "#ffffff",
                             correctLevel : QRCode.CorrectLevel.L
                         });
+
+                        // Konversi canvas ke <img> supaya browser tidak menyembunyikan canvas saat window.print()
+                        setTimeout(() => {
+                            const canvas = printQrEl.querySelector('canvas');
+                            if (canvas) {
+                                const imgData = canvas.toDataURL('image/png');
+                                printQrEl.innerHTML = `<img src="${imgData}" style="width:100px;height:100px;display:block;margin:auto;" />`;
+                            }
+                        }, 100);
                     }
                 });
             }
 
-            // 4. Trigger Print (beri jeda sedikit lebih lama agar semua gambar barcode selesai dirender sempurna)
-            setTimeout(() => { window.print(); }, 600);
+            // 4. Aktifkan mode cetak pada body dan panggil dialog print
+            document.body.classList.add('is-printing');
+            setTimeout(() => {
+                window.print();
+                setTimeout(() => {
+                    document.body.classList.remove('is-printing');
+                }, 500);
+            }, 500);
         }
 
     </script>
