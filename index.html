@@ -10,6 +10,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- QRCode.js untuk Barcode Dokumen -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
     <script>
         tailwind.config = {
@@ -1556,18 +1558,27 @@
 
             state.perangkat.forEach(item => {
                 const badge = badgeColors[item.jenis] || 'bg-slate-100 text-slate-700';
+                const qrData = item.link ? item.link : `DOK-${item.id} | ${item.jenis} - ${item.mapel} - ${item.judul}`;
                 grid.innerHTML += `
                     <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition flex flex-col justify-between">
                         <div>
-                            <div class="flex justify-between items-start mb-3">
-                                <span class="px-2.5 py-1 rounded-md text-[11px] font-bold ${badge}">${item.jenis}</span>
-                                <span class="text-xs font-semibold text-slate-400">${item.mapel}</span>
+                            <div class="flex justify-between items-start gap-3 mb-3">
+                                <div class="flex-1">
+                                    <div class="flex flex-wrap items-center gap-2 mb-2">
+                                        <span class="px-2.5 py-1 rounded-md text-[11px] font-bold ${badge}">${item.jenis}</span>
+                                        <span class="text-xs font-semibold text-slate-400">${item.mapel}</span>
+                                    </div>
+                                    <h4 class="font-bold text-slate-800 text-base leading-snug">${item.judul}</h4>
+                                </div>
+                                <div class="flex-shrink-0 bg-white p-1.5 border border-slate-200 rounded-lg shadow-xs text-center" title="Barcode Dokumen">
+                                    <div id="qr-card-${item.id}" class="flex justify-center"></div>
+                                    <span class="text-[8px] font-mono text-slate-400 block mt-0.5">#${String(item.id).slice(-5)}</span>
+                                </div>
                             </div>
-                            <h4 class="font-bold text-slate-800 text-base mb-2 leading-snug">${item.judul}</h4>
                             <p class="text-xs text-slate-500 line-clamp-3 mb-4">${item.catatan || 'Tidak ada catatan tambahan.'}</p>
                         </div>
                         <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
-                            ${item.link ? `<a href="${item.link}" target="_blank" class="text-xs font-bold text-primary hover:underline flex items-center gap-1"><i class="fas fa-external-link-alt"></i> Buka File</a>` : `<span class="text-[11px] text-slate-400 italic">Tanpa tautan</span>`}
+                            ${item.link ? `<a href="${item.link}" target="_blank" class="text-xs font-bold text-primary hover:underline flex items-center gap-1"><i class="fas fa-external-link-alt"></i> Buka File</a>` : `<span class="text-[11px] text-slate-400 italic">Barcode Info Aktif</span>`}
                             <div class="flex gap-1">
                                 <button onclick='editPerangkat(${JSON.stringify(item).replace(/'/g, "&#39;")})' class="p-1.5 text-slate-400 hover:text-blue-600 rounded hover:bg-blue-50 transition" title="Edit"><i class="fas fa-edit"></i></button>
                                 <button onclick="deletePerangkat(${item.id})" class="p-1.5 text-slate-400 hover:text-red-600 rounded hover:bg-red-50 transition" title="Hapus"><i class="fas fa-trash"></i></button>
@@ -1575,6 +1586,22 @@
                         </div>
                     </div>
                 `;
+            });
+
+            // Generate Barcode 1 per 1 untuk setiap kartu dokumen
+            state.perangkat.forEach(item => {
+                const qrContainer = el(`qr-card-${item.id}`);
+                if(qrContainer) {
+                    const qrText = item.link ? item.link : `${item.jenis} | ${item.mapel} | ${item.judul}`;
+                    new QRCode(qrContainer, {
+                        text: qrText,
+                        width: 56,
+                        height: 56,
+                        colorDark : "#1e293b",
+                        colorLight : "#ffffff",
+                        correctLevel : QRCode.CorrectLevel.M
+                    });
+                }
             });
         }
 
@@ -1920,12 +1947,13 @@
                     <thead>
                         <tr>
                             <th class="w-[30px]">NO</th>
-                            <th class="w-[110px]">JENIS</th>
-                            <th class="w-[120px]">MATA PELAJARAN</th>
-                            <th class="w-[200px]">JUDUL / MATERI POKOK</th>
+                            <th class="w-[100px]">JENIS</th>
+                            <th class="w-[110px]">MATA PELAJARAN</th>
+                            <th class="w-[180px]">JUDUL / MATERI POKOK</th>
                             <th>RINGKASAN / TUJUAN PEMBELAJARAN</th>
+                            <th class="w-[75px]">BARCODE</th>
                         </tr>
-                    </thead><tbody class="align-top">`;
+                    </thead><tbody class="align-middle">`;
                 
                 state.perangkat.forEach((item, idx) => {
                     tableHTML += `<tr>
@@ -1934,10 +1962,30 @@
                         <td>${item.mapel}</td>
                         <td class="print-text-left font-bold">${item.judul}</td>
                         <td class="print-text-left">${(item.catatan || '-').replace(/\n/g, '<br>')}</td>
+                        <td class="p-1 text-center">
+                            <div id="qr-print-${item.id}" class="inline-block mx-auto"></div>
+                            <div class="text-[8px] font-mono mt-0.5">#${String(item.id).slice(-5)}</div>
+                        </td>
                     </tr>`;
                 });
                 tableHTML += `</tbody></table>`;
                 printContainer.innerHTML = tableHTML;
+
+                // Render Barcode 1 per 1 untuk tampilan cetak F4
+                state.perangkat.forEach(item => {
+                    const printQrEl = el(`qr-print-${item.id}`);
+                    if(printQrEl) {
+                        const qrText = item.link ? item.link : `${item.jenis} | ${item.mapel} | ${item.judul}`;
+                        new QRCode(printQrEl, {
+                            text: qrText,
+                            width: 54,
+                            height: 54,
+                            colorDark : "#000000",
+                            colorLight : "#ffffff",
+                            correctLevel : QRCode.CorrectLevel.M
+                        });
+                    }
+                });
             }
 
             // 4. Trigger Print
